@@ -1,0 +1,159 @@
+{
+  "COUNTERCODE": {
+    "type": "char(6)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "实际扣库存的柜"
+  },
+  "ONLINECOUNTERCODE": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "虚拟柜",
+    "defaultValue": null
+  },
+  "CONFIRMSTATE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-待确认 1-确认 2-拒绝",
+    "defaultValue": "0"
+  },
+  "CONFIRMTIME": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "SALESMANCODE": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "确认或拒绝操作的营业员",
+    "defaultValue": null
+  },
+  "ONLINEORDERCODE": {
+    "type": "char(18)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "RECEIVABLEAMT": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "应收金额",
+    "defaultValue": "0.00"
+  },
+  "DELIVERYDEPTCODE": {
+    "type": "varchar(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "订单最终自提货或发货点"
+  },
+  "DELIVERYMODE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-自提 1-物流配送",
+    "defaultValue": "0"
+  },
+  "FINALPRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "FINALRULESTRING": {
+    "type": "varchar(1024)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "NOTE": {
+    "type": "varchar(256)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "ORDERSTATE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "见文档",
+    "defaultValue": "1"
+  },
+  "PAYMENTMODE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-现场支付，1-网上支付，2-到付",
+    "defaultValue": "0"
+  },
+  "SITEID": {
+    "type": "int(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "USERCODE": {
+    "type": "char(32)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "TIME": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "2000-01-01 00:00:00"
+  },
+  "PLACETIME": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "下单时间",
+    "defaultValue": null
+  },
+  "PAYTIME": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "订单支付时间",
+    "defaultValue": null
+  },
+  "IFRETURN": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "是否是退货单 0是普通订单 1退货订单",
+    "defaultValue": "0"
+  },
+  "VIPCARDNO": {
+    "type": "varchar(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "贵宾卡卡号",
+    "defaultValue": null
+  },
+  "TELEPHONE": {
+    "type": "char(16)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "NAME": {
+    "type": "varchar(64)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  }
+}

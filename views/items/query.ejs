@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="product" content="Metro UI CSS Framework">
+
+
+<link href="../css/metro-bootstrap.css" rel="stylesheet">
+<link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+<link href="../css/iconFont.css" rel="stylesheet">
+<link href="../css/docs.css" rel="stylesheet">
+<link href="../js/prettify/prettify.css" rel="stylesheet">
+<!--<link href="../css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">-->
+<script src="../js/load-metro.js"></script>
+<!--<script src="../js/jquery/jquery.min.js"></script>-->
+
+<link rel="stylesheet" type="text/css" media="screen"
+      href="../js/jquery.jqGrid-4.6.0/css/themes/redmond/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css"/>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+
+<script src="../js/jquery/jquery.widget.min.js"></script>
+<script src="../js/jquery/jquery.mousewheel.js"></script>
+<script src="../js/prettify/prettify.js"></script>
+<script src="../js/holder/holder.js"></script>
+<script src="../js/docs.js"></script>
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+
+<script src="../js/metro.js"></script>
+<script src="../js/github.js"></script>
+
+<script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+
+
+<script type="text/javascript">
+Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+        "M+": this.getMonth() + 1,                 //月份
+        "d+": this.getDate(),                    //日
+        "h+": this.getHours(),                   //小时
+        "m+": this.getMinutes(),                 //分
+        "s+": this.getSeconds(),                 //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds()             //毫秒
+    };
+    if (/(y+)/.test(fmt))
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt))
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+
+$(document).ready(function () {
+    jQuery("#itemTable").jqGrid({
+        url: '/items/searchall?qry=',
+        datatype: "json",
+        height: 400,
+        width: window.screen.availWidth > 1140 ? 1020 : 820,
+        autowidth: false,
+        shrinkToFit: false,
+        colNames: [
+            "商品编码",
+            "条形码",
+            "货号",
+            "全称",
+            "简称",
+
+            "品牌编码",
+            "销售分类编码",
+            "商品分类编码",
+            "供应商编码",
+            "招商人员编码",
+            "品牌名称",
+            "销售分类名称",
+            "商品分类名称",
+            "供应商名称",
+            "招商人员名称",
+
+            "商品编码类型",
+            "合同经销方式",
+            "核定售价",
+            "统一暂时售价",
+            "销项税率",
+            "消费税率",
+            "进项税率",
+            "是否允许退货",
+            "销售状态",
+
+            "规格",
+            "计量单位",
+            "产地",
+            "净重",
+            "毛重",
+            "等级",
+            "颜色",
+            "包装规格",
+            "尺寸",
+            "体积",
+            "质保期",
+
+            "最后进价",
+            "安全库存",
+            "最高存量",
+            "最低存量",
+            "最高订货量",
+            "最低订货量",
+            "商品属性",
+
+            "复查状态",
+            "错误信息",
+            "输入员",
+
+            "录入时间",
+            "最后一次更新时间",
+
+            "是否考虑库存",
+            "是否允许上线",
+            "是否允许负库存",
+            "SKC信息录入状态",
+            "上线信息录入状态",
+            "在卖状态",
+            "商品上线描述",
+            "商品评分",
+            "评分人数(满5分)",
+            "销售量",
+            "购买人数",
+            "好评率(%)",
+            "上线开卖时间"
+        ],
+        colModel: [
+            {name: 'ITEMCODE', index: 'ITEMCODE', width: 60, frozen: true},
+            {name: 'BARCODE', index: 'BARCODE', width: 120, frozen: true},
+            {name: 'PRODUCTCODE', index: 'PRODUCTCODE', width: 80, frozen: true},
+            {name: 'ITEMNAME', index: 'ITEMNAME', width: 120, frozen: true},
+            {name: 'ITEMSHORTNAME', index: 'ITEMSHORTNAME', width: 70, frozen: true},
+
+            {name: 'BRANDCODE', index: 'BRANDCODE'},
+            {name: 'RETAILTYPECODE', index: 'RETAILTYPECODE'},
+            {name: 'ITEMTYPECODE', index: 'ITEMTYPECODE'},
+            {name: 'MERCHANTCODE', index: 'MERCHANTCODE'},
+            {name: 'AGENTCODE', index: 'AGENTCODE'},
+            {name: 'BRANDNAME', index: 'BRANDNAME'},
+            {name: 'ITEMTYPENAME', index: 'ITEMTYPENAME'},
+            {name: 'RETAILTYPENAME', index: 'RETAILTYPENAME'},
+            {name: 'MERCHANTNAME', index: 'MERCHANTNAME'},
+            {name: 'AGENTNAME', index: 'AGENTNAME'},
+
+            {name: 'ITEMCODETYPE', index: 'ITEMCODETYPE', formatter: 'select', edittype: "select", editoptions: {value: "0:正常商品编码;1:大类码"}},
+            {name: 'BUSINESSMODE', index: 'BUSINESSMODE'},
+            {name: 'PRICE', index: 'PRICE'},
+            {name: 'TEMPPRICE', index: 'TEMPPRICE'},
+            {name: 'TAXRATE', index: 'TAXRATE'},
+            {name: 'EXCISERATE', index: 'EXCISERATE'},
+            {name: 'PURCHASETAXRATE', index: 'PURCHASETAXRATE'},
+            {name: 'RETURNGOODS', index: 'RETURNGOODS', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'SALESTATE', index: 'SALESTATE', formatter: 'select', edittype: "select", editoptions: {value: "0:正常;2:手工登记删除;3:合同到期自动登记删除"}},
+
+            {name: 'SPECIFICATION', index: 'SPECIFICATION'},
+            {name: 'UNIT', index: 'UNIT'},
+            {name: 'PRODUCINGAREA', index: 'PRODUCINGAREA'},
+            {name: 'NETWEIGHT', index: 'NETWEIGHT'},
+            {name: 'GROSSWEIGHT', index: 'GROSSWEIGHT'},
+            {name: 'GRADE', index: 'GRADE'},
+            {name: 'COLOR', index: 'COLOR'},
+            {name: 'CASING', index: 'CASING'},
+            {name: 'DIMENSION', index: 'DIMENSION'},
+            {name: 'VOLUME', index: 'VOLUME'},
+            {name: 'TERM', index: 'TERM'},
+
+            {name: 'LASTPURCHASEPRICE', index: 'LASTPURCHASEPRICE'},
+            {name: 'SAFESTOCK', index: 'SAFESTOCK'},
+            {name: 'MAXSTOCK', index: 'MAXSTOCK'},
+            {name: 'MINSTOCK', index: 'MINSTOCK'},
+            {name: 'MAXORDER', index: 'MAXORDER'},
+            {name: 'MINORDER', index: 'MINORDER'},
+            {name: 'PROPERTY', index: 'PROPERTY', formatter: 'select', edittype: "select", editoptions: {value: "0:普通商品;1:黄金商品;2:香烟商品"}},
+
+            {name: 'CHECKSTATE', index: 'CHECKSTATE', formatter: 'select', edittype: "select", editoptions: {value: "0:复查不通过(可改价格、招商人员、商品分类);1:复查通过(不可改价格、招商人员、商品分类);2:输入;3:变更(不可改价格、招商人员、商品分类);4:变更不通过(不可改价格、招商人员、商品分类)"}},
+            {name: 'ERRORINFO', index: 'ERRORINFO'},
+            {name: 'INPUTPERSON', index: 'INPUTPERSON'},
+
+            {name: 'createdAt', index: 'createdAt', formatter: dataFormat},
+            {name: 'updatedAt', index: 'updatedAt', formatter: dataFormat},
+
+            {name: 'ISCONSIDERSTOCK', index: 'ISCONSIDERSTOCK', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'ISALLOWONLINE', index: 'ISALLOWONLINE', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'ISALLOWNEGATIVE', index: 'ISALLOWNEGATIVE', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'SKCCHECKSTATE', index: 'SKCCHECKSTATE', formatter: 'select', edittype: "select", editoptions: {value: "0:未完善;1:审核通过;2:已完善待审核;3:审核过又有更新"}},
+            {name: 'ONLINECHECKSTATE', index: 'ONLINECHECKSTATE', formatter: 'select', edittype: "select", editoptions: {value: "0:未完善;1:审核通过;2:已完善待审核;3:审核过又有更新"}},
+            {name: 'SELLINGSTATE', index: 'SELLINGSTATE', formatter: 'select', edittype: "select", editoptions: {value: "0:尚未到柜开始销售;1:线下不管库存销售中;2:线下管库存销售中;3:线上线下销售中"}},
+            {name: 'TITLE', index: 'TITLE'},
+            {name: 'SCORE', index: 'SCORE'},
+            {name: 'SCOREPOPULARITY', index: 'SCOREPOPULARITY'},
+            {name: 'PURCHASE', index: 'PURCHASE'},
+            {name: 'PURCHASEPOPULARITY', index: 'PURCHASEPOPULARITY'},
+            {name: 'PRAISERATE', index: 'PRAISERATE'},
+            {name: 'ONLINETIME', index: 'ONLINETIME',formatter: dataFormat}
+
+        ],
+        rowNum: 20,
+        rowList: [20, 50, 100],
+        pager: '#itemDiv',
+        viewrecords: true,
+        sortname: 'ITEMCODE',
+        sortorder: "desc",
+//                multiselect: true,
+//                editurl:?,
+        caption: "商品信息",
+        fitColumns: true,
+        onSelectRow: function () {
+            clearSkc();
+            clearOnline();
+
+            var id = $("#itemTable").jqGrid('getGridParam', "selrow");
+            var obj = $("#itemTable").jqGrid('getRowData', id);
+
+            var itemcode=obj.ITEMCODE;
+            var isconsiderstock=obj.ISCONSIDERSTOCK;
+            var isallowonline=obj.ISALLOWONLINE;
+            var skccheckstate=obj.SKCCHECKSTATE;
+            var onlinecheckstate=obj.ONLINECHECKSTATE;
+            var sellingstate=obj.SELLINGSTATE;
+
+//            alert(itemcode+" "+skccheckstate+" "+onlinecheckstate+" "+sellingstate+" "+isconsiderstock+" "+isallowonline);
+
+            if(isconsiderstock==1){
+                $("#panel1").attr("style","display:block");
+            }
+            else{
+                $("#panel1").attr("style","display:none");
+            }
+
+            if(isallowonline==1){
+                $("#panel2").attr("style","display:block");
+            }
+            else{
+                $("#panel2").attr("style","display:none");
+            }
+
+            if(skccheckstate==1||skccheckstate==3){
+                $("#div1").attr("style","display:none");
+                $("#div2").attr("style","display:block");
+
+                getSkc();
+            }
+            else{
+                $("#div1").attr("style","display:block");
+                $("#div2").attr("style","display:none");
+            }
+
+            if(onlinecheckstate==1||onlinecheckstate==3){
+                $("#div3").attr("style","display:none");
+                $("#div4").attr("style","display:block");
+
+                getOnline();
+            }
+            else{
+                $("#div3").attr("style","display:block");
+                $("#div4").attr("style","display:none");
+            }
+
+            window.parent.SetWinHeight();
+
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function(){
+            var userdata=JSON.stringify($(this).getGridParam('userData'));
+            if(userdata!='{}' && userdata)
+                alert(userdata);
+        },
+        gridComplete: function () {
+
+        }
+    });
+    jQuery("#itemTable").jqGrid('navGrid', '#itemDiv', {search:false, add: false, edit: false, del: false});
+    jQuery("#itemTable").jqGrid('setFrozenColumns');
+
+    var skcArr=[];
+    jQuery("#skcTable").jqGrid({
+        datatype: "local",
+        height: 160,
+        width: 800,
+//        autowidth: true,
+//        shrinkToFit: true,
+        colNames: [
+            "SKC编码",
+            "供应商SKC编码",
+            "颜色",
+            "尺寸"
+        ],
+        colModel: [
+            {name: 'SKCCODE', index: 'SKCCODE'},
+            {name: 'MERCHANTSKCCODE', index: 'MERCHANTSKCCODE'},
+            {name: 'COLOR', index: 'COLOR'},
+            {name: 'SIZE', index: 'SIZE'}
+        ],
+        rowNum: 10,
+        rowList: [10, 30, 50],
+        pager: '#skcDiv',
+        viewrecords: true,
+        sortname: 'COLOR',
+        sortorder: "asc",
+        caption: "SKC信息",
+        fitColumns: true,
+        editurl: 'clientArray',
+        onSelectRow: function () {
+
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function () {
+
+        },
+        gridComplete: function () {
+
+        }
+    });
+    jQuery("#skcTable").jqGrid('navGrid', "#skcDiv", {search: false, refresh: false, edit: false, add: false, del: false})
+    jQuery("#skcTable").jqGrid('setGridParam', {data: skcArr}).trigger('reloadGrid');
+
+    var imgpreviewArr=[];
+    jQuery("#imgpreviewTable").jqGrid({
+        datatype: "local",
+        height: 180,
+        width:800,
+//        width: window.screen.availWidth > 1140 ? 1020 : 820,
+//        autowidth: true,
+//        shrinkToFit: true,
+        colNames: [
+            "",
+            "预览图片",
+            "简述"
+        ],
+        colModel: [
+            {name: 'ISSELECTED', index: 'ISSELECTED', width:5, editable: true, formatter:'checkbox',edittype:"checkbox",editoptions:{value:"1:0"}},
+            {name: 'IMGURL', index: 'IMGURL', width:12,formatter:imageFormat,unformat:imageUnFormat,editable: false},
+            {name: 'DESCRIPTION', index: 'DESCRIPTION', editable: true,edittype:"textarea", editoptions:{rows:"3"}}
+        ],
+        rowNum: 10,
+        rowList: [10, 30, 50],
+        pager: '#imgpreviewDiv',
+        viewrecords: true,
+        caption: "图片预览信息",
+        fitColumns: true,
+        editurl: 'clientArray',
+//         lineEdit:true,
+//         linesubmit:'clientArray',
+        onSelectRow: function () {
+//                var id = $("#imgpreviewTable").jqGrid('getGridParam', "selrow");
+//                alert(id);
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function () {
+
+        },
+        gridComplete: function () {
+
+        }
+    });
+    jQuery("#imgpreviewTable").jqGrid('navGrid', "#imgpreviewDiv", {search: false, refresh: false, edit: false, add: false, del: false});
+    jQuery("#imgpreviewTable").jqGrid('setGridParam', {data: imgpreviewArr}).trigger('reloadGrid');
+
+    var imgdetailArr=[];
+    jQuery("#imgdetailTable").jqGrid({
+        datatype: "local",
+        height: 300,
+//        width:800,
+        width: window.screen.availWidth > 1140 ? 1020 : 820,
+//        autowidth: true,
+//        shrinkToFit: true,
+        colNames: [
+            "",
+            "详情图片",
+            "简述"
+        ],
+        colModel: [
+            {name: 'ISSELECTED', index: 'ISSELECTED', width:5, editable: true, formatter:'checkbox',edittype:"checkbox",editoptions:{value:"1:0"}},
+//            {name: 'ISSELECTED', index: 'ISSELECTED', width:10, formatter: checkFormat},
+            {name: 'IMGURL', index: 'IMGURL', width:20,formatter:imageFormat,unformat:imageUnFormat,editable: false},
+            {name: 'DESCRIPTION', index: 'DESCRIPTION', editable: true,edittype:"textarea", editoptions:{rows:"7"}}
+        ],
+        rowNum: 10,
+        rowList: [10, 30, 50],
+        pager: '#imgdetailDiv',
+        viewrecords: true,
+        caption: "图片详情信息",
+        fitColumns: true,
+        editurl: 'clientArray',
+//         lineEdit:true,
+//         linesubmit:'clientArray',
+        onSelectRow: function () {
+//                var id = $("#imgdetailTable").jqGrid('getGridParam', "selrow");
+//                alert(id);
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function () {
+
+        },
+        gridComplete: function () {
+
+        }
+    });
+    jQuery("#imgdetailTable").jqGrid('navGrid', "#imgdetailDiv", {search: false, refresh: false, edit: false, add: false, del: false});
+    jQuery("#imgdetailTable").jqGrid('setGridParam', {data: imgdetailArr}).trigger('reloadGrid');
+
+    var paramArr=[];
+    jQuery("#paramTable").jqGrid({
+        datatype: "local",
+        height: 180,
+        width: 800,
+//        width: window.screen.availWidth > 1140 ? 1020 : 820,
+//        autowidth: true,
+//        shrinkToFit: true,
+        colNames: [
+            "商品属性名",
+            "商品属性值"
+        ],
+        colModel: [
+            {name: 'ATTRIBUTE', index: 'ATTRIBUTE', editable: true, width: 150},
+            {name: 'VALUE', index: 'VALUE', editable: true, width: 650}
+        ],
+        rowNum: 10,
+        rowList: [10, 30, 50],
+        pager: '#paramDiv',
+        viewrecords: true,
+        sortname: 'COLOR',
+        sortorder: "asc",
+        caption: "参数信息",
+        fitColumns: true,
+        editurl: 'clientArray',
+//            cellEdit:true,
+//            cellsubmit:'clientArray',
+        onSelectRow: function () {
+//                var id = $("#paramTable").jqGrid('getGridParam', "selrow");
+//                alert(id);
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function () {
+
+        },
+        gridComplete: function () {
+
+        }
+    });
+    jQuery("#paramTable").jqGrid('navGrid', "#paramDiv", {search: false, refresh: false, edit: false, add: false, del: false})
+    jQuery("#paramTable").jqGrid('setGridParam', {data: paramArr}).trigger('reloadGrid');
+
+
+    function dataFormat(cellvalue,options,rowObject){
+        if(!cellvalue) return '';
+        return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+    }
+
+    //formatter:imageFormat,unformat:imageUnFormat
+    function imageFormat(cellvalue, options, rowObject) {
+//        return '<img src="' + cellvalue + '" ondblclick="javascript:alert(23453245)"/>';
+        var str="<img src=\"pp\" ondblclick=\"javascript:$.Dialog({position:{offsetX:'200px', offsetY:'100px' }, shadow: true, overlay: true,flat:true,title: '',draggable:true, width: 500,height: 500, padding: 10, content: '<img width=&quot;100%&quot; src=&quot;pp&quot;>'});\"/>";
+        str=str.replace(/pp/g,cellvalue);
+        return str;
+    }
+
+    function imageUnFormat(cellvalue, options, cell) {
+        return $('img', cell).attr('src');
+    }
+
+    $("#search").click(function () {
+        var qry=$("#qry").val().trim();//去除首尾空格
+        $("#itemTable").jqGrid('setGridParam',{ url: '/items/searchall?qry='+qry}).trigger('reloadGrid');
+
+        clearSkc();
+        clearOnline();
+        $("#panel1").attr("style","display:none");
+        $("#panel2").attr("style","display:none");
+        $("#div1").attr("style","display:none");
+        $("#div2").attr("style","display:none");
+        $("#div3").attr("style","display:none");
+        $("#div4").attr("style","display:none");
+        window.parent.SetWinHeight();
+//        var id = $("#itemTable").jqGrid('getGridParam', "selrow");
+//        var ids = $("#itemTable").jqGrid('getDataIDs');
+//        alert(JSON.stringify(id));
+//        alert(JSON.stringify(ids));
+//        var list = $("#itemTable").jqGrid('getRowData', id);
+//        alert(JSON.stringify(list));
+//        alert(JSON.stringify(jQuery("#itemTable").jqGrid('getGridParam', "url")));
+//        alert(JSON.stringify(jQuery("#itemTable").jqGrid('getGridParam', "data")));
+    })
+
+    var clearSkc=function(){
+        skcArr = [];
+        jQuery("#skcTable").clearGridData();
+        jQuery("#skcTable").jqGrid('setCaption', "SKC信息");
+        jQuery("#skcTable").jqGrid('setGridParam', {data: skcArr}).trigger('reloadGrid');
+    }
+
+    var clearTitle=function(){
+        $('#title').val("");
+    }
+
+    var clearImgpreview=function(){
+        imgpreviewArr=[];
+        jQuery("#imgpreviewTable").clearGridData();
+        jQuery("#imgpreviewTable").jqGrid('setGridParam', {data: imgpreviewArr}).trigger('reloadGrid');
+        jQuery("#imgpreviewTable").jqGrid('setCaption', "商品的图片预览").trigger('reloadGrid');
+    }
+
+    var clearImgdetail=function(){
+        imgdetailArr=[];
+        jQuery("#imgdetailTable").clearGridData();
+        jQuery("#imgdetailTable").jqGrid('setGridParam', {data: imgdetailArr}).trigger('reloadGrid');
+        jQuery("#imgdetailTable").jqGrid('setCaption', "商品的图文详情").trigger('reloadGrid');
+    }
+
+    var clearRegion=function(){
+        $("#selRegion1").val(0);
+        $("#selRegion2 option[value!=0]").remove();
+        $("#selRegion3 option[value!=0]").remove();
+    }
+
+    var clearCategory=function(){
+        $("#selCategory1").val(0);
+        $("#selCategory2 option[value!=0]").remove();
+        $("#selCategory3 option[value!=0]").remove();
+    }
+
+    var clearParameter=function(){
+        paramArr=[];
+        jQuery("#paramTable").clearGridData();
+        jQuery("#paramTable").jqGrid('setGridParam', {data: paramArr}).trigger('reloadGrid');
+        jQuery("#paramTable").jqGrid('setCaption', "商品的参数信息").trigger('reloadGrid');
+    }
+
+    var clearOnline=function(){
+        clearTitle();
+        clearImgpreview();
+        clearImgdetail();
+        clearRegion();
+        clearCategory();
+        clearParameter();
+    }
+
+    var refreshSkc=function(skcs){
+        skcArr=skcs;
+        jQuery("#skcTable").jqGrid('setGridParam', {data: skcArr}).trigger('reloadGrid');
+    }
+
+    var refreshTitle=function(title){
+        $("#title").val(title);
+    }
+
+    var refreshImgpreview=function(imgpreviews){
+        imgpreviewArr=imgpreviews;
+        jQuery("#imgpreviewTable").jqGrid('setGridParam', {data: imgpreviewArr}).trigger('reloadGrid');
+    }
+
+    var refreshImgdetail=function(imgdetails){
+        imgdetailArr=imgdetails;
+        jQuery("#imgdetailTable").jqGrid('setGridParam', {data: imgdetailArr}).trigger('reloadGrid');
+    }
+
+    var refreshRegion=function(r1,r2,r3){
+        $.ajax({
+            'url': '/items/queryRegionKeysService',
+            'type': 'get',
+            'data': {},
+            'datatype': 'html',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("查询分区列表出错!");
+                return;
+            },
+            'success': function (msg) {
+                if(msg.status){
+                    //分区数据
+                    var region1 = msg.data.region1;
+                    var region1List = region1;
+                    var region1id = msg.data.region1id;
+                    var region1idList = region1id;
+                    for (var k = 0; k < region1List.length; k++) {
+                        //将转换后的数组中的每个值添加到下拉框中(两种方法皆可)
+                        $("#selRegion1").append("<option value= " + region1idList[k] + " >" + region1List[k] + "</option> ");
+                    }
+                    $("#selRegion1").val(r1);
+
+                    $.ajax({
+                        'url': '/items/querySonRegionService',
+                        'type': 'get',
+                        'data': {REGIONID:r1},
+                        'datatype': 'html',
+                        'timeout': 10000,
+                        'error': function (msg) {
+                            alert("查询分区列表出错!");
+                            return;
+                        },
+                        'success': function (msg) {
+                            if (msg.status) {
+                                msg = msg.data;
+                                for (var k = 0; k < msg.namedata.length; k++) {
+                                    //将转换后的数组中的每个值添加到下拉框中(两种方法皆可)
+                                    $("#selRegion2").append("<option value= " + msg.iddata[k] + " >" + msg.namedata[k] + "</option> ");
+                                }
+                                $("#selRegion2").val(r2);
+
+                                $.ajax({
+                                    'url': '/items/querySonRegionService',
+                                    'type': 'get',
+                                    'data': {REGIONID:r2},
+                                    'datatype': 'html',
+                                    'timeout': 10000,
+                                    'error': function (msg) {
+                                        alert("查询分区列表出错!");
+                                        return;
+                                    },
+                                    'success': function (msg) {
+                                        if (msg.status) {
+                                            msg = msg.data;
+                                            for (var k = 0; k < msg.namedata.length; k++) {
+                                                //将转换后的数组中的每个值添加到下拉框中(两种方法皆可)
+                                                $("#selRegion3").append("<option value= " + msg.iddata[k] + " >" + msg.namedata[k] + "</option> ");
+                                            }
+                                            $("#selRegion3").val(r3);
+                                        }
+                                        else {
+                                            alert("查询分区列表出错!");
+                                            return;
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                alert("查询分区列表出错!");
+                                return;
+                            }
+                        }
+                    });
+                }
+                else{
+                    alert("查询分区列表出错!");
+                    return;
+                }
+            }
+        });
+    }
+
+    var refreshCategory=function(c1,c2,c3){
+        $.ajax({
+            'url': '/items/queryCategoryKeysService',
+            'type': 'get',
+            'data': {},
+            'datatype': 'html',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("查询分类列表出错!");
+                return;
+            },
+            'success': function (msg) {
+                if(msg.status){
+                    //分区数据
+                    var category1 = msg.data.category1;
+//                    var category1List = category1.split(",");
+                    var category1List=category1;
+                    var category1id = msg.data.category1id;
+//                    var category1idList = category1id.split(",");
+                    var category1idList=category1id;
+                    for (var k = 0; k < category1List.length; k++) {
+                        //将转换后的数组中的每个值添加到下拉框中(两种方法皆可)
+                        $("#selCategory1").append("<option value= " + category1idList[k] + " >" + category1List[k] + "</option> ");
+                    }
+                    $("#selCategory1").val(c1);
+
+                    $.ajax({
+                        'url': '/items/querySonCategoryService',
+                        'type': 'get',
+                        'data': {CATEGORYID:c1},
+                        'datatype': 'html',
+                        'timeout': 10000,
+                        'error': function (msg) {
+                            alert("查询分类列表出错!");
+                            return;
+                        },
+                        'success': function (msg) {
+                            if (msg.status) {
+                                msg = msg.data;
+                                for (var k = 0; k < msg.namedata.length; k++) {
+                                    //将转换后的数组中的每个值添加到下拉框中(两种方法皆可)
+                                    $("#selCategory2").append("<option value= " + msg.iddata[k] + " >" + msg.namedata[k] + "</option> ");
+                                }
+                                $("#selCategory2").val(c2);
+
+                                $.ajax({
+                                    'url': '/items/querySonCategoryService',
+                                    'type': 'get',
+                                    'data': {CATEGORYID:c2},
+                                    'datatype': 'html',
+                                    'timeout': 10000,
+                                    'error': function (msg) {
+                                        alert("查询分类列表出错!");
+                                        return;
+                                    },
+                                    'success': function (msg) {
+                                        if (msg.status) {
+                                            msg = msg.data;
+                                            for (var k = 0; k < msg.namedata.length; k++) {
+                                                //将转换后的数组中的每个值添加到下拉框中(两种方法皆可)
+                                                $("#selCategory3").append("<option value= " + msg.iddata[k] + " >" + msg.namedata[k] + "</option> ");
+                                            }
+                                            $("#selCategory3").val(c3);
+                                        }
+                                        else {
+                                            alert("查询分类列表出错!");
+                                            return;
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                alert("查询分类列表出错!");
+                                return;
+                            }
+                        }
+                    });
+                }
+                else{
+                    alert("查询分类列表出错!");
+                    return;
+                }
+            }
+        });
+    }
+
+    var refreshParameter=function(params){
+        paramArr=params;
+        jQuery("#paramTable").jqGrid('setGridParam', {data: paramArr}).trigger('reloadGrid');
+    }
+
+    var getImgPreviewData=function(itemcode,imgpreviews){
+        $.ajax({
+            'url': '/items/getImgpreviewsStored',
+            'type': 'get',
+            'data': {ITEMCODE:itemcode},
+            'datatype': 'html',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("查询云端预览图片出错!");
+                return;
+            },
+            'success': function (msg) {
+                if (msg.status) {
+//                    alert(JSON.stringify(msg.data));
+                    var result=[]
+                    for(var k=0;k<msg.data.length;k++){
+                        imgurl=msg.data[k];
+                        //检测imgurl是否在imgpreviews中
+                        var isexisted=0;
+                        var description="";
+                        for(var n=0;n<imgpreviews.length;n++){
+                            if(imgpreviews[n].IMGURL==imgurl){
+                                isexisted=1;
+                                description=imgpreviews[n].DESCRIPTION;
+                                break;
+                            }
+                        }
+                        result.push({IMGURL:msg.data[k],DESCRIPTION:description,ISSELECTED:isexisted,id:"img"+k});
+                    }
+//                    alert(JSON.stringify(result));
+                    refreshImgpreview(result);
+                }
+                else {
+                    alert("查询云端预览图片出错!");
+                    return;
+                }
+            }
+        });
+    }
+
+    var getImgDetailData=function(itemcode,imgdetails){
+        $.ajax({
+            'url': '/items/getImgdetailsStored',
+            'type': 'get',
+            'data': {ITEMCODE:itemcode},
+            'datatype': 'html',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("查询云端详情图片出错!");
+                return;
+            },
+            'success': function (msg) {
+                if (msg.status) {
+//                    alert(JSON.stringify(msg.data));
+                    var result=[]
+                    for(var k=0;k<msg.data.length;k++){
+                        imgurl=msg.data[k];
+                        //检测imgurl是否在imgpreviews中
+                        var isexisted=0;
+                        var description="";
+                        for(var n=0;n<imgdetails.length;n++){
+                            if(imgdetails[n].IMGURL==imgurl){
+                                isexisted=1;
+                                description=imgdetails[n].DESCRIPTION;
+                                break;
+                            }
+                        }
+                        result.push({IMGURL:msg.data[k],DESCRIPTION:description,ISSELECTED:isexisted,id:"img"+k});
+                    }
+//                    alert(JSON.stringify(result));
+//                    imgdetailArr=result;
+                    refreshImgdetail(result);
+                }
+                else {
+                    alert("查询云端详情图片出错!");
+                    return;
+                }
+            }
+        });
+    }
+
+    var getSkc=function(){
+        var id = $("#itemTable").jqGrid('getGridParam', "selrow");
+        var obj = $("#itemTable").jqGrid('getRowData', id);
+        var tmpObj = obj;
+        var itemcode=tmpObj.ITEMCODE;
+        var caption = tmpObj.ITEMCODE + "商品的SKC信息";
+
+        $.ajax({
+            'url': '/items/getApprovedSkcBySku',
+            'type': 'get',
+            'data': {ITEMCODE:obj.ITEMCODE},
+            'datatype': 'json',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("获取选定商品的skc信息失败!");
+                return;
+            },
+            'success': function (msg) {
+                if(msg.status==false){
+                    alert("获取选定商品的skc信息失败!");
+                    return;
+                }
+                else{
+//                    alert(JSON.stringify(msg.data));
+                    var caption = tmpObj.ITEMCODE + "商品的SKC信息";
+                    jQuery("#skcTable").jqGrid('setCaption', caption).trigger('reloadGrid');
+                    refreshSkc(msg.data);
+                }
+            }
+        });
+    }
+
+    var getOnline=function(){
+        var id = $("#itemTable").jqGrid('getGridParam', "selrow");
+        var obj = $("#itemTable").jqGrid('getRowData', id);
+        var tmpObj = obj;
+        var itemcode=tmpObj.ITEMCODE;
+        var caption1 = tmpObj.ITEMCODE + "商品的参数信息";
+        var caption2 = tmpObj.ITEMCODE + "商品的图片预览";
+        var caption3 = tmpObj.ITEMCODE + "商品的图文详情";
+
+        $.ajax({
+            'url': '/items/getApprovedOnlineBySku',
+            'type': 'get',
+            'data': {ITEMCODE:itemcode},
+            'datatype': 'html',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("查询上线信息出错!");
+                return;
+            },
+            'success': function (msg) {
+                if (msg.status) {
+                    var onlines=msg.data;
+//                    alert(JSON.stringify(onlines));
+
+                    var title=onlines[0].TITLE;
+                    var imgpreviews=onlines[1];
+                    var imgdetails=onlines[2];
+                    var regions=onlines[3];
+                    var categories=onlines[4];
+                    var params=onlines[5];
+
+                    $("#title").val(title);
+
+                    jQuery("#paramTable").jqGrid('setCaption', caption1).trigger('reloadGrid');
+                    jQuery("#imgpreviewTable").jqGrid('setCaption', caption2).trigger('reloadGrid');
+                    jQuery("#imgdetailTable").jqGrid('setCaption', caption3).trigger('reloadGrid');
+                    getImgPreviewData(tmpObj.ITEMCODE,imgpreviews);
+                    getImgDetailData(tmpObj.ITEMCODE,imgdetails);
+
+                    if(regions.length!=3){
+                        alert('分区信息获取错误!');
+//                        return;
+                    }
+                    if(categories.length!=3) {
+                        alert("分类信息获取错误!");
+//                        return;
+                    }
+//                    alert(JSON.stringify(regions));
+//                    alert(JSON.stringify(categories));
+                    //从小到大排序regionid
+                    var r1=regions[0].REGIONID;
+                    var r2=regions[1].REGIONID;
+                    var r3=regions[2].REGIONID;
+                    if(r1>r2) {
+                        var tmp=r2;
+                        r2=r1;
+                        r1=tmp;
+                    }
+                    if(r1>r3){
+                        var tmp=r3;
+                        r3=r1;
+                        r1=tmp;
+                    }
+                    if(r2>r3){
+                        var tmp=r3;
+                        r3=r2;
+                        r2=tmp;
+                    }
+
+                    var c1=categories[0].CATEGORYID;
+                    var c2=categories[1].CATEGORYID;
+                    var c3=categories[2].CATEGORYID;
+                    if(c1>c2) {
+                        var tmp=c2;
+                        c2=c1;
+                        c1=tmp;
+                    }
+                    if(c1>c3){
+                        var tmp=c3;
+                        c3=c1;
+                        c1=tmp;
+                    }
+                    if(c2>c3){
+                        var tmp=c3;
+                        c3=c2;
+                        c2=tmp;
+                    }
+//                        alert(r1+" "+r2+" "+r3);
+//                        alert(c1+" "+c2+" "+c3);
+
+                    refreshRegion(r1,r2,r3);
+                    refreshCategory(c1,c2,c3);
+
+                    refreshParameter(params);
+                }
+                else {
+                    alert("查询上线信息出错!");
+                    return;
+                }
+            }
+        });
+    }
+
+});
+</script>
+
+<style>
+    .ui-jqgrid,
+    .ui-jqgrid * {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        -ms-box-sizing: content-box;
+        -o-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+
+</head>
+<body class="metro">
+
+<div id="maindiv" >
+
+        <div class="mectemp ">
+            <div class="input-control text" style="width: 300px;">
+                <input id="qry" type="text" data-state="info"
+                        placeholder="关键字" />
+
+                <button class="btn-search" id="search" value="搜索"/>
+            </div>
+
+
+
+            <div style="width:100%">
+
+                <table style="width:100%">
+                    <tr style="width:100%">
+                        <td>
+                            <table id="itemTable"></table>
+                            <div id="itemDiv"></div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+
+            <div id='panel1' class="panel" data-role="panel" style="display:none">
+                <br>
+                <div class="panel-header bg-lightGray fg-black"> SKC信息</div>
+                <div class="panel-content">
+                    <div id="div1" width="100%"  style="display:none"> skc信息尚未录入或尚未审核</div>
+                    <div id="div2" width="100%"  style="display:none">
+                        <table style="width:100%">
+                            <tr style="width:100%">
+                                <td>
+                                    <table id="skcTable"></table>
+                                    <div id="skcDiv"></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id='panel2' class="panel" data-role="panel"  style="display:none">
+                <br>
+                <div class="panel-header bg-lightGray fg-black"> 上线信息</div>
+                <div class="panel-content">
+
+                    <div id="div3" width="100%"  style="display:none"> 上线信息尚未录入或尚未审核</div>
+
+                    <div id="div4" width="100%"  style="display:none">
+                        <nav class="breadcrumbs" style="margin-top: 2px">
+                            <ul>
+                                <li><a><i class="icon-diamond"></i></a><a>网上标头</a></li>
+                            </ul>
+                        </nav>
+                        <div>
+                            <input id="title" type="text" data-state="info" placeholder=""
+                                   style="height: 30px; width:100%" readonly/>
+                        </div>
+                        <br>
+
+
+                        <nav class="breadcrumbs" style="margin-top: 2px">
+                            <ul>
+                                <li><a><i class="icon-diamond"></i></a><a>图片预览</a></li>
+                            </ul>
+                        </nav>
+                        <div>
+                            <table style="width:100%">
+                                <tr style="width:100%">
+                                    <td>
+                                        <table id="imgpreviewTable"></table>
+                                        <div id="imgpreviewDiv"></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br>
+
+
+                        <nav class="breadcrumbs" style="margin-top: 2px">
+                            <ul>
+                                <li><a><i class="icon-diamond"></i></a><a>图文详情</a></li>
+                            </ul>
+                        </nav>
+                        <div >
+                            <table style="width:100%">
+                                <tr style="width:100%">
+                                    <td>
+                                        <table id="imgdetailTable"></table>
+                                        <div id="imgdetailDiv"></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br>
+
+
+                        <nav class="breadcrumbs" style="margin-top: 2px">
+                            <ul>
+                                <li><a><i class="icon-diamond"></i></a><a>分区信息</a></li>
+                            </ul>
+                        </nav>
+                        <div >
+                            <table style="width: 100%;height: 30px" id="KEYTABLE1">
+                                <tr>
+                                    <td style="width: 33%; height: 30px">
+                                        <div class="input-control text size2" style="width: 300px;height: 30px">
+                                            <select id="selRegion1" style="height:30px;width:300px" onfocus="this.defaultIndex=this.selectedIndex;"
+                                                    onchange="this.selectedIndex=this.defaultIndex;">
+                                                <option value="0">----------------------第一分区--------------------</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td style="width: 33%; height: 30px">
+                                        <div class="input-control text size2" style="width: 300px;height: 30px">
+                                            <select id="selRegion2" style="height:30px;width:300px" onfocus="this.defaultIndex=this.selectedIndex;"
+                                                    onchange="this.selectedIndex=this.defaultIndex;">
+                                                <option value="0">----------------------第二分区--------------------</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td style="width: 33%; height: 30px">
+                                        <div class="input-control text size2" style="width: 300px;height: 30px">
+                                            <select id="selRegion3" style="height:30px;width:300px" onfocus="this.defaultIndex=this.selectedIndex;"
+                                                    onchange="this.selectedIndex=this.defaultIndex;">
+                                                <option value="0">----------------------第三分区--------------------</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br>
+
+                        <nav class="breadcrumbs" style="margin-top: 2px">
+                            <ul>
+                                <li><a><i class="icon-diamond"></i></a><a>分类信息</a></li>
+                            </ul>
+                        </nav>
+                        <div>
+                            <table style="width: 100%;height: 30px" id="KEYTABLE">
+                                <tr>
+                                    <td style="width: 33%; height: 30px">
+                                        <div class="input-control text size2" style="width: 300px;height: 30px">
+                                            <select id="selCategory1" style="height:30px;width:300px" onfocus="this.defaultIndex=this.selectedIndex;"
+                                                    onchange="this.selectedIndex=this.defaultIndex;">
+                                                <option value="0">----------------------第一分类--------------------</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td style="width: 33%; height: 30px">
+                                        <div class="input-control text size2" style="width: 300px;height: 30px">
+                                            <select id="selCategory2" style="height:30px;width:300px" onfocus="this.defaultIndex=this.selectedIndex;"
+                                                    onchange="this.selectedIndex=this.defaultIndex;">
+                                                <option value="0">----------------------第二分类--------------------</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td style="width: 33%; height: 30px">
+                                        <div class="input-control text size2" style="width: 300px;height: 30px">
+                                            <select id="selCategory3" style="height:30px;width:300px" onfocus="this.defaultIndex=this.selectedIndex;"
+                                                    onchange="this.selectedIndex=this.defaultIndex;">
+                                                <option value="0">----------------------第三分类--------------------</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br>
+
+                        <nav class="breadcrumbs" style="margin-top: 2px">
+                            <ul>
+                                <li><a><i class="icon-diamond"></i></a><a>参数信息</a></li>
+                            </ul>
+                        </nav>
+                        <div>
+                            <table style="width:100%">
+                                <tr style="width:100%">
+                                    <td>
+                                        <table id="paramTable"></table>
+                                        <div id="paramDiv"></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+</div>
+
+</body>
+</html>
+

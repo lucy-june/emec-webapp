@@ -1,0 +1,194 @@
+{
+  "ORDERCODE": {
+    "type": "char(18)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "VIPCARDNO": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "USERCODE": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "POSDEALNUM": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "pos机交易序列号",
+    "defaultValue": null
+  },
+  "POSTRANSCODE": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "COUNTERCODE": {
+    "type": "char(6)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "订单最终自提货或发货点"
+  },
+  "STORECODE": {
+    "type": "char(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "门店号",
+    "defaultValue": null
+  },
+  "PLACETIME": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "下单时间",
+    "defaultValue": null
+  },
+  "PAYTIME": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "订单支付时间",
+    "defaultValue": null
+  },
+  "CONTENTCODE": {
+    "type": "char(26)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "ITEMCODE": {
+    "type": "char(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "SKCCODE": {
+    "type": "char(10)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "ITEMNAME": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品全称",
+    "defaultValue": null
+  },
+  "BRANDCODE": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "品牌编码",
+    "defaultValue": null
+  },
+  "BRANDNAME": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "COLOR": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "颜色",
+    "defaultValue": null
+  },
+  "SIZE": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "大小",
+    "defaultValue": null
+  },
+  "NUM": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "UNITPRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0.00"
+  },
+  "ORIGINAMT": {
+    "type": "decimal(22,2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0.00"
+  },
+  "RETAILAMT": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "成交价（分摊后实际折后价）",
+    "defaultValue": "0.00"
+  },
+  "CASHPAYSHARE": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "支付完成后 finalprice 的现金支付份额",
+    "defaultValue": "0.00"
+  },
+  "CREDITPAYSHARE": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "支付完成后 finalprice 的刷卡支付份额",
+    "defaultValue": "0.00"
+  },
+  "CASHCOUPONPAYSHARE": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "支付完成后 finalprice 的现金券支付份额",
+    "defaultValue": "0.00"
+  },
+  "GOODSCOUPONPAYSHARE": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "支付完成后 finalprice 的商品券支付份额",
+    "defaultValue": "0.00"
+  },
+  "ECARDPAYSHARE": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "支付完成后 finalprice 的电子卡消费卡错卡支付份额",
+    "defaultValue": "0.00"
+  },
+  "OTHERPAYSHARE": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "支付完成后 finalprice 的其他支付份额",
+    "defaultValue": "0.00"
+  },
+  "PREMIUMPAYSHARE": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "支付完成后 finalprice 的溢价份额(认为是负的)",
+    "defaultValue": "0.00"
+  }
+}

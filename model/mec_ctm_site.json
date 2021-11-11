@@ -1,0 +1,81 @@
+{
+  "SITEID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "USERCODE": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "ISDEFAULT": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "是否为默认",
+    "defaultValue": "0"
+  },
+  "PERSON": {
+    "type": "varchar(32)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "收货人"
+  },
+  "TELEPHONE": {
+    "type": "varchar(16)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "收货人电话"
+  },
+  "POSTCODE": {
+    "type": "varchar(16)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "收货人邮编",
+    "defaultValue": null
+  },
+  "DETAIL": {
+    "type": "varchar(256)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "详细地址",
+    "defaultValue": null
+  },
+  "PROVINCE": {
+    "type": "varchar(16)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "省",
+    "defaultValue": null
+  },
+  "CITY": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "市",
+    "defaultValue": null
+  },
+  "DISTRICT": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "区",
+    "defaultValue": null
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "创建时间"
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "更新时间"
+  }
+}

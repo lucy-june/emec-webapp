@@ -1,0 +1,15 @@
+{
+  "ITEMCODE": {
+    "type": "char(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "商品编码(mis系统编码)"
+  },
+  "COUNTERCODE": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  }
+}

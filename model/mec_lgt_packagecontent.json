@@ -1,0 +1,39 @@
+{
+  "ID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "PACKAGECODE": {
+    "type": "char(30)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "CONTENTCODE": {
+    "type": "char(26)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "ISONLINEORDER": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  }
+}

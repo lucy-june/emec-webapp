@@ -1,0 +1,226 @@
+{
+  "orderorgroupcode": {
+    "type": "char(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "groupid": {
+    "type": "char(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "ordercode": {
+    "type": "char(18)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": ""
+  },
+  "ifreturn": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "ordercodetype": {
+    "type": "bigint(20)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "pickupmode": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "paymenttype": {
+    "type": "int(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "status": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "orderdate": {
+    "type": "varchar(24)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "audittime": {
+    "type": "varchar(24)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "paytime": {
+    "type": "varchar(24)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "outtime": {
+    "type": "varchar(24)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "finishtime": {
+    "type": "varchar(24)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "receivabletime": {
+    "type": "varchar(24)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "vipcardNo": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "cashier": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "receivableamt": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "realshipprice": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "realpacking": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "shipprice": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "packing": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "receivecontact": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "receivename": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "receivephone": {
+    "type": "varchar(16)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "receivecellphone": {
+    "type": "varchar(16)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "receiveaddress": {
+    "type": "varchar(256)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "receivezip": {
+    "type": "varchar(16)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "storecode": {
+    "type": "char(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "poscode": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "paylocal": {
+    "type": "int(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "possalecode": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "grouplistid": {
+    "type": "bigint(20)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "ID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "_ID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "CATEGORYID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "ATTRIBUTE": {
+    "type": "varchar(32)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "RECORDSTATE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "OPERATION": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "OPERATEPERSON": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  }
+}

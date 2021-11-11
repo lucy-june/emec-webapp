@@ -1,0 +1,173 @@
+{
+  "ONLINEORDERCODE": {
+    "type": "char(18)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "ONLINECONTENTCODE": {
+    "type": "char(26)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": ""
+  },
+  "COUNTERCODE": {
+    "type": "char(6)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "实际扣库存的柜"
+  },
+  "SKCCODE": {
+    "type": "char(10)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "NUM": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "UNITPRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0.00"
+  },
+  "COLOR": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "颜色",
+    "defaultValue": null
+  },
+  "SIZE": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "大小",
+    "defaultValue": null
+  },
+  "MERCHANTSKCCODE": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "ITEMCODE": {
+    "type": "char(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "商品编码(mis系统编码)"
+  },
+  "ITEMNAME": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品全称",
+    "defaultValue": null
+  },
+  "ITEMSHORTNAME": {
+    "type": "varchar(12)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品简称",
+    "defaultValue": null
+  },
+  "BRANDCODE": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "品牌编码",
+    "defaultValue": null
+  },
+  "BARCODE": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "条形码",
+    "defaultValue": null
+  },
+  "ITEMTYPECODE": {
+    "type": "char(5)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品分类编码",
+    "defaultValue": null
+  },
+  "PRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "核定售价",
+    "defaultValue": "0.00"
+  },
+  "TEMPPRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "统一暂时售价",
+    "defaultValue": "0.00"
+  },
+  "PRODUCINGAREA": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "产地",
+    "defaultValue": null
+  },
+  "TITLE": {
+    "type": "varchar(128)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品上线的名称",
+    "defaultValue": null
+  },
+  "SCORE": {
+    "type": "double(6,5)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "评分 满分5分",
+    "defaultValue": "5.00000"
+  },
+  "SCOREPOPULARITY": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "评分人数",
+    "defaultValue": "0"
+  },
+  "PURCHASE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "购买数目",
+    "defaultValue": "0"
+  },
+  "PURCHASEPOPULARITY": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "购买人数",
+    "defaultValue": "0"
+  },
+  "PRAISERATE": {
+    "type": "int(3)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "好评率，单位是%",
+    "defaultValue": "100"
+  },
+  "ONLINETIME": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  }
+}

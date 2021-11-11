@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+    <meta name="description" content="Simple responsive css framework">
+    <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+    <link href="../css/metro-bootstrap.css" rel="stylesheet">
+    <link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/iconFont.css" rel="stylesheet">
+    <link href="../css/docs.css" rel="stylesheet">
+    <link href="../js/prettify/prettify.css" rel="stylesheet">
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery.form.min.js"></script>
+    <script src="../js/jquery/jquery.widget.min.js"></script>
+    <script src="../js/jquery/jquery.mousewheel.js"></script>
+    <script src="../js/prettify/prettify.js"></script>
+    <script src="../js/holder/holder.js"></script>
+    <script src="../js/load-metro.js"></script>
+    <script src="../js/docs.js"></script>
+
+    <script src="../js/metro/metro-scroll.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#myForm").submit(function(){
+                $(this).ajaxSubmit({
+                    success:function(responseText, statusText, xhr, $form){
+                        if(statusText=="success"){
+                            if(responseText.status){
+                                alert("更新成功！");
+                            }else{
+                                alert(responseText.msg);
+                            }
+                        }else{
+                            alert("请求出错啦！");
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+
+        function confirmEdit(){
+            //check;
+            var dateeffective = $("#DATE-EFFECTIVE").val();
+            var dateexpires = $("#DATE-EXPIRES").val();
+            var title=$('#TITLE1').val();
+            if($("#PRIORITY").val()==''||dateeffective == "" || dateexpires == ""||title=='') {
+                alert("有必填值为空，请检查！");
+                return;
+            }
+            $('#STARTTIME').val(dateeffective);
+            $('#ENDTIME').val(dateexpires);
+            $('#TITLE').val(title);
+            var type=$('#TYPE1').val();
+            $('#TYPE').val(type);
+
+            $('#myForm').submit();
+        }
+
+        function typeChange(){
+            var type=$('#TYPE1').val();
+            if(type==0){
+                $("#ACTIVITY2").hide();
+                $("#ACTIVITY3").hide();
+                $('#LB1').val('中一');
+            }else if(type==1){
+                $("#ACTIVITY2").show();
+                $("#ACTIVITY3").hide();
+                $('#LB1').text('左一');
+                $('#LB2').text('右一');
+            }else if(type==2){
+                $("#ACTIVITY2").show();
+                $("#ACTIVITY3").show();
+                $('#LB1').text('左上');
+                $('#LB2').text('左下');
+                $('#LB3').text('右一');
+            }else if(type==3){
+                $("#ACTIVITY2").show();
+                $("#ACTIVITY3").show();
+                $('#LB1').text('左一');
+                $('#LB2').text('右上');
+                $('#LB3').text('右下');
+            }else{
+                alert("No Zuo No Die!");
+            }
+        }
+
+    </script>
+
+    <title>Mec Demo</title>
+    </title>
+</head>
+<body class="metro" onload="typeChange()">
+
+<style type="text/css">
+    *{margin:0;padding:0;list-style-type:none;}
+    a,img{border:0;}
+    body{font:16px/180% Arial, Helvetica, sans-serif, "新宋体";}
+    /* demo */
+    .demo{width:100%;float: left}
+    .demo span{display:inline-block;float: left}
+    .demo span input{width:150px;height:30px;font-size:12px;font-family:Arial, Helvetica, sans-serif;}
+</style>
+
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp ">
+            <div class="panel">
+                <div class="panel-header bg-lightGray fg-black"> 编辑活动块</div>
+                <div class="panel-content">
+
+                    <table style="width:100%;">
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">标题*： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <input id="TITLE1" type="text" data-state="info" value="<%=bundle.TITLE %>"
+                                           placeholder="" style="height:30px;width:200px" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">模板*： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <select id="TYPE1" name="TYPE1" type="text" data-state="info" style="height:30px;" onchange="typeChange()">
+                                        <option value=2 <%if(bundle.TYPE==2){ %>selected = "selected"<%}%>>左二右一</option>
+                                        <option value=3 <%if(bundle.TYPE==3){ %>selected = "selected"<%}%>>左一右二</option>
+                                        <option value=1 <%if(bundle.TYPE==1){ %>selected = "selected"<%}%>>左一右一</option>
+                                        <option value=0 <%if(bundle.TYPE==0){ %>selected = "selected"<%}%>>中一</option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">日期： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <!--<div class="demo">
+                                    <span>开始时间：<input type="text" value="" id="" onclick="SelectDate(this,'yyyy-MM-dd hh:mm:ss')"/></span>
+                                    <span>&nbsp;截止时间：<input type="text" value="" id="" onclick="SelectDate(this,'yyyy-MM-dd hh:mm:ss')"/></span>
+                                    </div>-->
+
+                                <div class="input-control text" data-role="datepicker" data-format="yyyy-mm-dd"
+                                     data-week-start="1" style="width:200px;height:30px;margin-top: 3px;">
+                                    <%
+                                    var stime=bundle.STARTTIME;var sstime=stime.getFullYear()+'-';
+                                    if(stime.getMonth()<=8) sstime+='0';
+                                    sstime+=(stime.getMonth()+1)+'-';
+                                    if(stime.getDate()<=8) sstime+='0';
+                                    sstime+=(stime.getDate()+1);
+                                    var etime=bundle.ENDTIME;var estime=etime.getFullYear()+'-';
+                                    if(etime.getMonth()<=8) estime+='0';
+                                    estime+=(etime.getMonth()+1)+'-';
+                                    if(etime.getDate()<=8) estime+='0';
+                                    estime+=(etime.getDate()+1);
+                                    %>
+                                    <input id="DATE-EFFECTIVE" type="text" value="<%=sstime%>">
+                                    <button class="btn-date"></button>
+                                </div>
+                                <label class="inline-block"
+                                       style="width: 30px"> --- </label>
+                                <div class="input-control text" data-role="datepicker" data-format="yyyy-mm-dd"
+                                     data-week-start="1" style="width:200px;height:30px;margin-top: 3px;">
+                                    <input id="DATE-EXPIRES" type="text" value="<%=estime %>">
+                                    <button class="btn-date"></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <form id="myForm" method="post" enctype="multipart/form-data" action="/super/editAppBundleService">
+                            <input type="hidden" id="STARTTIME" name="STARTTIME" value="<%=sstime %>"/>
+                            <input type="hidden" id="ENDTIME" name="ENDTIME" value="<%=estime%>"/>
+                            <input type="hidden" id="TYPE" name="TYPE" value="<%=bundle.TYPE%>"/>
+                            <input type="hidden" id="TITLE" name="TITLE" value="<%=bundle.TITLE%>"/>
+                            <input type="hidden" id="BUNDLEID" name="BUNDLEID" value="<%=bundle.BUNDLEID%>"/>
+                            <tr>
+                                <td style="width:100px;height:65px">
+                                    <div class="input-control text size2">
+                                        <label class="col-sm-2 control-label">优先级： </label>
+                                    </div>
+                                </td>
+                                <td style="height:65px">
+                                    <div class="input-control text size2" style="width:200px">
+                                        <input id="PRIORITY" name="PRIORITY" type="text" data-state="info"
+                                               placeholder="" style="height:30px;width:200px" value="<%=bundle.PRIORITY%>" />
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr id="ACTIVITY1">
+                                <td style="width:100px;height:65px">
+                                    <div class="input-control text size2">
+                                        <label id="LB1" class="col-sm-2 control-label">左上： </label>
+                                    </div>
+                                </td>
+                                <td style="height:65px">
+                                    <div class="demo">
+                                        <span>活动：
+                                            <select id="AID1" name="AID1" type="text" data-state="info" style="height:30px;">
+                                                <option value=0>请选择</option>
+                                                <%items.forEach(function(item){ %>
+                                                <option value='<%=item.ACTIVITYID %>' <%if(bundle.ACTIVITYID1==item.ACTIVITYID){%> selected = "selected"<%}%>><%=item.TITLE %></option>
+                                                <%})%>
+                                            </select>
+                                        </span>
+                                        <span>&nbsp;图片：<input id="PICURL1" name="PICURL1" data-state="info" placeholder="填写图片URL" style="height:30px;width:100px" />
+                                        &nbsp;或者&nbsp;<input id="PICFILE1" name="PICFILE1" type="file" style="height:30px;width:150px"></span>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr id="ACTIVITY2">
+                                <td style="width:100px;height:65px">
+                                    <div class="input-control text size2">
+                                        <label id="LB2" class="col-sm-2 control-label">左下： </label>
+                                    </div>
+                                </td>
+                                <td style="height:65px">
+                                    <div class="demo">
+                                        <span>活动：
+                                            <select id="AID2" name="AID2" type="text" data-state="info" style="height:30px;">
+                                                <option value=0 >请选择</option>
+                                                <%items.forEach(function(item){ %>
+                                                <option value='<%=item.ACTIVITYID %>' <%if(bundle.ACTIVITYID2==item.ACTIVITYID){%> selected = "selected"<%}%>><%=item.TITLE %></option>
+                                                <%})%>
+                                            </select>
+                                        </span>
+                                        <span>&nbsp;图片：<input id="PICURL2" name="PICURL2" data-state="info" placeholder="填写图片URL" style="height:30px;width:100px" />
+                                       &nbsp;或者&nbsp;<input id="PICFILE2" name="PICFILE2" type="file" style="height:30px;width:150px"></span>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr id="ACTIVITY3">
+                                <td style="width:100px;height:65px">
+                                    <div class="input-control text size2">
+                                        <label id="LB3" class="col-sm-2 control-label">右一： </label>
+                                    </div>
+                                </td>
+                                <td style="height:65px">
+                                    <div class="demo">
+                                        <span>活动：
+                                            <select id="AID3" name="AID3" type="text" data-state="info" style="height:30px;">
+                                                <option value=0 >请选择</option>
+                                                <%items.forEach(function(item){ %>
+                                                <option value='<%=item.ACTIVITYID %>' <%if(bundle.ACTIVITYID3==item.ACTIVITYID){%> selected = "selected"<%}%>><%=item.TITLE %></option>
+                                                <%})%>
+                                            </select>
+                                        </span>
+                                        <span>&nbsp;图片：<input id="PICURL3" name="PICURL3" data-state="info" placeholder="填写图片URL" style="height:30px;width:100px" />
+                                        &nbsp;或者&nbsp;<input id="PICFILE3" name="PICFILE3" type="file" style="height:30px;width:150px"></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:100px;height:65px"></td>
+                                <td style="height:65px">说明：图片信息不填写意为不修改图片信息。</td>
+                            </tr>
+                        </form>
+                    </table>
+
+                    <br>
+                    <br>
+
+                    <div class="input-control switch" data-role="input-control" style="width:100%">
+                        <button class="bg-darkBlue fg-white" style="width:120px"
+                                onclick="confirmEdit()">修改
+                        </button>
+                        <button class="bg-green fg-white" style="width:120px"
+                                onclick="resetInput()">重置
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

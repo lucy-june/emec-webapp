@@ -1,0 +1,27 @@
+{
+  "ITEMCODE": {
+    "type": "char(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "REGIONNAMES": {
+    "type": "text",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null
+  }
+}

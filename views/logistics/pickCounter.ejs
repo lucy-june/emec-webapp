@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="product" content="Metro UI CSS Framework">
+
+
+<link href="../css/metro-bootstrap.css" rel="stylesheet">
+<link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+<link href="../css/iconFont.css" rel="stylesheet">
+<link href="../css/docs.css" rel="stylesheet">
+<link href="../js/prettify/prettify.css" rel="stylesheet">
+<!--<link href="../css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">-->
+<script src="../js/load-metro.js"></script>
+<!--<script src="../js/jquery/jquery.min.js"></script>-->
+
+<link rel="stylesheet" type="text/css" media="screen"
+      href="../js/jquery.jqGrid-4.6.0/css/themes/ui-lightness/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css"/>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+
+<script src="../js/jquery/jquery.widget.min.js"></script>
+<script src="../js/jquery/jquery.mousewheel.js"></script>
+<script src="../js/prettify/prettify.js"></script>
+<script src="../js/holder/holder.js"></script>
+<script src="../js/docs.js"></script>
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+
+<script src="../js/metro.js"></script>
+<script src="../js/github.js"></script>
+
+<script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+
+
+<script src="../js/metro/metro-scroll.js"></script>
+<script src="../js/district/selectdistrict.js"></script>
+
+<script>
+
+Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+        "M+": this.getMonth() + 1,                 //月份
+        "d+": this.getDate(),                    //日
+        "h+": this.getHours(),                   //小时
+        "m+": this.getMinutes(),                 //分
+        "s+": this.getSeconds(),                 //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds()             //毫秒
+    };
+    if (/(y+)/.test(fmt))
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt))
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+
+$(document).ready(function () {
+    //assistantList获取
+    var assMap={};
+    <% assistantList.forEach(function(assistant){ %>
+    var assid= '<%= assistant.SALESMANCODE %>';
+    var name= '<%= assistant.SALESMANNAME %>';
+    assMap[assid]=name;
+    <% }); %>
+//        alert(JSON.stringify(assMap));
+
+    jQuery("#orderTable").jqGrid({
+        datatype: "local",
+        height:  window.screen.availHeight * 0.45,
+        width:  document.body.clientWidth * 0.9,
+//        autowidth: true,
+//        shrinkToFit: true,
+        colNames: [
+//            "包裹编码",
+            "操作",
+            "POS条号",
+            "下单时间",
+            "支付时间",
+            "支付方式",
+            "订单类型",
+            "订单编码",
+            "提货码"
+
+        ],
+        colModel: [
+//            {name: 'PACKAGECODE', index: 'PACKAGECODE'},
+            {name: 'opBtn', index: 'opBtn',align:'center', width:120 ,sortable: false, formatter: conFormat1},
+            {name: 'POSTRANSCODE', index: 'POSTRANSCODE',align:'center',sortable: true,width:250},
+            {name: 'PLACETIME', index: 'PLACETIME',align:'center',sortable: true,formatter:dateFormat},
+            {name: 'PAYTIME', index: 'PAYTIME',align:'center',sortable: true,formatter:dateFormat},
+            {name: 'PAYMENTMODE', index: 'PAYMENTMODE',align:'center',sortable: true,formatter: 'select', edittype: "select", editoptions: {value: "0:POS支付;1:在线支付"}},
+            {name: 'ISONLINEORDER', index: 'ISONLINEORDER',align:'center',sortable: true,formatter: 'select', edittype: "select", editoptions: {value: "0:线下单;1:线上单"}},
+            {name: 'ORDERCODE', index: 'ORDERCODE',align:'center',sortable: true,width:200},
+            {name: 'PICKCODE', index: 'PICKCODE',hidden:'true'}
+
+        ],
+        rowNum: 30,
+        rowList: [10, 30, 50],
+        pager: '#orderDiv',
+        viewrecords: true,
+        sortname: 'createdAt',
+        sortorder: "desc",
+        caption: "待提货订单",
+        fitColumns: true,
+        editurl: 'clientArray',
+        onSelectRow: function () {
+
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function () {
+
+        },
+        gridComplete: function () {
+
+        }
+    });
+    jQuery("#orderTable").jqGrid('navGrid', "#orderDiv", {search: false,refresh: false, edit: false, add: false, del: false})
+
+    fillOrder();
+
+    function assFormat(cellvalue, options, rowObject) {
+        var name=assMap[cellvalue];
+        if(name) return name;
+        else if(cellvalue) return cellvalue;
+        else return "";
+    }
+
+    function dateFormat(cellvalue, options, rowObject) {
+        if (!cellvalue) return '';
+        return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+    }
+
+    function numFormat(cellvalue, options, rowObject) {
+        //            alert(JSON.stringify(rowObject));
+        var id=rowObject.id;
+        var str = '<div id="spinnerDiv_'+id+'" onclick="changeNum(this)">'+
+                '<input class="myspinner" id="spinner_'+id+'" name="value1" value="'+cellvalue+'" min=1 style="width:50px" onkeyup="changeNum(this)" >'+
+                '</div>';
+
+        return str;
+    }
+
+    function keyFormat(cellvalue, options, rowObject) {
+        if(rowObject.PAYMENTMODE==0) return "--";
+        var ordercode=rowObject.ORDERCODE;
+        var str="<i class='icon-key on-right on-left' " +
+                "style='cursor:hand; color: green;'  " +
+                "onmouseout='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand;color: green;&quot;)' " +
+                "onmouseover='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand; color: red; &quot;)' " +
+                "id='key_" + ordercode + "' onclick='javascript:alert(&quot;"+cellvalue+"&quot;);'></i>";
+        return str;
+    }
+
+    function deliveryFormat(cellvalue, options, rowObject) {
+        if(cellvalue==0) return "自提";
+        var ordercode=rowObject.ORDERCODE;
+        var str="配送"+
+                "<i class='icon-location-3 on-right on-left' " +
+                "style='cursor:hand; color: green;'  " +
+                "onmouseout='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand;color: green;&quot;)' " +
+                "onmouseover='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand; color: red; &quot;)' " +
+                "id='delivery_" + ordercode + "' onclick='clickDelivery(this)'></i>";
+        return str;
+    }
+
+    function conFormat1(cellvalue, options, rowObject) {
+//            alert(JSON.stringify(rowObject));
+//        var paymentmode=rowObject.PAYMENTMODE;
+//        var pickcode=rowObject.PICKCODE.toString();
+//        var param=paymentmode==0?pickcode:"";
+        var str = '<button id="'+options.rowId+'" class="bg-mecBlue fg-white" style="width:60px;height:13px;margin-top:2px;margin-bottom:2px" onclick="showContent1(this)">核对发货</button>';
+
+
+        return str;
+    }
+
+    function dataFormat(cellvalue, options, rowObject) {
+        if (!cellvalue) return '';
+        return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+    }
+
+    $("#search").click(function(){
+        fillOrder();
+    })
+});
+
+var checkNull=function(){
+    var qry=$("#qry").val().trim();
+    if(qry){
+        fillOrder();
+    }else{
+        return;
+    }
+}
+
+var fillOrder=function(){
+    var qry=$("#qry").val().trim();
+    $.ajax({
+        'url': '/logistics/getPickCounterOrders',
+        'type': 'get',
+        'data': {qry:qry},
+        'datatype': 'json',
+        'timeout': 10000,
+        'error': function (msg) {
+            alert("获取提货信息失败");
+            return;
+        },
+        'success': function (msg) {
+            if (msg.status == false) {
+                alert("获取提货信息失败");
+                return;
+            }
+            else{
+                $("#orderTable").clearGridData();
+                $("#orderTable").jqGrid('setGridParam', {data: msg.data}).trigger('reloadGrid');
+            }
+        }
+    });
+}
+
+var showContent1=function(element){
+    var tb=jQuery("#orderTable");
+    var data=tb.getRowData(element.id);
+    var ordercode=data.ORDERCODE;
+    var param = data.PICKCODE;
+    var options={};
+    var path='/orders/'
+    if(ordercode && ordercode.charAt(0)=='1'){
+        options.ONLINEORDERCODE=ordercode;
+        path+='getOnlineContentByOrder';
+    }
+    else{
+        options.OFFLINEORDERCODE=ordercode;
+        path+='getOfflineContentByOrder';
+    }
+    
+    $.ajax({
+        'url': path,
+        'type': 'get',
+        'data': options,
+        'datatype': 'json',
+        'timeout': 10000,
+        'error': function (msg) {
+            alert("获取提货信息失败");
+            return;
+        },
+        'success': function (msg) {
+            if(msg.status==false){
+                alert("获取提货信息失败");
+                return;
+            }
+            else{
+//                            alert(JSON.stringify(msg.data));
+                var contents=msg.data;
+                $.Dialog({
+                    shadow: true,
+                    overlay: true,
+                    title: '',
+                    draggable: true,
+                    width: 900,
+                    height: 220,
+                    padding: 10,
+                    onShow: function (_dialog) {
+                        var content = '<div style="width:100%">' +
+                                '<table style="width:100%;margin-bottom: 7px">' +
+                                '<tr style="width:100%">' +
+                                '<td>' +
+                                ' <table id="contentTable"></table>' +
+                                '</td>' +
+                                '</tr>' +
+                                ' </table>' +
+                                '</div>'+
+                                '<div style="width:100%">' +
+                                '<select id="selAssistant_'+ordercode+'" style="width:100px;height:25px;margin-bottom: 6px;">' +
+                                '<option value="">---操作员*---</option>' +
+                                '<% if (assistantList.length) { %>' +
+                                '<% assistantList.forEach(function(assistant){ %>' +
+                                '<option value="<%= assistant.SALESMANCODE %>"> <%= assistant.SALESMANNAME %> </option>' +
+                                '<% }) %>' +
+                                '<% } %>' +
+                                '</select>' +
+                                (!param?
+                                '<input id="code_'+ordercode+'" type="text" style="width:100px;margin-bottom: 6px;height:25px;margin-left: 8px" placeholder="自提码*" />':
+                                '<input id="code_'+ordercode+'" type="text" style="display:none" value="'+param+'" />')+
+                                '<button id="pick_'+ordercode+'" class="bg-mecOrange fg-white" style="width:120px;margin-bottom: 6px;margin-left: 8px" onclick="pickPackage(this);">确认发货</button>'+
+                                '</div>';;
+
+                        $.Dialog.title("订单详情");
+                        $.Dialog.content(content);
+                        $.Metro.initInputs();
+
+                        jQuery("#contentTable").jqGrid({
+                            datatype: "local",
+                            height: 150,
+                            width: 900,
+                            autowidth: true,
+                            shrinkToFit: true,
+                            colNames: [
+
+                                "品牌",
+                                "名称",
+                                "货号",
+                                "颜色",
+                                "尺码",
+                                "数量",
+                                "金额",
+                                "SKC编码",
+                                "商品编码"
+                            ],
+                            colModel: [
+
+
+                                {name: 'BRANDNAME', index: 'BRANDNAME', sortable: true},
+                                {name: 'ITEMNAME', index: 'ITEMNAME', sortable: true},
+                                {name: 'PRODUCTCODE', index: 'PRODUCTCODE', sortable: true},
+                                {name: 'COLOR', index: 'COLOR', sortable: true},
+                                {name: 'SIZE', index: 'SIZE', sortable: true},
+//                                {name: 'STORECHECKEDPRICE', index: 'STORECHECKEDPRICE',align:'right',formatter:'number'},
+                                {name: 'NUM', index: 'NUM', sortable: true},
+                                {name: 'STORETEMPPRICE', index: 'STORETEMPPRICE', sortable: true,formatter:'number'},
+                                {name: 'SKCCODE', index: 'SKCCODE', sortable: true},
+                                {name: 'ITEMCODE', index: 'ITEMCODE', sortable: true}
+                            ],
+                            rowNum: 10000,
+                            rowList: [10000],
+                            pager: '',
+                            viewrecords: true,
+                            sortname: 'ITEMCODE',
+                            sortorder: "asc",
+                            caption: "",
+                            onSelectRow: function () {
+
+                            }
+                        });
+                        $("#contentTable").jqGrid('setGridParam', {data: contents}).trigger('reloadGrid');
+                    }
+                });
+            }
+        }
+    });
+}
+
+var pickPackage=function(element){
+    var ordercode=element.id.replace("pick_","");
+    var assid=$("#selAssistant_"+ordercode).val();
+    if(!assid||assid==""){
+        alert("请选择营业员!");
+        return;
+    }
+    var pickcode=$("#code_"+ordercode).val();
+    if(!pickcode){
+        alert("请输入6位自提码!");
+        return;
+    }
+
+    $.ajax({
+        'url': '/logistics/pickCounterOrder',
+        'type': 'post',
+        'data': {ORDERCODE:ordercode,PICKCODE:pickcode,SALESMANCODE:assid},
+        'datatype': 'json',
+        'timeout': 10000,
+        'error': function (msg) {
+            alert("网络错误请重试!")
+            return;
+        },
+        'success': function (msg) {
+            if(msg.status==false){
+                alert("提货码不正确!")
+                return;
+            }
+            else{
+                $.Notify({
+                    shadow: true,
+                    position: 'bottom',
+                    style:{background: 'darkBlue', color: 'white'} ,
+                    content: "发货成功!"
+                });
+                $.Dialog.close();
+                fillOrder();
+            }
+        }
+    });
+}
+
+var clickDelivery=function(element){
+    var ordercode=element.id.replace("delivery_","");
+    var options={};
+    if(ordercode && ordercode.charAt(0)=='1'){
+        options.ONLINEORDERCODE=ordercode;
+    }
+    else{
+        options.OFFLINEORDERCODE=ordercode;
+    }
+//        alert(ordercode);
+    $.ajax({
+        'url': '/orders/getSiteInfoByOrder',
+        'type': 'get',
+        'data': options,
+        'datatype': 'json',
+        'timeout': 10000,
+        'error': function (msg) {
+            alert("获取配送地址信息失败!");
+            return;
+        },
+        'success': function (msg) {
+            if(msg.status==false){
+                alert("获取配送地址信息失败!");
+                return;
+            }
+            else{
+//                    alert(JSON.stringify(msg.data));
+                var siteinfo =msg.data;
+                if(!siteinfo||Object.keys(siteinfo).length==0){
+                    alert("没有找到配送地址信息!");
+                    return;
+                }
+                $.Dialog({
+                    shadow: true,
+                    overlay: true,
+                    title: '',
+                    draggable: true,
+                    width: 600,
+                    height: 200,
+                    padding: 10,
+                    onShow: function (_dialog) {
+                        var content =
+                                '<table width="100%" > '+
+                                '<tr style="width:100%"> '+
+                                '<td style="width:20%;height:42px"> '+
+                                '<label class="col-sm-2 control-label" style="width:150px"> 收货人: </label>'+
+                                '<input id="site_person_'+ordercode+'" type="text" data-state="info" '+
+                                '   placeholder="收货人*" style="height:30px;width:90%" readonly/> '+
+                                '</td> '+
+                                '<td style="width:20%;height:42px"> '+
+                                '<label class="col-sm-2 control-label" style="width:150px"> 收货人手机: </label>'+
+                                '<input id="site_telephone_'+ordercode+'" type="text" data-state="info" '+
+                                '   placeholder="联系方式*" style="height:30px;width:90%" readonly/> '+
+                                '</td> '+
+                                ' '+
+                                '<td style="width:20%;height:42px"> '+
+                                '<label class="col-sm-2 control-label" style="width:150px"> 省: </label>'+
+                                '<input id="selProvince_'+ordercode+'" type="text" data-state="info" '+
+                                '   placeholder="省" style="height:30px;width:90%" readonly/> '+
+                                '</td> '+
+                                '<td style="width:20%;height:42px"> '+
+                                '<label class="col-sm-2 control-label" style="width:150px"> 市: </label>'+
+                                '<input id="selCity_'+ordercode+'" type="text" data-state="info" '+
+                                '   placeholder="市" style="height:30px;width:90%" readonly/> '+
+                                '</td> '+
+                                '<td style="width:20%;height:42px"> '+
+                                '<label class="col-sm-2 control-label" style="width:150px"> 区: </label>'+
+                                '<input id="selArea_'+ordercode+'" type="text" data-state="info" '+
+                                '   placeholder="区" style="height:30px;width:90%" readonly/> '+
+                                '</td> '+
+                                '</tr> '+
+                                ' '+
+                                '<tr style="width:100%"> '+
+                                '<td colspan="5"> '+
+                                '<label class="col-sm-2 control-label" style="width:200px"> 详细地址: </label>'+
+                                '<input id="site_detail_'+ordercode+'" type="text" data-state="info" placeholder="详细地址*" '+
+                                '   style="height:30px;width:98%" readonly/> '+
+                                '</td> '+
+                                '</tr> '+
+                                '</table>';
+
+                        $.Dialog.title("配送地址");
+                        $.Dialog.content(content);
+                        $.Metro.initInputs();
+
+                        $("#site_person_"+ordercode).val(siteinfo.PERSON);
+                        $("#site_telephone_"+ordercode).val(siteinfo.TELEPHONE);
+                        $("#selProvince_"+ordercode).val(siteinfo.PROVINCE);
+                        $("#selCity_"+ordercode).val(siteinfo.CITY);
+                        $("#selArea_"+ordercode).val(siteinfo.DISTRICT);
+                        $("#site_detail_"+ordercode).val(siteinfo.DETAIL);
+                    }
+                });
+            }
+        }
+    });
+}
+
+
+</script>
+<title></title>
+<style type="text/css" class="init">
+    .ui-jqgrid,
+    .ui-jqgrid * {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        -ms-box-sizing: content-box;
+        -o-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+
+</head>
+<body class="metro">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp bd-orange">
+
+            <div style="width:100%">
+                <div class="input-control text" style="width: 300px;">
+                    <input id="qry" type="text" data-state="info" placeholder="POS号/订单号" onkeydown="if (event.keyCode==13){checkNull();}"/>
+                    <button class="btn-search" id="search" value="搜索">
+                    </button></div>
+                <table style="width:100%">
+                    <tr style="width:100%">
+                        <td>
+                            <table id="orderTable"></table>
+                            <div id="orderDiv"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
+

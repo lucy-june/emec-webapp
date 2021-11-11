@@ -1,0 +1,6 @@
+package sale;
+message over
+{
+        required string response=1;
+}
+

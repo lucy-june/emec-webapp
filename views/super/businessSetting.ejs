@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+    <meta name="description" content="Simple responsive css framework">
+    <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+    <link href="../css/metro-bootstrap.css" rel="stylesheet">
+    <link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/iconFont.css" rel="stylesheet">
+    <link href="../css/docs.css" rel="stylesheet">
+    <link href="../js/prettify/prettify.css" rel="stylesheet">
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery.widget.min.js"></script>
+    <script src="../js/jquery/jquery.mousewheel.js"></script>
+    <script src="../js/prettify/prettify.js"></script>
+    <script src="../js/holder/holder.js"></script>
+    <script src="../js/load-metro.js"></script>
+    <script src="../js/docs.js"></script>
+    <script src="../js/github.info.js"></script>
+    <script src="../js/metro/metro-scroll.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#GENDER").val("");
+        })
+
+
+
+        function checkPaymentExpireTime(str) {
+            var intorfloat=/^[0-9]+.{0,1}[0-9]*$/;
+            if(!str) {
+                return {result:false, msg:"请输入订单超时时间!"};
+            } else if (!intorfloat.test(str)) {
+                return {result:false, msg:"订单超时时间不合法!"};
+            } else {
+                return {result:true, msg:""};
+            }
+        }
+
+
+
+        var resetInput = function () {
+            var arr = ["paymentExpireTime"];
+            for (var k = 0; k < arr.length; k++) {
+                $("#" + arr[k]).val("");
+            }
+        };
+
+        var confirmAdd = function () {
+            var paymentExpireTimeResult = checkPaymentExpireTime($("#paymentExpireTime").val());
+            if (!paymentExpireTimeResult.result) {
+                alert(paymentExpireTimeResult.msg);
+                return;
+            }
+
+            var arr = ["paymentExpireTime"];
+            var options = {};
+            for (var k = 0; k < arr.length; k++) {
+                options[arr[k]] = $("#" + arr[k]).val();
+            }
+            $.ajax({
+                'url': '/super/modifyBusinessSetting',
+                'type': 'get',
+                'data': options,
+                'datatype': 'html',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("未知错误,修改业务设置失败!");
+                    var arr = ["paymentExpireTime"];
+                    for (var k = 0; k < arr.length; k++) {
+                        $("#" + arr[k]).val("");
+                    }
+                    return;
+                },
+                'success': function (msg) {
+                    if(msg.status == true) {
+                        alert(msg.data);
+                    } else {
+                        alert("未知错误,修改业务设置失败!");
+                    }
+                    var arr = ["paymentExpireTime"];
+                    for (var k = 0; k < arr.length; k++) {
+                        $("#" + arr[k]).val("");
+                    }
+                }
+            });
+        }
+
+    </script>
+
+    <title>Mec Demo</title>
+    </title>
+</head>
+<body class="metro">
+
+        <div class="mectemp bd-orange">
+
+                    <table style="width:100%">
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">订单超时时间： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <input id="paymentExpireTime" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" />
+                                </div>
+                            </td>
+                        </tr>
+
+                    </table>
+                    <br>
+                    <br>
+
+                    <div class="input-control switch" data-role="input-control" style="width:100%">
+                        <button class="bg-mecBlue fg-white" style="width:120px"
+                                onclick="confirmAdd()">确认
+                        </button>
+                        <button class="bg-mecOrange fg-white" style="width:120px"
+                                onclick="resetInput()">重置
+                        </button>
+                    </div>
+                </div>
+
+</body>
+</html>

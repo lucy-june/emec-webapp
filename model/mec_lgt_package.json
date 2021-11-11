@@ -1,0 +1,97 @@
+{
+  "PACKAGECODE": {
+    "type": "char(30)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "ORDERCODE": {
+    "type": "char(18)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "ISONLINEORDER": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "PAYMENTMODE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "DELIVERYMODE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "DELIVERYDEPTCODE": {
+    "type": "varchar(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "DEPTCODE": {
+    "type": "varchar(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "COUNTERCODE": {
+    "type": "char(6)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "PACKAGESTATE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "POSITIONCODE": {
+    "type": "char(16)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": ""
+  },
+  "RECORDSTATE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "1"
+  },
+  "LASTOPERATEPERSON": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "PLACEORDERTIME": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "2000-01-01 00:00:00"
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  }
+}

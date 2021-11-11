@@ -1,0 +1,46 @@
+{
+    "dev": {
+        "dialect": "mysql",
+        "username": "mec_admin",
+        "password": "passw0rd",
+        "database": "mec_qa",
+        "host": "202.120.40.140",
+        "port": "3306",
+        "timezone" : "+08:00",
+        "maxConnections": 100,
+        "maxIdleTime": 300
+    },
+    "test": {
+        "dialect": "mysql",
+        "username": "mec_admin",
+        "password": "abc123",
+        "database": "mec",
+        "host": "126.200.168.3",
+        "port": "3306",
+        "timezone" : "+08:00",
+        "maxConnections": 100,
+        "maxIdleTime": 300
+    },
+    "qa": {
+        "dialect": "mysql",
+        "username": "mec_admin",
+        "password": "abc123",
+        "database": "mec",
+        "host": "10.68.0.52",
+        "port": "3306",
+        "timezone" : "+08:00",
+        "maxConnections": 500,
+        "maxIdleTime": 500
+    },
+    "prod": {
+        "dialect": "mysql",
+        "username": "mec_admin",
+        "password": "plMqAz1571",
+        "database": "mec",
+        "host": "10.68.0.52",
+        "port": "3306",
+        "timezone" : "+08:00",
+        "maxConnections": 500,
+        "maxIdleTime": 500
+    }
+}

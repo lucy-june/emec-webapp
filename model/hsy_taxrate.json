@@ -1,0 +1,21 @@
+{
+  "TAXRATECODE": {
+    "type": "char(2)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "TAXRATENAME": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "TAXRATE": {
+    "type": "float(3,2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  }
+}

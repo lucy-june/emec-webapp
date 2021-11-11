@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+    <meta name="description" content="Simple responsive css framework">
+    <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+    <link href="../css/metro-bootstrap.css" rel="stylesheet">
+    <link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/iconFont.css" rel="stylesheet">
+    <link href="../css/docs.css" rel="stylesheet">
+    <link href="../js/prettify/prettify.css" rel="stylesheet">
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery.widget.min.js"></script>
+    <script src="../js/jquery/jquery.mousewheel.js"></script>
+    <script src="../js/prettify/prettify.js"></script>
+    <script src="../js/holder/holder.js"></script>
+    <script src="../js/load-metro.js"></script>
+    <script src="../js/docs.js"></script>
+    <script src="../js/github.info.js"></script>
+    <script src="../js/metro/metro-scroll.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#GENDER").val("");
+        })
+
+        function checkUserid(str) {
+            if(!str) {
+                return {result:false, msg:"请输入柜台号!"};
+            } else if (str.length != 6) {
+                return {result:false, msg:"柜台号不合法!"};
+            } else {
+                return {result:true, msg:""};
+            }
+        }
+
+        function checkName(str) {
+            if(!str) {
+                return {result:false, msg:"请输入姓名!"};
+            } else if (str.length > 10) {
+                return {result:false, msg:"姓名过长!"};
+            } else {
+                return {result:true, msg:""};
+            }
+        }
+
+        function checkGender(str) {
+            if(!str) {
+                return {result:false, msg:"请选择性别!"};
+            } else {
+                return {result:true, msg:""};
+            }
+        }
+
+        function checkTel(str) {
+            var regu = /^(\+86)?( )?[0-9]{11}$/;
+            return regu.test(str);
+        }
+
+        var resetInput = function () {
+            var arr = ["USERID", "NAME", "GENDER","IDNUMBER", "TELEPHONE"];
+            for (var k = 0; k < arr.length; k++) {
+                $("#" + arr[k]).val("");
+            }
+        };
+
+        var confirmAdd = function () {
+            var useridResult = checkUserid($("#USERID").val());
+            if (!useridResult.result) {
+                alert(useridResult.msg);
+                return;
+            }
+
+            var nameResult = checkName($("#NAME").val());
+            if (!nameResult.result) {
+                alert(nameResult.msg);
+                return;
+            }
+
+            var genderResult = checkGender($("#GENDER").val());
+            if (!genderResult.result) {
+                alert(genderResult.msg);
+                return;
+            }
+
+            var arr = ["USERID", "NAME", "GENDER","IDNUMBER", "TELEPHONE"];
+            var options = {};
+            for (var k = 0; k < arr.length; k++) {
+                options[arr[k]] = $("#" + arr[k]).val();
+            }
+            $.ajax({
+                'url': '/super/addSellerService',
+                'type': 'get',
+                'data': options,
+                'datatype': 'html',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("未知错误,添加账号失败!");
+                    var arr = ["USERID", "NAME", "GENDER","IDNUMBER", "TELEPHONE"];
+                    for (var k = 0; k < arr.length; k++) {
+                        $("#" + arr[k]).val("");
+                    }
+                    return;
+                },
+                'success': function (msg) {
+                    if(msg == 1) {
+                        alert("成功添加营业员!");
+                    } else if(msg == 9) {
+                        alert("不存在该柜台!");
+                    } else if(msg == 8) {
+                        alert("该柜台已存在该营业员!");
+                    } else {
+                        alert("未知错误,添加失败!");
+                    }
+                    var arr = ["NAME", "GENDER","IDNUMBER", "TELEPHONE"];
+                    for (var k = 0; k < arr.length; k++) {
+                        $("#" + arr[k]).val("");
+                    }
+                }
+            });
+        }
+
+    </script>
+
+    <title>Mec Demo</title>
+    </title>
+</head>
+<body class="metro">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp ">
+            <div class="panel">
+                <div class="panel-header bg-lightGray fg-black"> 添加柜台营业员</div>
+                <div class="panel-content">
+                    <table style="width:100%">
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">柜台ID*： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <input id="USERID" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" />
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">姓名*： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control password" data-role="input-control" style="width:200px">
+                                    <input id="NAME" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" />
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">性别*： </label>
+
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <select id="GENDER" type="text" data-state="info"
+                                            placeholder="" style="height:30px;width:200px">
+                                        <option value=1 >男</option>
+                                        <option value=0 >女</option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">身份证号： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <input id="IDNUMBER" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">联系电话： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <input id="TELEPHONE" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" />
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <br>
+
+                    <div class="input-control switch" data-role="input-control" style="width:100%">
+                        <button class="bg-darkGreen fg-white" style="width:120px"
+                                onclick="confirmAdd()">确认
+                        </button>
+                        <button class="bg-lightRed fg-white" style="width:120px"
+                                onclick="resetInput()">重置
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

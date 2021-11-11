@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="product" content="Metro UI CSS Framework">
+
+
+<link href="../css/metro-bootstrap.css" rel="stylesheet">
+<link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+<link href="../css/iconFont.css" rel="stylesheet">
+<link href="../css/docs.css" rel="stylesheet">
+<link href="../js/prettify/prettify.css" rel="stylesheet">
+<!--<link href="../css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">-->
+<script src="../js/load-metro.js"></script>
+<!--<script src="../js/jquery/jquery.min.js"></script>-->
+
+<link rel="stylesheet" type="text/css" media="screen"
+      href="../js/jquery.jqGrid-4.6.0/css/themes/ui-lightness/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css"/>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+
+<script src="../js/jquery/jquery.widget.min.js"></script>
+<script src="../js/jquery/jquery.mousewheel.js"></script>
+<script src="../js/prettify/prettify.js"></script>
+<script src="../js/holder/holder.js"></script>
+<script src="../js/docs.js"></script>
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+
+<script src="../js/metro.js"></script>
+<script src="../js/github.js"></script>
+
+<script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script src="../js/ukey.js"></script>
+
+<script>
+
+Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+        "M+": this.getMonth() + 1,                 //月份
+        "d+": this.getDate(),                    //日
+        "h+": this.getHours(),                   //小时
+        "m+": this.getMinutes(),                 //分
+        "s+": this.getSeconds(),                 //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds()             //毫秒
+    };
+    if (/(y+)/.test(fmt))
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt))
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+var tmpObj = null;
+var skcArr = [];
+
+//    var skcArr=[{MERCHANTSKCCODE:"11",COLOR:"11",SIZE:"111",ID:null,id:"a"},
+//        {MERCHANTSKCCODE:"22",COLOR:"222",SIZE:"2",ID:null,id:"b"},
+//        {MERCHANTSKCCODE:"3",COLOR:"33",SIZE:"333",ID:null,id:"c"},
+//        {MERCHANTSKCCODE:"4",COLOR:"444",SIZE:"4",ID:null,id:"d"}
+//    ];//一定要添加id字段
+
+$(document).ready(function () {
+    var tmp_subgrid_table_id=null;
+    var tmp_itemcode=null;
+
+    jQuery("#itemTable").jqGrid({
+        url: '/items/getCounterHasstockSku?qry=',
+        datatype: "json",
+        height:  window.screen.availHeight * 0.3,
+        width:  document.body.clientWidth * 0.9,
+        autowidth: false,
+        shrinkToFit: false,
+        colNames: [
+            "商品编码",
+            "条形码",
+            "货号",
+            "全称",
+            "简称",
+
+            "品牌名称",
+            "销售分类名称",
+            "商品分类名称",
+            "供应商名称",
+            "招商人员名称",
+
+            "会员售价",
+            "本柜核定售价",
+            "本柜暂时售价",
+
+            "统一核定售价",
+            "统一暂时售价",
+            "是否允许退货",
+
+            "规格",
+            "计量单位",
+            "产地",
+            "净重",
+            "毛重",
+            "等级",
+            "颜色",
+            "包装规格",
+            "尺寸",
+            "体积",
+            "质保期",
+
+            "最后进价",
+            "安全库存",
+            "最高存量",
+            "最低存量",
+            "最高订货量",
+            "最低订货量",
+            "商品属性",
+
+            "是否考虑库存",
+            "是否允许上线",
+            "是否允许负库存",
+            "网上是否在卖",
+            "商品上线描述",
+            "商品评分",
+            "评分人数(满5分)",
+            "销售量",
+            "购买人数",
+            "好评率(%)",
+            "上线开卖时间"
+        ],
+        colModel: [
+            {name: 'ITEMCODE', index: 'ITEMCODE', width: 60, frozen: true},
+            {name: 'BARCODE', index: 'BARCODE', width: 120, frozen: true},
+            {name: 'PRODUCTCODE', index: 'PRODUCTCODE', width: 80, frozen: true},
+            {name: 'ITEMNAME', index: 'ITEMNAME', width: 120, frozen: true},
+            {name: 'ITEMSHORTNAME', index: 'ITEMSHORTNAME', width: 70, frozen: true},
+
+            {name: 'BRANDNAME', index: 'BRANDNAME'},
+            {name: 'ITEMTYPENAME', index: 'ITEMTYPENAME'},
+            {name: 'RETAILTYPENAME', index: 'RETAILTYPENAME'},
+            {name: 'MERCHANTNAME', index: 'MERCHANTNAME'},
+            {name: 'AGENTNAME', index: 'AGENTNAME'},
+
+            {name: 'MEMBERPRICE', index: 'MEMBERPRICE'},
+            {name: 'STORECHECKEDPRICE', index: 'STORECHECKEDPRICE'},
+            {name: 'STORETEMPPRICE', index: 'STORETEMPPRICE'},
+
+            {name: 'PRICE', index: 'PRICE'},
+            {name: 'TEMPPRICE', index: 'TEMPPRICE'},
+            {name: 'RETURNGOODS', index: 'RETURNGOODS', formatter: 'checkbox', editoptions: {value: "1:0"}},
+
+            {name: 'SPECIFICATION', index: 'SPECIFICATION'},
+            {name: 'UNIT', index: 'UNIT'},
+            {name: 'PRODUCINGAREA', index: 'PRODUCINGAREA'},
+            {name: 'NETWEIGHT', index: 'NETWEIGHT'},
+            {name: 'GROSSWEIGHT', index: 'GROSSWEIGHT'},
+            {name: 'GRADE', index: 'GRADE'},
+            {name: 'COLOR', index: 'COLOR'},
+            {name: 'CASING', index: 'CASING'},
+            {name: 'DIMENSION', index: 'DIMENSION'},
+            {name: 'VOLUME', index: 'VOLUME'},
+            {name: 'TERM', index: 'TERM'},
+
+            {name: 'LASTPURCHASEPRICE', index: 'LASTPURCHASEPRICE'},
+            {name: 'SAFESTOCK', index: 'SAFESTOCK'},
+            {name: 'MAXSTOCK', index: 'MAXSTOCK'},
+            {name: 'MINSTOCK', index: 'MINSTOCK'},
+            {name: 'MAXORDER', index: 'MAXORDER'},
+            {name: 'MINORDER', index: 'MINORDER'},
+            {name: 'PROPERTY', index: 'PROPERTY', formatter: 'select', edittype: "select", editoptions: {value: "0:普通商品;1:黄金商品;2:香烟商品"}},
+
+            {name: 'ISCONSIDERSTOCK', index: 'ISCONSIDERSTOCK', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'ISALLOWONLINE', index: 'ISALLOWONLINE', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'ISALLOWNEGATIVE', index: 'ISALLOWNEGATIVE', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'ONLINESTATE', index: 'ONLINESTATE', formatter: 'checkbox', editoptions: {value: "1:0"}},
+
+            {name: 'TITLE', index: 'TITLE'},
+            {name: 'SCORE', index: 'SCORE'},
+            {name: 'SCOREPOPULARITY', index: 'SCOREPOPULARITY'},
+            {name: 'PURCHASE', index: 'PURCHASE'},
+            {name: 'PURCHASEPOPULARITY', index: 'PURCHASEPOPULARITY'},
+            {name: 'PRAISERATE', index: 'PRAISERATE'},
+            {name: 'ONLINETIME', index: 'ONLINETIME', formatter: dataFormat}
+        ],
+        rowNum: 20,
+        rowList: [20, 50, 100],
+        pager: '#itemDiv',
+        viewrecords: true,
+        sortname: 'ITEMCODE',
+        sortorder: "desc",
+        caption: "商品信息",
+        fitColumns: true,
+        onSelectRow: function () {
+
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function () {
+            var userdata = JSON.stringify($(this).getGridParam('userData'));
+            if (userdata != '{}' && userdata)
+                alert(userdata);
+        },
+        gridComplete: function () {
+
+        },
+        subGrid: true,
+        subGridRowExpanded: function (subgrid_id, row_id) {
+            var rowIds = $("#itemTable").getDataIDs();
+            $.each(rowIds, function (index, rowId) {
+                $("#itemTable").collapseSubGridRow(rowId);
+            });
+
+            // we pass two parameters
+            // subgrid_id is a id of the div tag created whitin a table data
+            // the id of this elemenet is a combination of the "sg_" + id of the row
+            // the row_id is the id of the row
+            // If we wan to pass additinal parameters to the url we can use
+            // a method getRowData(row_id) - which returns associative array in type name-value
+            // here we can easy construct the flowing
+
+//            alert(subgrid_id);
+//            alert(row_id);
+
+            var obj = $("#itemTable").jqGrid('getRowData', row_id);
+            var itemcode=obj.ITEMCODE;
+
+            var subgrid_table_id, pager_id;
+            subgrid_table_id = subgrid_id + "_t";
+            pager_id = "p_" + subgrid_table_id;
+//            $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table><div id='"+pager_id+"' class='scroll'></div>");
+            $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table>");
+            jQuery("#" + subgrid_table_id).jqGrid({
+                datatype: "local",
+                colNames: [
+                    "SKC编码",
+                    "供应商SKC编码",
+                    "颜色",
+                    "尺寸",
+                    "库存"
+                ],
+                colModel: [
+                    {name: 'SKCCODE', index: 'SKCCODE'},
+                    {name: 'MERCHANTSKCCODE', index: 'MERCHANTSKCCODE'},
+                    {name: 'COLOR', index: 'COLOR'},
+                    {name: 'SIZE', index: 'SIZE'},
+                    {name: 'AMOUNT', index: 'AMOUNT'}
+                ],
+                rowNum: '10000',
+                pager: pager_id,
+                sortname: 'SKCCODE',
+                sortorder: "asc",
+                height: '100%',
+                onSelectRow: function () {
+                    clearAll();
+                    tmp_subgrid_table_id=subgrid_table_id;
+                    tmp_itemcode=itemcode;
+                    var id = $("#" + subgrid_table_id).jqGrid('getGridParam', "selrow");
+                    var obj = $("#" + subgrid_table_id).jqGrid('getRowData', id);
+//                    alert(id);
+                    $("#skccode").val(id);
+                }
+            });
+
+            refreshSub( subgrid_table_id, itemcode);
+        },
+        subGridRowColapsed: function (subgrid_id, row_id) {
+            // this function is called before removing the data
+            tmp_subgrid_table_id=null;
+            var subgrid_table_id;
+            subgrid_table_id = subgrid_id + "_t";
+            jQuery("#" + subgrid_table_id).remove();
+            tmp_subgrid_table_id=null;
+            tmp_itemcode=null;
+        }
+    });
+    jQuery("#itemTable").jqGrid('navGrid', '#itemDiv', {search: false, add: false, edit: false, del: false});
+    jQuery("#itemTable").jqGrid('setFrozenColumns');
+
+    function dataFormat(cellvalue, options, rowObject) {
+        if (!cellvalue) return '';
+        return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+    }
+
+    $("#search").click(function () {
+        var qry = $("#qry").val().trim();//去除首尾空格
+        $("#itemTable").jqGrid('setGridParam', { url: '/items/getCounterHasstockSku?qry=' + qry}).trigger('reloadGrid');
+        clearAll();
+    })
+
+    $("#cancel").click(function () {
+        $("#delta").val("");
+        $("#selAssistant").val("");
+    })
+
+    $("#submit").click(function () {
+        var skccode=$("#skccode").val();
+        var delta=$("#delta").val();
+        var assistantid=$("#selAssistant").val();
+
+        if(!skccode){
+            alert("请选择退货的商品!");
+            return;
+        }
+        if(!checkNum(delta)){
+            alert("请输入正确的退货数目!");
+            return;
+        }
+        if(!assistantid){
+            alert("请选择营业员!");
+            return;
+        }
+
+        var options={SKCCODE:skccode,NUM:delta,SALESMANCODE:assistantid};
+//        alert(JSON.stringify(options));
+        var stext=sign($("#rand").val());
+        var params={data:options,sign:stext};
+        if(stext.length<5){
+            alert("使用U盾签名出错，请稍后重试或联系技术人员");
+            return;
+        }
+        //var params={data:options};
+        $.ajax({
+            'url': '/items/decreaseStockService',
+            'type': 'post',
+            'data': params,
+            'datatype': 'json',
+            'timeout': 10000,
+            'error': function (msg) {
+                $.Notify({
+                    shadow: true,
+                    position: 'center',
+                    style:{background: 'red', color: 'white'} ,
+                    content: "退货失败!"
+                });
+                return;
+            },
+            'success': function (msg) {
+                if (msg.status == false) {
+                    $.Notify({
+                        shadow: true,
+                        position: 'center',
+                        style:{background: 'red', color: 'white'} ,
+                        content: "退货失败!"
+                    });
+                    return;
+                }
+                else {
+                    $.Notify({
+                        shadow: true,
+                        position: 'center',
+                        style:{background: 'blue', color: 'white'} ,
+                        content: "退货成功!"
+                    });
+                    refreshSub(tmp_subgrid_table_id,tmp_itemcode);
+                }
+            }
+        });
+    })
+
+    var checkNum = function(num){
+        var reg=new RegExp(/^\+{0,1}[0-9]{1,5}$/);
+        return reg.test(num);
+    }
+
+    var refreshSub=function(tableid,itemcode){
+        if(!tableid||!itemcode) return;
+//        alert(tableid+ " "+itemcode);
+        $.ajax({
+            'url': '/items/getCounterSkcStock',
+            'type': 'get',
+            'data': {ITEMCODE: itemcode},
+            'datatype': 'json',
+            'timeout': 100000,
+            'error': function (msg) {
+                alert("获取选定商品的颜色尺码库存失败!");
+                return;
+            },
+            'success': function (msg) {
+                if (msg.status == false) {
+                    alert("获取选定商品的颜色尺码库存失败!");
+                    return;
+                }
+                else {
+//                    alert(JSON.stringify(msg.data));
+                    var arr = msg.data;
+                    for (var k = 0; k < arr.length; k++) {
+                        arr[k].id = arr[k].SKCCODE;
+                    }
+                    jQuery("#" + tableid).clearGridData();
+                    jQuery("#" + tableid).jqGrid('setGridParam', {data: arr}).trigger('reloadGrid');
+                }
+            }
+        });
+    }
+
+    var clearAll = function () {
+        $("#skccode").val("");
+        $("#delta").val("");
+        $("#selAssistant").val("");
+        tmp_subgrid_table_id=null;
+        tmp_itemcode=null;
+    }
+});
+
+</script>
+<title></title>
+<style type="text/css" class="init">
+    .ui-jqgrid,
+    .ui-jqgrid * {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        -ms-box-sizing: content-box;
+        -o-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+
+</head>
+<body class="metro" onload="load()">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp bd-orange">
+            <div class="input-control text" style="width: 300px;">
+                <input id="qry" type="text" data-state="info"
+                       placeholder="关键字" />
+                <button class="btn-search" id="search" value="搜索"/>
+            </div>
+
+            <br>
+
+            <div style="width:100%">
+                <table style="width:100%">
+                    <tr style="width:100%">
+                        <td>
+                            <table id="itemTable"></table>
+                            <div id="itemDiv"></div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+            <br>
+
+            <div class="input-control switch" data-role="input-control"
+                 style="width: 100%">
+                <table style="width: 100%">
+                    <tr>
+                        <td>
+                            <label class="inline-block" style="width: 60px"> SKC码* </label>
+                            <input id="skccode" type="text" data-state="info" placeholder=""
+                                   style="height: 30px; width: 150px" readonly/>
+                        </td>
+
+                        <td>
+                            <label class="inline-block" style="width: 60px;margin-left:20px"> 退货数* </label>
+                            <input id="delta" type="text" data-state="info" placeholder=""
+                                   style="height: 30px; width: 150px"/>
+                        </td>
+
+                        <td>
+                            <label class="inline-block" style="width: 60px"> 营业员* </label>
+                            <select id="selAssistant" style="width:150px;height:30px">
+                                <option value="">------请选择------</option>
+                                <% if (assistantList.length) { %>
+                                <% assistantList.forEach(function(assistant){ %>
+                                <option value="<%= assistant.SALESMANCODE %>"> <%= assistant.SALESMANNAME %> </option>
+                                <% }) %>
+                                <% } %>
+                            </select>
+                        </td>
+
+                        <td>
+                            <button id="submit" class="bg-mecBlue fg-white"
+                                    style="width: 75px;">提交
+                            </button>
+                            <button id="cancel" class="bg-mecOrange fg-white"
+                                    style="width: 75px;">取消
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<object id="plugin0" type="application/x-huijinsecurityplugin" width="0" height="0">
+    <param name="onload" value="pluginLoaded" />
+</object>
+<input id="rand" name="rand" type="hidden" value="<%= rand %>">
+
+</body>
+</html>
+

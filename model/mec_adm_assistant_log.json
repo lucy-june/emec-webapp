@@ -1,0 +1,78 @@
+{
+  "ID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "ASSISTANTID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "COUNTERCODE": {
+    "type": "char(6)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "NAME": {
+    "type": "varchar(10)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "GENDER": {
+    "type": "tinyint(1)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "IDNUMBER": {
+    "type": "char(18)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "TELEPHONE": {
+    "type": "char(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "RECORDSTATE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "OPERATION": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "OPERATEPERSON": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "创建时间"
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "更新时间"
+  }
+}

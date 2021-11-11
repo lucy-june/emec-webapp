@@ -1,0 +1,36 @@
+{
+    "dev": {
+        "web":2000,
+        "webSSL":2001,
+        "app":2002,
+        "appSSL":2003,
+        "saleSSL":3001,
+        "pmtProxy":9527,
+        "srhProxy":9528
+    },
+    "test": {
+        "web":2000,
+        "webSSL":2001,
+        "app":2002,
+        "appSSL":2003,
+        "saleSSL":3001,
+        "pmtProxy":9527,
+        "srhProxy":9528
+    },
+    "qa": {
+        "web":2000,
+        "webSSL":2001,
+        "app":2002,
+        "appSSL":2003,
+        "saleSSL":3001,
+        "pmtProxy":9527,
+        "srhProxy":9528
+    },
+    "prod": {
+        "web":2000,
+        "webSSL":2001,
+        "app":2002,
+        "appSSL":2003,
+        "saleSSL":3001
+    }
+}

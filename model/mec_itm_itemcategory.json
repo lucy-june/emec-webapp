@@ -1,0 +1,32 @@
+{
+  "ID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "ITEMCODE": {
+    "type": "char(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "CATEGORYID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  }
+}

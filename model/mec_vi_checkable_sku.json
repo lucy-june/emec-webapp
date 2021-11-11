@@ -1,0 +1,334 @@
+{
+  "ID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "ITEMCODE": {
+    "type": "char(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "商品编码"
+  },
+  "BARCODE": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "条形码",
+    "defaultValue": null
+  },
+  "ITEMNAME": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品全称",
+    "defaultValue": null
+  },
+  "ITEMSHORTNAME": {
+    "type": "varchar(12)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品简称",
+    "defaultValue": null
+  },
+  "BRANDCODE": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "品牌编码",
+    "defaultValue": null
+  },
+  "RETAILTYPECODE": {
+    "type": "char(3)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "销售分类",
+    "defaultValue": null
+  },
+  "ITEMTYPECODE": {
+    "type": "char(5)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品分类编码",
+    "defaultValue": null
+  },
+  "MERCHANTCODE": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "供应商编码",
+    "defaultValue": null
+  },
+  "BUSINESSMODE": {
+    "type": "char(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "经营方式",
+    "defaultValue": "1"
+  },
+  "PRODUCINGAREA": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "产地",
+    "defaultValue": null
+  },
+  "PRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "核定售价",
+    "defaultValue": "0.00"
+  },
+  "TEMPPRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "统一暂时售价",
+    "defaultValue": "0.00"
+  },
+  "TAXRATE": {
+    "type": "char(2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "销项税率",
+    "defaultValue": "01"
+  },
+  "EXCISERATE": {
+    "type": "char(2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "消费税率",
+    "defaultValue": null
+  },
+  "RETURNGOODS": {
+    "type": "decimal(1,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "是否允许退货：0：不允许 ，1：允许",
+    "defaultValue": null
+  },
+  "SALESTATE": {
+    "type": "decimal(1,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "销售状态：0：正常 ，2：手工登记删除，3：合同到期自动登记删除",
+    "defaultValue": null
+  },
+  "NETWEIGHT": {
+    "type": "decimal(7,3)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "净重",
+    "defaultValue": null
+  },
+  "GROSSWEIGHT": {
+    "type": "decimal(7,3)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "毛重",
+    "defaultValue": null
+  },
+  "SPECIFICATION": {
+    "type": "varchar(30)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品规格",
+    "defaultValue": null
+  },
+  "PRODUCTCODE": {
+    "type": "varchar(30)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品货号",
+    "defaultValue": null
+  },
+  "GRADE": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品等级",
+    "defaultValue": null
+  },
+  "COLOR": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品颜色",
+    "defaultValue": null
+  },
+  "CASING": {
+    "type": "decimal(5,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "包装规格",
+    "defaultValue": "1"
+  },
+  "DIMENSION": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "尺寸",
+    "defaultValue": null
+  },
+  "VOLUME": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "体积",
+    "defaultValue": null
+  },
+  "ITEMCODETYPE": {
+    "type": "decimal(1,0)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "商品编码类型：0：正常商品编码，1：大类码",
+    "defaultValue": "0"
+  },
+  "UNIT": {
+    "type": "varchar(10)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "计量单位",
+    "defaultValue": null
+  },
+  "LASTPURCHASEPRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "最后进价",
+    "defaultValue": null
+  },
+  "PURCHASETAXRATE": {
+    "type": "char(2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "进项税率",
+    "defaultValue": null
+  },
+  "SAFESTOCK": {
+    "type": "decimal(5,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "安全库存",
+    "defaultValue": null
+  },
+  "MAXSTOCK": {
+    "type": "decimal(5,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "最高存量",
+    "defaultValue": null
+  },
+  "MINSTOCK": {
+    "type": "decimal(5,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "最低存量",
+    "defaultValue": null
+  },
+  "MAXORDER": {
+    "type": "decimal(5,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "最高订货量",
+    "defaultValue": null
+  },
+  "MINORDER": {
+    "type": "decimal(5,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "最低订货量",
+    "defaultValue": null
+  },
+  "PROPERTY": {
+    "type": "decimal(1,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品属性：0：普通商品， 1：黄金商品， 2：香烟商品",
+    "defaultValue": null
+  },
+  "CHECKSTATE": {
+    "type": "decimal(1,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "复查状态\r\n            0：复查不通过（可改价格、招商人员、商品分类）\r\n            1：复查通过（不可改价格、招商人员、商品分类）\r\n            2：输入\r\n            3：变更（不可改价格、招商人员、商品分类）\r\n            4 ：变更不通过（不可改价格、招商人员、商品分类）",
+    "defaultValue": "2"
+  },
+  "ERRORINFO": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "错误信息",
+    "defaultValue": null
+  },
+  "INPUTPERSON": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "输入员编码",
+    "defaultValue": null
+  },
+  "AGENTCODE": {
+    "type": "char(3)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "招商人员编码（经销B必须）",
+    "defaultValue": null
+  },
+  "TERM": {
+    "type": "date",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "质保期",
+    "defaultValue": null
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "创建时间"
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "更新时间"
+  },
+  "ISCONSIDERSTOCK": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-不管库存 1-管库存",
+    "defaultValue": "0"
+  },
+  "ISALLOWONLINE": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-线下 1-线上",
+    "defaultValue": "0"
+  },
+  "ISALLOWNEGATIVE": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-不允许负库存 1-允许",
+    "defaultValue": "0"
+  },
+  "TMPSTATE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-增待审 1-删待审 2-改待审 3-增审过 4-删审过 5-改审过  6-拒绝"
+  },
+  "LASTOPERATEPERSON": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  }
+}

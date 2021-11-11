@@ -1,0 +1,29 @@
+{
+  "AGENTCODE": {
+    "type": "char(3)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "AGENTNAME": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "STAFFCODE": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "STATE": {
+    "type": "float(1,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "KEYID": {
+    "type": "varchar(20)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "KEYTYPE": {
+    "type": "tinyint(4)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "STATUS": {
+    "type": "tinyint(4)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "U盾的状态，1有效，2挂失，3注销",
+    "defaultValue": "1"
+  },
+  "KEYPATH": {
+    "type": "varchar(255)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "COUNTERCODE": {
+    "type": "char(6)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "LASTOPERATEPERSON": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "创建日期"
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "更新时间"
+  }
+}

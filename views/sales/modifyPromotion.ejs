@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+
+
+    <link href="../css/metro-bootstrap.css" rel="stylesheet">
+    <link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/iconFont.css" rel="stylesheet">
+    <link href="../css/docs.css" rel="stylesheet">
+    <link href="../js/prettify/prettify.css" rel="stylesheet">
+    <script src="../js/load-metro.js"></script>
+
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="../js/jquery.jqGrid-4.6.0/css/themes/ui-lightness/jquery-ui.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css"/>
+    <script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+    <script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+
+    <script src="../js/jquery/jquery.widget.min.js"></script>
+    <script src="../js/jquery/jquery.mousewheel.js"></script>
+    <script src="../js/prettify/prettify.js"></script>
+    <script src="../js/holder/holder.js"></script>
+    <script src="../js/docs.js"></script>
+
+    <script src="../js/metro/metro-scroll.js"></script>
+
+    <script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+
+    <script src="../js/metro.js"></script>
+    <script src="../js/github.js"></script>
+
+    <script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+
+    <script src="../js/metro/metro-scroll.js"></script>
+
+    <script>
+
+        Date.prototype.Format = function (fmt) { //author: meizz
+            var o = {
+                "M+": this.getMonth() + 1,                 //月份
+                "d+": this.getDate(),                    //日
+                "h+": this.getHours(),                   //小时
+                "m+": this.getMinutes(),                 //分
+                "s+": this.getSeconds(),                 //秒
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                "S": this.getMilliseconds()             //毫秒
+            };
+            if (/(y+)/.test(fmt))
+                fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt))
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        }
+
+
+
+        $(document).ready(function () {
+
+            //记录规则
+            var totalStateJson = {"reduce": 0, "coupon": 0, "gift": 0};
+            var totalReduceConvertJson = {};
+            var totalReduceJson = {};
+            var totalCouponConvertJson = {};
+            var totalCouponJson = {};
+            var totalGiftConvertJson = {};
+            var totalGiftJson = {};
+
+            jQuery("#ruleTable").jqGrid({
+                url: '/sales/getEditablePromotion',
+                datatype: "json",
+                height: document.body.clientHeight * 0.3,
+                width: document.body.clientWidth ,
+                autowidth: false,
+                shrinkToFit: true,
+                colNames: [
+                        "ID",
+                        "活动编号",
+                        "活动内容",
+                        "开始时间",
+                        "结束时间",
+                        "规则状态",
+                        "审核状态",
+                        "最近操作人",
+                        "适用门店",
+                        "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
+
+                ],
+                colModel: [
+                    {name:'ID', index:'ID'},
+                    {name:'RULECODE', index:'RULECODE', width: 80, frozen:true},
+                    {name:'RULECONTENT', index:'RULECONTENT', width:120, frozen:true},
+                    {name:'DATEEFFECTIVE', formatter: dateFormat},
+                    {name:'DATEEXPIRES', formatter: dateFormat},
+                    {name:'STATE', index:'STATE', formatter: 'select', edittype: "select", editoptions: {value: "0:禁用;1:启用"}},
+                    {name:'TMPSTATE', index:'TMPSTATE', formatter: 'select', edittype: "select", editoptions: {value: "0:添加待审核;1:删除待审核;2:修改待审核;3:添加审核通过;4:删除审核通过;5:修改审核通过;6:拒绝"}},
+                    {name:'LASTOPERATEPERSON', index:'LASTOPERATEPERSON'},
+
+                    {name:'DEPTCODE', index:'DEPTCODE', formatter: 'select', edittype: "select", editoptions: {value: "10201:徐汇店;10202:虹桥店;10200:线上"}},
+                    {name:'REDUCECONVERT', index:'REDUCECONVERT', hidden:true},
+                    {name:'REDUCE', index:'REDUCE',hidden:true},
+                    {name:'COUPONCONVERT', index:'COUPONCONVERT', hidden:true},
+                    {name:'COUPON', index:'COUPON', hidden:true},
+                    {name:'GIFTCONVERT', index:'GIFTCONVERT',hidden:true},
+                    {name:'GIFT', index:'GIFT', hidden:true},
+                    {name:'RULESCRIPT', index:'RULESCRIPT', hidden:true},
+                    {name:'RECORDSTATE', index:'RECORDSTATE', hidden:true},
+                    {name:'VIPSALIENCE', index:'VIPSALIENCE',hidden:true},
+                    {name:'COUPONVIPGRADE', index:'COUPONVIPGRADE', hidden:true},
+                    {name:'COUPONPOSACCU', index:'COUPONPOSACCU', hidden:true},
+                    {name:'COUPONVIPMORE', index:'COUPONVIPMORE',hidden:true},
+                    {name:'COUPONALLOWERROR', index:'COUPONALLOWERROR',hidden:true},
+                    {name:'GIFTVIPGRADE', index:'GIFTVIPGRADE', hidden:true},
+                    {name:'GIFTPOSACCU', index:'GIFTPOSACCU',hidden:true},
+                    {name:'GIFTVIPMORE', index:'GIFTVIPMORE', hidden:true},
+                    {name:'GIFTALLOWERROR', index:'GIFTALLOWERROR', hidden:true}
+                ],
+                rowNum: 20,
+                rowList: [20, 50, 100],
+                pager: '#ruleDiv',
+                viewrecords: true,
+                sortname: 'ID',
+                sortorder: "desc",
+                caption: '促销规则',
+                fitColumns: true,
+                onSelectRow: function () {
+                    var rid = $("#ruleTable").jqGrid('getGridParam', "selrow");
+                    var ruleobj = $("#ruleTable").jqGrid('getRowData', rid);
+                    showRule(ruleobj);
+                },
+                onSelectAll: function () {
+
+                },
+                loadComplete: function () {
+
+                },
+                gridComplete: function () {
+
+                }
+            });
+
+            jQuery("#ruleTable").jqGrid('navGrid', '#ruleDiv', {search: false, add:false, edit:false, del:false});
+            jQuery("#ruleTable").jqGrid('hideCol', 'ID');
+            jQuery("#ruleTable").jqGrid('setFrozenColumns');
+
+            function dateFormat(cellvalue,options,rowObject){
+                if(!cellvalue) return '';
+                return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+            }
+
+            $("#search").click(function () {
+                var qry = $("#qry").val().trim();
+                $("#ruleTable").jqGrid('setGridParam', {url: '/sales/getViewPromotion?qry=' + qry}).trigger('reloadGrid');
+            })
+
+            var showRule = function (ruleObj) {
+
+                totalStateJson = {"reduce": 0, "coupon": 0, "gift": 0};
+                totalReduceConvertJson = {};
+                totalReduceJson = {};
+                totalCouponConvertJson = {};
+                totalCouponJson = {};
+                totalGiftConvertJson = {};
+                totalGiftJson = {};
+
+                $("#hidmodifyid").val(ruleObj.ID);
+                $("#MODIFYRULEDIV").attr("style", "display: block");
+                $("#RULECODE").val(ruleObj.RULECODE);
+                $("#RULECONTENT").val(ruleObj.RULECONTENT);
+                var rulestarttime = ruleObj.DATEEFFECTIVE;
+               // var rulestartdate = new Date(rulestarttime).Format("yyyy-MM-dd");
+                var ruleendtime = ruleObj.DATEEXPIRES;
+               // var ruleenddate = new Date(ruleendtime).Format("yyyy-MM-dd");
+                $("#DATE-EFFECTIVE").val(rulestarttime);
+                $("#DATE-EXPIRES").val(ruleendtime);
+                var deptcode = ruleObj.DEPTCODE;
+                var deptname = "";
+                switch (deptcode)
+                {
+                    case "10200":
+                        deptname = "线上店";
+                        break;
+                    case "10201":
+                        deptname = "徐汇店";
+                        break;
+                    case "10202":
+                        deptname = "虹桥店";
+                        break;
+                    default :
+                        deptname = "未知门店，请重试";
+                        break;
+                }
+                $("#DEPTNAME").val(deptname);
+                $("#SALIENCE").val(ruleObj.VIPSALIENCE);
+                $("#STATE").val(ruleObj.STATE);
+
+                $("#COUPONPOSACCU").val(ruleObj.COUPONPOSACCU);
+                $("#COUPONVIPGRADE").val(ruleObj.COUPONVIPGRADE);
+                $("#GIFTPOSACCU").val(ruleObj.GIFTPOSACCU);
+                $("#GIFTVIPGRADE").val(ruleObj.GIFTVIPGRADE);
+
+                //处理满减规则
+                var reduceConvertString = ruleObj.REDUCECONVERT;
+                var reduceString = ruleObj.REDUCE;
+                $("#SHOWREDUCETABLE tr").empty();
+                if(reduceConvertString != '') {
+                    var reduceConvertJson = JSON.parse(reduceConvertString);
+                    var reduceJson = JSON.parse(reduceString);
+                    //对于JSON中，依次取出key，通过key再取出value
+                    for(var key in reduceConvertJson) {
+                        var mark = key;
+                        var trid = "tr[id='" + mark + "']";
+                        $("#SHOWREDUCETABLE").find(trid).remove();
+                        var convertMap = reduceConvertJson[key];
+                        var reduceMap = reduceJson[key];
+                        //先将取出的规则放入记录规则的JSON对象中
+                        totalReduceConvertJson[mark] = convertMap;
+                        totalReduceJson[mark] = reduceMap;
+                        var scopeval = convertMap["scope"];
+                        var methodval = reduceMap["method"];
+                        var methodString = "";
+                        var scopeString = "";
+                        if(methodval == "iterate") {
+                            methodString = "循环型";
+                        } else if(methodval == "list") {
+                            methodString = "列表型";
+                        } else {
+                            methodString = "循环列表型";
+                        }
+                        if(scopeval == "dept") {
+                            scopeString = "全场";
+                        } else {
+                            scopeString = "全柜";
+                        }
+                        var convertString = JSON.stringify(convertMap.convert);
+                        var reduceString = JSON.stringify(reduceMap.rule);
+                        reduceString = reduceString.replace("base", "满");
+                        reduceString = reduceString.replace("value", "减");
+                        //生成一列，加入到规则列表中
+                        var trstring = "<tr id=" + mark + "><td>" + mark + "</td><td>" + methodString + "</td><td>" + scopeString + "</td><td>" + convertString + "</td><td>" + reduceString + "</td></tr>";
+                        $("#SHOWREDUCETABLE").append(trstring);
+                        totalStateJson.reduce = 1;
+                    }
+                }
+
+                //处理赠券规则，基本同满减
+                var couponConvertString = ruleObj.COUPONCONVERT;
+                var couponString = ruleObj.COUPON;
+                $("#SHOWCOUPONTABLE tr").empty();
+                if(couponConvertString != '') {
+                    var couponConvertJson = JSON.parse(couponConvertString);
+                    var couponJson = JSON.parse(couponString);
+                    //对于JSON中，依次取出key，通过key再取出value
+                    for(var key in couponConvertJson) {
+                        var mark = key;
+                        var trid = "tr[id='" + mark + "']";
+                        $("#SHOWCOUPONTABLE").find(trid).remove();
+                        var couponConvertMap = couponConvertJson[key];
+                        var couponMap = couponJson[key];
+                        //先将取出的规则放入记录规则的JSON对象中
+                        totalCouponConvertJson[mark] = convertMap;
+                        totalCouponJson[mark] = couponMap;
+                        var scopeval = couponConvertMap["scope"];
+                        var methodval = couponMap["method"];
+                        var methodString = "";
+                        var scopeString = "";
+                        if(methodval == "iterate") {
+                            methodString = "循环型";
+                        } else if(methodval == "list") {
+                            methodString = "列表型";
+                        } else {
+                            methodString = "循环列表型";
+                        }
+                        if(scopeval == "dept") {
+                            scopeString = "全场";
+                        } else {
+                            scopeString = "全柜";
+                        }
+                        var couponConvertString = JSON.stringify(couponConvertMap.convert);
+                        var couponString = JSON.stringify(couponMap.rule);
+                        couponString = couponString.replace("base", "满");
+                        couponString = couponString.replace("value", "赠");
+                        //生成一列，加入到规则列表中
+                        var trstring = "<tr id=" + mark + "><td>" + mark + "</td><td>" + methodString + "</td><td>" + scopeString + "</td><td>" + couponConvertString + "</td><td>" + couponString + "</td></tr>";
+                        $("#SHOWCOUPONTABLE").append(trstring);
+                        totalStateJson.coupon = 1;
+                    }
+                }
+
+                //处理赠礼规则，基本同满减
+                var giftConvertString = ruleObj.GIFTCONVERT;
+                var giftString = ruleObj.GIFT;
+                $("#SHOWGIFTTABLE tr").empty();
+                if(giftConvertString != '') {
+                    var giftConvertJson = JSON.parse(giftConvertString);
+                    var giftJson = JSON.parse(giftString);
+                    //对于JSON中，依次取出key，通过key再取出value
+                    for(var key in giftConvertJson) {
+                        var mark = key;
+                        var trid = "tr[id='" + mark + "']";
+                        $("#SHOWGIFTTABLE").find(trid).remove();
+                        var giftConvertMap = giftConvertJson[key];
+                        var giftMap = giftJson[key];
+                        //先将取出的规则放入记录规则的JSON对象中
+                        totalGiftConvertJson[mark] = convertMap;
+                        totalGiftJson[mark] = giftMap;
+                        var scopeval = giftConvertMap["scope"];
+                        var methodval = giftMap["method"];
+                        var methodString = "";
+                        var scopeString = "";
+                        if(methodval == "iterate") {
+                            methodString = "循环型";
+                        } else if(methodval == "list") {
+                            methodString = "列表型";
+                        } else {
+                            methodString = "循环列表型";
+                        }
+                        if(scopeval == "dept") {
+                            scopeString = "全场";
+                        } else {
+                            scopeString = "全柜";
+                        }
+                        var giftConvertString = JSON.stringify(giftConvertMap.convert);
+                        var giftString = JSON.stringify(giftMap.rule);
+                        giftString = giftString.replace("base", "满");
+                        giftString = giftString.replace("value", "赠");
+                        giftString = giftString.replace("num", "数量");
+                        //生成一列，加入到规则列表中
+                        var trstring = "<tr id=" + mark + "><td>" + mark + "</td><td>" + methodString + "</td><td>" + scopeString + "</td><td>" + giftConvertString + "</td><td>" + giftString + "</td></tr>";
+                        $("#SHOWGIFTTABLE").append(trstring);
+                        totalStateJson.gift = 1;
+                    }
+                }
+                window.parent.SetWinHeight();
+            }
+
+            //重用前面addPromotion方法
+
+
+            //添加一行转换值
+            $("#addConvertBtn").click(function () {
+                //记录convert属性数目
+                var num = $("#hidConvertNum").val();
+                num++;
+                $("#hidConvertNum").val(num);
+                //复制一行，并重设ID
+                $("#CONVERTLINE0").clone(true).attr("id", "CONVERTLINE"+num).appendTo("#CONVERTTABLE");
+                $("#CONVERTLINE"+num).find("select[id = 'OLDMARK0']").attr("id", "OLDMARK"+num);
+                $("#CONVERTLINE"+num).find("select[id = 'NEWMARK0']").attr("id", "NEWMARK"+num);
+                $("#CONVERTLINE"+num).find("button[id = 'removeConvertBtn']").attr("style", "display:inline");
+                //调用父页面的方法来重新加载iframe大小
+                window.parent.SetWinHeight();
+            });
+            //移除一行转换值
+            $("#removeConvertBtn").click(function () {
+                $(this).parent().parent().remove();
+                //调用父页面的方法来重新加载iframe大小
+                window.parent.SetWinHeight();
+            });
+
+            $("#addCouponConvertBtn").click(function () {
+                //记录convert属性数目
+                var num = $("#hidCouponConvertNum").val();
+                num++;
+                $("#hidCouponConvertNum").val(num);
+                //
+                $("#COUPONCONVERTLINE0").clone(true).attr("id", "COUPONCONVERTLINE"+num).appendTo("#COUPONCONVERTTABLE");
+                $("#COUPONCONVERTLINE"+num).find("select[id = 'COUPONOLDMARK0']").attr("id", "COUPONOLDMARK"+num);
+                $("#COUPONCONVERTLINE"+num).find("select[id = 'COUPONNEWMARK0']").attr("id", "COUPONNEWMARK"+num);
+                $("#COUPONCONVERTLINE"+num).find("button[id = 'removeCouponConvertBtn']").attr("style", "display:inline");
+                //调用父页面的方法来重新加载iframe大小
+                window.parent.SetWinHeight();
+            });
+            $("#removeCouponConvertBtn").click(function () {
+                $(this).parent().parent().remove();
+                //调用父页面的方法来重新加载iframe大小
+                window.parent.SetWinHeight();
+            });
+
+            $("#addGiftConvertBtn").click(function () {
+                //记录convert属性数目
+                var num = $("#hidGiftConvertNum").val();
+                num++;
+                $("#hidGiftConvertNum").val(num);
+                //
+                $("#GIFTCONVERTLINE0").clone(true).attr("id", "GIFTCONVERTLINE"+num).appendTo("#GIFTCONVERTTABLE");
+                $("#GIFTCONVERTLINE"+num).find("select[id = 'GIFTOLDMARK0']").attr("id", "GIFTOLDMARK"+num);
+                $("#GIFTCONVERTLINE"+num).find("select[id = 'GIFTNEWMARK0']").attr("id", "GIFTNEWMARK"+num);
+                $("#GIFTCONVERTLINE"+num).find("button[id = 'removeGiftConvertBtn']").attr("style", "display:inline");
+                //调用父页面的方法来重新加载iframe大小
+                window.parent.SetWinHeight();
+            });
+            $("#removeGiftConvertBtn").click(function () {
+                $(this).parent().parent().remove();
+                //调用父页面的方法来重新加载iframe大小
+                window.parent.SetWinHeight();
+            });
+
+            //添加一行满减规则
+            $("#addReduceBtn").click(function () {
+                //记录reduce属性数目
+                var num = $("#hidReduceNum").val();
+                num++;
+                $("#hidReduceNum").val(num);
+                //
+                $("#REDUCELINE0").clone(true).attr("id", "REDUCELINE"+num).appendTo("#REDUCETABLE");
+                $("#REDUCELINE"+num).find("input[id = 'BASE0']").attr("id", "BASE"+num);
+                $("#REDUCELINE"+num).find("input[id = 'VALUE0']").attr("id", "VALUE"+num);
+                $("#REDUCELINE"+num).find("button[id = 'removeReduceBtn']").attr("style", "margin-left: 20px;display:inline");
+                //调用父页面的方法来重新加载iframe大小
+                window.parent.SetWinHeight();
+            });
+            //移除一行满减规则
+            $("#removeReduceBtn").click(function () {
+                $(this).parent().parent().remove();
+                //调用父页面的方法来重新加载iframe大小
+                window.parent.SetWinHeight();
+            });
+
+            $("#addCouponBtn").click(function () {
+                //记录reduce属性数目
+                var num = $("#hidCouponNum").val();
+                num++;
+                $("#hidCouponNum").val(num);
+                //
+                $("#COUPONLINE0").clone(true).attr("id", "COUPONLINE"+num).appendTo("#COUPONTABLE");
+                $("#COUPONLINE"+num).find("input[id = 'COUPONBASE0']").attr("id", "COUPONBASE"+num);
+                $("#COUPONLINE"+num).find("input[id = 'COUPONVALUE0']").attr("id", "COUPONVALUE"+num);
+                $("#COUPONLINE"+num).find("button[id = 'removeCouponBtn']").attr("style", "margin-left: 20px;display:inline");
+                //调用父页面的方法来重新加载iframe大小
+                window.parent.SetWinHeight();
+            });
+            $("#removeCouponBtn").click(function () {
+                $(this).parent().parent().remove();
+                //调用父页面的方法来重新加载iframe大小
+                window.parent.SetWinHeight();
+            });
+
+            $("#addGiftBtn").click(function () {
+                //记录reduce属性数目
+                var num = $("#hidGiftNum").val();
+                num++;
+                $("#hidGiftNum").val(num);
+                //
+                $("#GIFTLINE0").clone(true).attr("id", "GIFTLINE"+num).appendTo("#GIFTTABLE");
+                $("#GIFTLINE"+num).find("input[id = 'GIFTBASE0']").attr("id", "GIFTBASE"+num);
+                $("#GIFTLINE"+num).find("input[id = 'GIFTVALUE0']").attr("id", "GIFTVALUE"+num);
+                $("#GIFTLINE"+num).find("input[id = 'GIFTNUM0']").attr("id", "GIFTNUM"+num);
+                $("#GIFTLINE"+num).find("button[id = 'removeGiftBtn']").attr("style", "margin-left: 20px;display:inline");
+                //调用父页面的方法来重新加载iframe大小
+                window.parent.SetWinHeight();
+            });
+            $("#removeGiftBtn").click(function () {
+                $(this).parent().parent().remove();
+                //调用父页面的方法来重新加载iframe大小
+                window.parent.SetWinHeight();
+            });
+
+            //绑定促销类型选择，根据类型显示或隐藏按钮
+            $("#METHOD").bind("change", function () {
+                //循环型，只能有一行满减值，隐藏添加按钮
+                if($(this).val() == "iterate") {
+                    $("#REDUCELINE0").find("button[id = 'addReduceBtn']").attr("style", "margin-left: 30px;display:none");
+                    var num = $("#hidReduceNum").val();
+                    if(num != 0) {
+                        num++;
+                        for(var i=1; i<num; i++) {
+                            $("#REDUCELINE"+i).remove();
+                        }
+                        window.parent.SetWinHeight();
+                        $("#hidReduceNum").val(0);
+                    }
+                } else {
+                    //显示隐藏按钮
+                    $("#REDUCELINE0").find("button[id = 'addReduceBtn']").attr("style", "margin-left: 30px;display:inline");
+                }
+            });
+
+            $("#COUPONMETHOD").bind("change", function () {
+                if($(this).val() == "iterate") {
+                    $("#COUPONLINE0").find("button[id = 'addCouponBtn']").attr("style", "margin-left: 30px;display:none");
+                    var num = $("#hidCouponNum").val();
+                    if(num != 0) {
+                        num++;
+                        for(var i=1; i<num; i++) {
+                            $("#COUPONLINE"+i).remove();
+                        }
+                        window.parent.SetWinHeight();
+                        $("#hidCouponNum").val(0);
+                    }
+                } else {
+                    $("#COUPONLINE0").find("button[id = 'addCouponBtn']").attr("style", "margin-left: 30px;display:inline");
+                }
+            });
+
+            $("#GIFTMETHOD").bind("change", function () {
+                if($(this).val() == "iterate") {
+                    $("#GIFTLINE0").find("button[id = 'addGiftBtn']").attr("style", "margin-left: 30px;display:none");
+                    var num = $("#hidGiftNum").val();
+                    if(num != 0) {
+                        num++;
+                        for(var i=1; i<num; i++) {
+                            $("#GIFTLINE"+i).remove();
+                        }
+                        window.parent.SetWinHeight();
+                        $("#hidGiftNum").val(0);
+                    }
+                } else {
+                    $("#GIFTLINE0").find("button[id = 'addGiftBtn']").attr("style", "margin-left: 30px;display:inline");
+                }
+            });
+
+            //将满减转换规则组合成JSON对象
+            var generateReduceConvertJson = function () {
+                var convertMap = {};
+                var scopeval = $("#SCOPE").val();
+                convertMap.scope = scopeval;
+                var detailConvertString = "";
+                var convertnum = $("#hidConvertNum").val();
+                convertnum++;
+                //对每一行转换值，拼接成json格式的字符串
+                for(var i=0; i<convertnum; i++) {
+                    var oldmark = $("#OLDMARK"+i).val();
+                    var newmark = $("#NEWMARK"+i).val();
+                    if(oldmark != null) {
+                        detailConvertString = detailConvertString + '"' + oldmark + '":"' + newmark + '",';
+                    }
+                }
+                detailConvertString = detailConvertString.slice(0, -1);
+                detailConvertString = "{" + detailConvertString + "}";
+                //把拼接好的字符串转换成JSON对象
+                detailConvertJson = JSON.parse(detailConvertString);
+                convertMap.convert = detailConvertJson;
+                return convertMap;
+            };
+
+            var generateCouponConvertJson = function () {
+                var convertMap = {};
+                var scopeval = $("#COUPONSCOPE").val();
+                convertMap.scope = scopeval;
+                var detailConvertString = "";
+                var convertnum = $("#hidCouponConvertNum").val();
+                convertnum++;
+                for(var i=0; i<convertnum; i++) {
+                    var oldmark = $("#COUPONOLDMARK"+i).val();
+                    var newmark = $("#COUPONNEWMARK"+i).val();
+                    if(oldmark != null) {
+                        detailConvertString = detailConvertString + '"' + oldmark + '":"' + newmark + '",';
+                    }
+                }
+                detailConvertString = detailConvertString.slice(0, -1);
+                detailConvertString = "{" + detailConvertString + "}";
+                detailConvertJson = JSON.parse(detailConvertString);
+                convertMap.convert = detailConvertJson;
+                return convertMap;
+            };
+
+            var generateGiftConvertJson = function () {
+                var convertMap = {};
+                var scopeval = $("#GIFTSCOPE").val();
+                convertMap.scope = scopeval;
+                var detailConvertString = "";
+                var convertnum = $("#hidGiftConvertNum").val();
+                convertnum++;
+                for(var i=0; i<convertnum; i++) {
+                    var oldmark = $("#GIFTOLDMARK"+i).val();
+                    var newmark = $("#GIFTNEWMARK"+i).val();
+                    if(oldmark != null) {
+                        detailConvertString = detailConvertString + '"' + oldmark + '":"' + newmark + '",';
+                    }
+                }
+                detailConvertString = detailConvertString.slice(0, -1);
+                detailConvertString = "{" + detailConvertString + "}";
+                detailConvertJson = JSON.parse(detailConvertString);
+                convertMap.convert = detailConvertJson;
+                return convertMap;
+            };
+
+            //将满减规则组装成字符串
+            var generateReduceJson = function () {
+                var reduceMap = {};
+                var methodval = $("#METHOD").val();
+                reduceMap.method = methodval;
+
+
+                var detailReduceList = [];
+                var reducenum = $("#hidReduceNum").val();
+                reducenum++;
+                //对每一行满减规则，类型变为整数类型，组装称json对象，加入列表
+                for(var i=0; i<reducenum; i++) {
+                    var base = $("#BASE"+i).val();
+                    var value = $("#VALUE"+i).val();
+                    if(base != null) {
+                        var detailReduceJson = {};
+                        var baseint = Number(base);
+                        var valueint = Number(value);
+                        detailReduceJson.base = baseint;
+                        detailReduceJson.value = valueint;
+                        detailReduceList.push(detailReduceJson);
+                    }
+                }
+                reduceMap.rule = detailReduceList;
+                return reduceMap;
+            };
+
+            var generateCouponJson = function () {
+                var couponMap = {};
+                var methodval = $("#COUPONMETHOD").val();
+                couponMap.method = methodval;
+
+                var detailCouponList = [];
+                var couponnum = $("#hidCouponNum").val();
+                couponnum++;
+                //对每一行赠券规则，类型变为整数类型，组装称json对象，加入列表
+                for(var i=0; i<couponnum; i++) {
+                    var base = $("#COUPONBASE"+i).val();
+                    var value = $("#COUPONVALUE"+i).val();
+                    if(base != null) {
+                        var detailCouponJson = {};
+                        var baseint = Number(base);
+                        var valueint = Number(value);
+                        detailCouponJson.base = baseint;
+                        detailCouponJson.value = valueint;
+                        detailCouponList.push(detailCouponJson);
+                    }
+                }
+                couponMap.rule = detailCouponList;
+                return couponMap;
+            };
+
+            var generateGiftJson = function () {
+                var giftMap = {};
+                var methodval = $("#GIFTMETHOD").val();
+                giftMap.method = methodval;
+
+                var detailGiftList = [];
+                var giftnum = $("#hidGiftNum").val();
+                giftnum++;
+                //对每一行赠礼规则，类型变为整数类型，组装称json对象，加入列表
+                for(var i=0; i<giftnum; i++) {
+                    var base = $("#GIFTBASE"+i).val();
+                    var value = $("#GIFTVALUE"+i).val();
+                    var num = $("#GIFTNUM"+i).val();
+                    if(base != null) {
+                        var detailGiftJson = {};
+                        var baseint = Number(base);
+                        var numint = Number(num);
+                        detailGiftJson.base = baseint;
+                        detailGiftJson.value = value;
+                        detailGiftJson.num = numint;
+                        detailGiftList.push(detailGiftJson);
+                    }
+                }
+                giftMap.rule = detailGiftList;
+                return giftMap;
+            };
+
+            //添加满减子规则
+            $("#addSonRule").click(function () {
+
+                var mark = $("#PROMOTIONMARK").val();
+                //调用生成json对象函数来生成满减转换和规则的json对象
+                var convertMap = generateReduceConvertJson();
+                var reduceMap = generateReduceJson();
+                //将json对象放入记录全部规则的JSON对象中
+                totalReduceConvertJson[mark] = convertMap;
+                totalReduceJson[mark] = reduceMap;
+                //转换成字符串输出检查
+                //var totalconvertstring = JSON.stringify(totalReduceConvertJson);
+                //var totalstring = JSON.stringify(totalReduceJson);
+
+                //对重复设置的同一类型，删除列表中以前存在的
+                var trid = "tr[id='" + mark + "']";
+                $("#SHOWREDUCETABLE").find(trid).remove();
+                var methodval = $("#METHOD").val();
+                var methodString = "";
+                var scopeval = $("#SCOPE").val();
+                var scopeString = "";
+                if(methodval == "iterate") {
+                    methodString = "循环型";
+                } else if(methodval == "list") {
+                    methodString = "列表型";
+                } else {
+                    methodString = "循环列表型";
+                }
+                if(scopeval == "dept") {
+                    scopeString = "全场";
+                } else {
+                    scopeString = "全柜";
+                }
+                var convertString = JSON.stringify(convertMap.convert);
+                var reduceString = JSON.stringify(reduceMap.rule);
+                reduceString = reduceString.replace("base", "满");
+                reduceString = reduceString.replace("value", "减");
+                //生成一列，加入到规则列表中
+                var trstring = "<tr id=" + mark + "><td>" + mark + "</td><td>" + methodString + "</td><td>" + scopeString + "</td><td>" + convertString + "</td><td>" + reduceString + "</td></tr>";
+                $("#SHOWREDUCETABLE").append(trstring);
+                window.parent.SetWinHeight();
+                totalStateJson.reduce = 1;
+            });
+
+
+            $("#addSonCouponRule").click(function () {
+                var mark = $("#COUPONPROMOTIONMARK").val();
+                //调用生成json对象函数来生成满减转换和规则的json对象
+                var convertMap = generateCouponConvertJson();
+                var couponMap = generateCouponJson();
+                //将json对象放入记录全部规则的JSON对象中
+                totalCouponConvertJson[mark] = convertMap;
+                totalCouponJson[mark] = couponMap;
+                //转换成字符串输出检查
+                var totalconvertstring = JSON.stringify(totalCouponConvertJson);
+                var totalstring = JSON.stringify(totalCouponJson);
+
+                //对重复设置的同一类型，删除列表中以前存在的
+                var trid = "tr[id='" + mark + "']";
+                $("#SHOWCOUPONTABLE").find(trid).remove();
+                var methodval = $("#COUPONMETHOD").val();
+                var methodString = "";
+                var scopeval = $("#COUPONSCOPE").val();
+                var scopeString = "";
+                if(methodval == "iterate") {
+                    methodString = "循环型";
+                } else if(methodval == "list") {
+                    methodString = "列表型";
+                } else {
+                    methodString = "循环列表型";
+                }
+                if(scopeval == "dept") {
+                    scopeString = "全场";
+                } else {
+                    scopeString = "全柜";
+                }
+                var convertString = JSON.stringify(convertMap.convert);
+                var couponString = JSON.stringify(couponMap.rule);
+                couponString = couponString.replace("base", "满");
+                couponString = couponString.replace("value", "赠");
+                //生成一列，加入到规则列表中
+                var trstring = "<tr id=" + mark + "><td>" + mark + "</td><td>" + methodString + "</td><td>" + scopeString + "</td><td>" + convertString + "</td><td>" + couponString + "</td></tr>";
+                $("#SHOWCOUPONTABLE").append(trstring);
+                window.parent.SetWinHeight();
+                totalStateJson.coupon = 1;
+            });
+
+            $("#addSonGiftRule").click(function () {
+                var mark = $("#GIFTPROMOTIONMARK").val();
+                //调用生成json对象函数来生成满减转换和规则的json对象
+                var convertMap = generateGiftConvertJson();
+                var giftMap = generateGiftJson();
+                //将json对象放入记录全部规则的JSON对象中
+                totalGiftConvertJson[mark] = convertMap;
+                totalGiftJson[mark] = giftMap;
+                //转换成字符串输出检查
+                //var totalconvertstring = JSON.stringify(totalGiftConvertJson);
+                //var totalstring = JSON.stringify(totalGiftJson);
+
+                //对重复设置的同一类型，删除列表中以前存在的
+                var trid = "tr[id='" + mark + "']";
+                $("#SHOWGIFTTABLE").find(trid).remove();
+                var methodval = $("#GIFTMETHOD").val();
+                var methodString = "";
+                var scopeval = $("#GIFTSCOPE").val();
+                var scopeString = "";
+                if(methodval == "iterate") {
+                    methodString = "循环型";
+                } else if(methodval == "list") {
+                    methodString = "列表型";
+                } else {
+                    methodString = "循环列表型";
+                }
+                if(scopeval == "dept") {
+                    scopeString = "全场";
+                } else {
+                    scopeString = "全柜";
+                }
+                var convertString = JSON.stringify(convertMap.convert);
+                var giftString = JSON.stringify(giftMap.rule);
+                giftString = giftString.replace("base", "满");
+                giftString = giftString.replace("value", "赠");
+                giftString = giftString.replace("num", "数量");
+                //生成一列，加入到规则列表中
+                var trstring = "<tr id=" + mark + "><td>" + mark + "</td><td>" + methodString + "</td><td>" + scopeString + "</td><td>" + convertString + "</td><td>" + giftString + "</td></tr>";
+                $("#SHOWGIFTTABLE").append(trstring);
+                window.parent.SetWinHeight();
+                totalStateJson.gift = 1;
+            });
+
+            $("#confirmModifyBTN").click(function () {
+                var finaldata = {};
+                finaldata.rid = $("#hidmodifyid").val();
+                var promotionnum = 0;
+                if(totalStateJson.reduce == 0 && totalStateJson.coupon == 0 && totalStateJson.gift == 0) {
+                    alert("你尚未添加任何子规则！");
+                    return;
+                }
+                var rulecode = $("#RULECODE").val();
+                var rulecontent = $("#RULECONTENT").val();
+                var deptcode = $("#DEPTCODE").val();
+                var dateeffective = $("#DATE-EFFECTIVE").val();
+                var dateexpires = $("#DATE-EXPIRES").val();
+                if(rulecode == "" || rulecontent == "" || deptcode == "" || dateeffective == "" || dateexpires == "") {
+                    alert("有必填值为空，请检查！");
+                    return;
+                }
+                var startdate = new Date(dateeffective);
+                var enddate = new Date(dateexpires);
+                if(startdate > enddate) {
+                    alert("开始日期不能晚于结束日期");
+                    return;
+                }
+
+                finaldata.rulecode = rulecode;
+                finaldata.rulecontent = rulecontent;
+                finaldata.dateeffective = dateeffective;
+                finaldata.dateexpires = dateexpires;
+                finaldata.deptcode = deptcode;
+                var salienceint = Number($("#SALIENCE").val());
+                finaldata.salience = salienceint;
+                var stateint = Number($("#STATE").val());
+                finaldata.state = stateint;
+                if(totalStateJson.reduce == 1) {
+                    finaldata.reduceconvert = JSON.stringify(totalReduceConvertJson);
+                    finaldata.reduce = JSON.stringify(totalReduceJson);
+                    promotionnum = promotionnum + 100;
+                }
+                if(totalStateJson.coupon == 1) {
+                    var couponposaccu = $("#COUPONPOSACCU").val();
+                    var couponaccuint = Number(couponposaccu);
+                    var couponvip = $("#COUPONVIPGRADE").val();
+                    var couponvipint = Number(couponvip);
+                    finaldata.couponposaccu = couponaccuint;
+                    finaldata.couponvipgrade = couponvipint;
+                    finaldata.couponconvert = JSON.stringify(totalCouponConvertJson);
+                    finaldata.coupon = JSON.stringify(totalCouponJson);
+                    promotionnum = promotionnum + 10;
+                } else {
+                    finaldata.couponposaccu = 0;
+                    finaldata.couponvipgrade = 0;
+                }
+                if(totalStateJson.gift == 1) {
+                    var giftposaccu = $("#GIFTPOSACCU").val();
+                    var giftaccuint = Number(giftposaccu);
+                    var giftvip = $("#GIFTVIPGRADE").val();
+                    var giftvipint = Number(giftvip);
+                    finaldata.giftposaccu = giftaccuint;
+                    finaldata.giftvipgrade = giftvipint;
+                    finaldata.giftconvert = JSON.stringify(totalGiftConvertJson);
+                    finaldata.gift = JSON.stringify(totalGiftJson);
+                    promotionnum = promotionnum + 1;
+                } else {
+                    finaldata.giftposaccu = 0;
+                    finaldata.giftvipgrade = 0;
+                }
+                finaldata.promotionnum = promotionnum;
+                $.ajax({
+                    'url': '/sales/modifyPromotionService',
+                    'type': 'post',
+                    'data': finaldata,
+                    'datatype': 'html',
+                    'timeout': 10000,
+                    'error': function (err) {
+                        alert("修改规则失败！" + JSON.stringify(err));
+                    },
+                    'success': function (msg) {
+                        if(msg == 9) {
+                            alert("修改规则成功！");
+                            $("#ruleTable").trigger('reloadGrid');
+                            $("#MODIFYRULEDIV").attr("style", "display: none");
+                            window.parent.SetWinHeight();
+                            window.parent.scrollTo(0, 0);
+                        } else {
+                            alert("数据库错误，添加规则失败！");
+
+                        }
+                    }
+                });
+            });
+
+            //删除规则
+            $("#deleteBTN").click(function () {
+                var data = {};
+                data.rid = $("#hidmodifyid").val();;
+                $.ajax({
+                    'url': '/sales/deletePromotion',
+                    'type': 'post',
+                    'data': data,
+                    'datatype': 'html',
+                    'timeout': 10000,
+                    'error': function (err) {
+                        alert("删除规则失败！" + JSON.stringify(err));
+                    },
+                    'success': function (msg) {
+                        alert("删除规则成功");
+                        $("#ruleTable").trigger('reloadGrid');
+                        $("#MODIFYRULEDIV").attr("style", "display: none");
+                        window.parent.SetWinHeight();
+                    }
+                });
+            });
+
+            $("#cancelBTN").click(function () {
+                $("#MODIFYRULEDIV").attr("style", "display: none");
+                window.parent.SetWinHeight();
+            });
+
+        });
+
+    </script>
+
+    <title>Mec Demo</title>
+
+    <style type="text/css" class="init">
+        .ui-jqgrid,
+        .ui-jqgrid * {
+            -webkit-box-sizing: content-box;
+            -moz-box-sizing: content-box;
+            -ms-box-sizing: content-box;
+            -o-box-sizing: content-box;
+            box-sizing: content-box;
+        }
+    </style>
+</head>
+
+<body class="metro">
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp bd-orange">
+            <div class="input-control text" style="width: 300px">
+                <input id="qry" type="text" data-state="info" placeholder="关键字" />
+                <button class="btn-search" id="search" value="搜索" />
+            </div>
+
+            <br>
+
+            <div style="width: 100%">
+                <table style="width: 100%">
+                    <tr style="width: 100%">
+                        <td>
+                            <table id="ruleTable"></table>
+                            <div id="ruleDiv"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <br>
+
+            <div  id="MODIFYRULEDIV" style="display: none">
+            <!--<div class="panel-header bg-lightGray fg-black"> 修改规则</div>-->
+            <div class="panel" data-role="panel">
+                <div class="panel-header bg-mecOrange fg-black"> 基本信息</div>
+                <div class="panel-content ">
+                    <table style="height: 100%;width:100%">
+                        <input id="hidmodifyid" type="hidden">
+                        <tr>
+                            <td style="width:150px">
+                                <label style="width:150px">促销活动编号：</label>
+                            </td>
+                            <td style="width:100%">
+                                <input id="RULECODE" type="text" data-state="info"
+                                       placeholder="" style="width:430px;height:30px;margin-top: 3px;margin-left: 0px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:150px">
+                                <label style="width:150px">促销活动内容：</label>
+                            </td>
+                            <td style="width:100%">
+                                <input id="RULECONTENT" type="text" data-state="info"
+                                       placeholder=""
+                                       style="width:430px;height:30px;margin-top: 3px;margin-left: 0px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:150px">
+                                <label style="width:150px">促销起止时间：</label>
+                            </td>
+                            <td style="width:100%">
+                                <div class="input-control text" data-role="datepicker" data-format="yyyy-mm-dd"
+                                     data-week-start="1" style="width:200px;height:30px;margin-top: 3px;">
+                                    <input id="DATE-EFFECTIVE" type="text">
+                                    <button class="btn-date"></button>
+                                </div>
+                                <label class="inline-block"
+                                       style="width: 20px"> --- </label>
+                                <div class="input-control text" data-role="datepicker" data-format="yyyy-mm-dd"
+                                     data-week-start="1" style="width:200px;height:30px;margin-top: 3px;">
+                                    <input id="DATE-EXPIRES" type="text">
+                                    <button class="btn-date"></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:150px">
+                                <label style="width:150px">规则适用门店：</label>
+                            </td>
+                            <td style="width:100%">
+                                <!--//门店可选-->
+                                <!--<select id="DEPTCODE" type="text" data-state="info"-->
+                                <!--placeholder="" style="height:30px;width:200px;margin-top: 3px">-->
+                                <!--<option></option>-->
+                                <!--<option value="10200">线上店</option>-->
+                                <!--<option value="10201">徐汇店</option>-->
+                                <!--<option value="10202">虹桥店</option>-->
+                                <!--</select>-->
+                                <!--//门店不可选,根据登录用户默认-->
+                                <input id="DEPTNAME" type="text" data-state="info" value="0" readonly="readonly"
+                                       placeholder="" style="width:200px;height:30px;margin-top: 3px;margin-left: 0px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:150px">
+                                <label style="width:150px">规则优先级别：</label>
+                            </td>
+                            <td style="width:100%">
+                                <select id="SALIENCE" type="text" data-state="info"
+                                        placeholder="" style="height:30px;width:200px;margin-top: 3px">
+                                    <option value="1">先打折后满减</option>
+                                    <option value="0">先满减后打折</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:150px">
+                                <label style="width:150px">规则活动状态：</label>
+                            </td>
+                            <td style="width:100%">
+                                <select id="STATE" type="text" data-state="info"
+                                        placeholder="" style="height:30px;width:200px;margin-top: 3px">
+                                    <option value="1">启用</option>
+                                    <option value="0">禁用</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <br>
+
+            <div class="panel" data-role="panel">
+                <div class="panel-header bg-mecOrange fg-black"> 设定满减条件</div>
+                <div class="panel-content ">
+                    <table id="CONVERTTABLE" style="width: 200px">
+                        <input type="hidden" id="hidConvertNum" name="hidConvertNum" value="0"/>
+                        <tr>
+                            <td style="width:70px">
+                                <label style="width:70px">促销标志</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="PROMOTIONMARK" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                    <option value="G">G</option>
+                                    <option value="H">H</option>
+                                    <option value="I">I</option>
+                                    <option value="J">J</option>
+                                    <option value="K">K</option>
+                                    <option value="L">L</option>
+                                    <option value="M">M</option>
+                                    <option value="N">N</option>
+                                    <option value="O">O</option>
+                                    <option value="P">P</option>
+                                    <option value="Q">Q</option>
+                                    <option value="R">R</option>
+                                    <option value="S">S</option>
+                                    <option value="T">T</option>
+                                    <option value="U">U</option>
+                                    <option value="V">V</option>
+                                    <option value="W">W</option>
+                                    <option value="X">X</option>
+                                    <option value="Y">Y</option>
+                                    <option value="Z">Z</option>
+                                </select>
+                            </td>
+                            <td style="width:70px">
+                                <label style="width:70px; margin-left: 20px">促销类型</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="METHOD" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="iterate">循环型</option>
+                                    <option value="list">列表型</option>
+                                    <option value="iteratelist">循环列表型</option>
+                                </select>
+                            </td>
+                            <td style="width: 70px">
+                                <label style="width: 70px; margin-left: 20px">累计方式</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="SCOPE" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="dept">全场</option>
+                                    <option value="counter">全柜</option>
+                                </select>
+                            </td>
+                            <td style="width: 90px">
+                                <label style="width: 90px; margin-left: 20px">允许误差(元)</label>
+                            </td>
+                            <td style="width: 100%">
+                                <input id="ERROR" type="text" value="0"
+                                       style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                            </td>
+                            <td style="width: 60px">
+                                <label style="width: 60px; margin-left: 20px">VIP多送</label>
+                            </td>
+                            <td style="width: 100%">
+                                <input id="VIPMORE" type="text" value="0"
+                                       style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 70px">
+                                <label style="width: 70px">替换方式:</label>
+                            </td>
+                        </tr>
+                        <tr id="CONVERTLINE0">
+                            <td style="width: 50px">
+                                <label style="width: 50px">原标记</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="OLDMARK0" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                    <option value="G">G</option>
+                                    <option value="H">H</option>
+                                    <option value="I">I</option>
+                                    <option value="J">J</option>
+                                    <option value="K">K</option>
+                                    <option value="L">L</option>
+                                    <option value="M">M</option>
+                                    <option value="N">N</option>
+                                    <option value="O">O</option>
+                                    <option value="P">P</option>
+                                    <option value="Q">Q</option>
+                                    <option value="R">R</option>
+                                    <option value="S">S</option>
+                                    <option value="T">T</option>
+                                    <option value="U">U</option>
+                                    <option value="V">V</option>
+                                    <option value="W">W</option>
+                                    <option value="X">X</option>
+                                    <option value="Y">Y</option>
+                                    <option value="Z">Z</option>
+                                </select>
+                            </td>
+                            <td style="width: 70px">
+                                <label style="width: 70px; margin-left: 20px">替换标记</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="NEWMARK0" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                    <option value="G">G</option>
+                                    <option value="H">H</option>
+                                    <option value="I">I</option>
+                                    <option value="J">J</option>
+                                    <option value="K">K</option>
+                                    <option value="L">L</option>
+                                    <option value="M">M</option>
+                                    <option value="N">N</option>
+                                    <option value="O">O</option>
+                                    <option value="P">P</option>
+                                    <option value="Q">Q</option>
+                                    <option value="R">R</option>
+                                    <option value="S">S</option>
+                                    <option value="T">T</option>
+                                    <option value="U">U</option>
+                                    <option value="V">V</option>
+                                    <option value="W">W</option>
+                                    <option value="X">X</option>
+                                    <option value="Y">Y</option>
+                                    <option value="Z">Z</option>
+                                </select>
+                            </td>
+                            <td style="width: 100%">
+                                <button id="addConvertBtn" style="margin-left: 30px"> + </button>
+                            </td>
+                            <td style="width: 100%">
+                                <button id="removeConvertBtn" style="display: none"> - </button>
+                            </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <table id="REDUCETABLE" style="width: 200px">
+                        <input type="hidden" id="hidReduceNum" name="hidReduceNum" value="0"/>
+                        <tr>
+                            <td style="width: 70px">
+                                <label style="width: 70px">折扣方式:</label>
+                            </td>
+                            <td style="width: 80px">
+                            </td>
+                            <td style="width:70px">
+                            </td>
+                            <td style="width: 80px">
+                            </td>
+                            <td style="width: 70px">
+                            </td>
+                            <td style="width: 80px">
+                            </td>
+                            <td style="width: 90px">
+                            </td>
+                            <td style="width: 80px">
+                            </td>
+                            <td style="width: 60px">
+                            </td>
+                            <td style="width: 80px">
+                            </td>
+                        </tr>
+                        <tr id="REDUCELINE0">
+                            <td style="width: 50px">
+                                <label style="width: 50px">满</label>
+                            </td>
+                            <td style="width: 100%">
+                                <input id="BASE0" type="text" style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                            </td>
+                            <td style="width: 70px">
+                                <label style="width: 70px; margin-left: 20px">减</label>
+                            </td>
+                            <td style="width: 100%">
+                                <input id="VALUE0" type="text" style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                            </td>
+                            <td style="width: 100%">
+                                <button id="addReduceBtn" style="margin-left: 30px;display: none"> + </button>
+                            </td>
+                            <td style="width: 100%">
+                                <button id="removeReduceBtn" style="display: none"> - </button>
+                            </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <button id="addSonRule" class="bg-mecBlue fg-white" style="width:100px">添加子规则</button>
+                    <br>
+                    <br>
+                    <table id="SHOWREDUCETABLE" style="width: 100%" border="1">
+                        <tr>
+                            <th>促销标志</th>
+                            <th>促销类型</th>
+                            <th>累计方式</th>
+                            <th>替换方式</th>
+                            <th>折扣方式</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <br>
+
+            <div class="panel" data-role="panel">
+                <div class="panel-header bg-mecOrange fg-black"> 设定赠券条件</div>
+                <div class="panel-content ">
+                    <table id="COUPONCONVERTTABLE" style="width: 200px">
+                        <input type="hidden" id="hidCouponConvertNum" name="hidCouponConvertNum" value="0"/>
+                        <tr>
+                            <td style="width:70px">
+                                <label style="width:70px">凭条累计</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="COUPONPOSACCU" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="1">累计</option>
+                                    <option value="0">不累计</option>
+                                </select>
+                            </td>
+                            <td style="width:70px">
+                                <label style="width:70px; margin-left: 20px">会员要求</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="COUPONVIPGRADE" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="0">无要求</option>
+                                    <option value="1">普卡会员</option>
+                                    <option value="2">金卡会员</option>
+                                </select>
+                            </td>
+                            <td style="width: 70px">
+                                <label style="width: 70px; margin-left: 20px">VIP多送</label>
+                            </td>
+                            <td style="width: 100%">
+                                <input id="COUPONVIPMORE" type="text" value="0"
+                                       style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                            </td>
+                            <td style="width: 90px">
+                                <label style="width: 90px; margin-left: 20px">允许误差(元)</label>
+                            </td>
+                            <td style="width: 100%">
+                                <input id="COUPONERROR" type="text" value="0"
+                                       style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:70px">
+                                <label style="width:70px">促销标志</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="COUPONPROMOTIONMARK" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                    <option value="G">G</option>
+                                    <option value="H">H</option>
+                                    <option value="I">I</option>
+                                    <option value="J">J</option>
+                                    <option value="K">K</option>
+                                    <option value="L">L</option>
+                                    <option value="M">M</option>
+                                    <option value="N">N</option>
+                                    <option value="O">O</option>
+                                    <option value="P">P</option>
+                                    <option value="Q">Q</option>
+                                    <option value="R">R</option>
+                                    <option value="S">S</option>
+                                    <option value="T">T</option>
+                                    <option value="U">U</option>
+                                    <option value="V">V</option>
+                                    <option value="W">W</option>
+                                    <option value="X">X</option>
+                                    <option value="Y">Y</option>
+                                    <option value="Z">Z</option>
+                                </select>
+                            </td>
+                            <td style="width:70px">
+                                <label style="width:70px; margin-left: 20px">促销类型</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="COUPONMETHOD" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="iterate">循环型</option>
+                                    <option value="list">列表型</option>
+                                    <option value="iteratelist">循环列表型</option>
+                                </select>
+                            </td>
+                            <td style="width: 70px">
+                                <label style="width: 70px; margin-left: 20px">累计方式</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="COUPONSCOPE" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="dept">全场</option>
+                                    <option value="counter">全柜</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 70px">
+                                <label style="width: 70px">替换方式:</label>
+                            </td>
+                        </tr>
+                        <tr id="COUPONCONVERTLINE0">
+                            <td style="width: 50px">
+                                <label style="width: 50px">原标记</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="COUPONOLDMARK0" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                    <option value="G">G</option>
+                                    <option value="H">H</option>
+                                    <option value="I">I</option>
+                                    <option value="J">J</option>
+                                    <option value="K">K</option>
+                                    <option value="L">L</option>
+                                    <option value="M">M</option>
+                                    <option value="N">N</option>
+                                    <option value="O">O</option>
+                                    <option value="P">P</option>
+                                    <option value="Q">Q</option>
+                                    <option value="R">R</option>
+                                    <option value="S">S</option>
+                                    <option value="T">T</option>
+                                    <option value="U">U</option>
+                                    <option value="V">V</option>
+                                    <option value="W">W</option>
+                                    <option value="X">X</option>
+                                    <option value="Y">Y</option>
+                                    <option value="Z">Z</option>
+                                </select>
+                            </td>
+                            <td style="width: 70px">
+                                <label style="width: 70px; margin-left: 20px">替换标记</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="COUPONNEWMARK0" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                    <option value="G">G</option>
+                                    <option value="H">H</option>
+                                    <option value="I">I</option>
+                                    <option value="J">J</option>
+                                    <option value="K">K</option>
+                                    <option value="L">L</option>
+                                    <option value="M">M</option>
+                                    <option value="N">N</option>
+                                    <option value="O">O</option>
+                                    <option value="P">P</option>
+                                    <option value="Q">Q</option>
+                                    <option value="R">R</option>
+                                    <option value="S">S</option>
+                                    <option value="T">T</option>
+                                    <option value="U">U</option>
+                                    <option value="V">V</option>
+                                    <option value="W">W</option>
+                                    <option value="X">X</option>
+                                    <option value="Y">Y</option>
+                                    <option value="Z">Z</option>
+                                </select>
+                            </td>
+                            <td style="width: 100%">
+                                <button id="addCouponConvertBtn" style="margin-left: 30px"> + </button>
+                            </td>
+                            <td style="width: 100%">
+                                <button id="removeCouponConvertBtn" style="display: none"> - </button>
+                            </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <table id="COUPONTABLE" style="width: 200px">
+                        <input type="hidden" id="hidCouponNum" name="hidCouponNum" value="0"/>
+                        <tr>
+                            <td style="width: 70px">
+                                <label style="width: 70px">赠券方式:</label>
+                            </td>
+                            <td style="width: 80px">
+                            </td>
+                            <td style="width:70px">
+                            </td>
+                            <td style="width: 80px">
+                            </td>
+                            <td style="width: 70px">
+                            </td>
+                            <td style="width: 80px">
+                            </td>
+                            <td style="width: 90px">
+                            </td>
+                            <td style="width: 80px">
+                            </td>
+                            <td style="width: 60px">
+                            </td>
+                            <td style="width: 80px">
+                            </td>
+                        </tr>
+                        <tr id="COUPONLINE0">
+                            <td style="width: 50px">
+                                <label style="width: 50px">满</label>
+                            </td>
+                            <td style="width: 100%">
+                                <input id="COUPONBASE0" type="text" style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                            </td>
+                            <td style="width: 70px">
+                                <label style="width: 70px; margin-left: 20px">赠</label>
+                            </td>
+                            <td style="width: 100%">
+                                <input id="COUPONVALUE0" type="text" style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                            </td>
+                            <td style="width: 100%">
+                                <button id="addCouponBtn" style="margin-left: 30px;display: none"> + </button>
+                            </td>
+                            <td style="width: 100%">
+                                <button id="removeCouponBtn" style="display: none"> - </button>
+                            </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <button id="addSonCouponRule" class="bg-mecBlue fg-white" style="width:100px">添加子规则</button>
+                    <br>
+                    <br>
+                    <table id="SHOWCOUPONTABLE" style="width: 100%" border="1">
+                        <tr>
+                            <th>促销标志</th>
+                            <th>促销类型</th>
+                            <th>累计方式</th>
+                            <th>替换方式</th>
+                            <th>赠券方式</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <br>
+            <div class="panel" data-role="panel">
+                <div class="panel-header bg-mecOrange fg-black"> 设定赠礼条件</div>
+                <div class="panel-content ">
+                    <table id="GIFTCONVERTTABLE" style="width: 200px">
+                        <input type="hidden" id="hidGiftConvertNum" name="hidGiftConvertNum" value="0"/>
+                        <tr>
+                            <td style="width:70px">
+                                <label style="width:70px">凭条累计</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="GIFTPOSACCU" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="1">累计</option>
+                                    <option value="0">不累计</option>
+                                </select>
+                            </td>
+                            <td style="width:70px">
+                                <label style="width:70px; margin-left: 20px">会员要求</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="GIFTVIPGRADE" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="0">无要求</option>
+                                    <option value="1">普卡会员</option>
+                                    <option value="2">金卡会员</option>
+                                </select>
+                            </td>
+                            <td style="width: 70px">
+                                <label style="width: 70px; margin-left: 20px">VIP多送</label>
+                            </td>
+                            <td style="width: 100%">
+                                <input id="GIFTVIPMORE" type="text" value="0"
+                                       style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                            </td>
+                            <td style="width: 90px">
+                                <label style="width: 90px; margin-left: 20px">允许误差(元)</label>
+                            </td>
+                            <td style="width: 100%">
+                                <input id="GIFTERROR" type="text" value="0"
+                                       style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:70px">
+                                <label style="width:70px">促销标志</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="GIFTPROMOTIONMARK" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                    <option value="G">G</option>
+                                    <option value="H">H</option>
+                                    <option value="I">I</option>
+                                    <option value="J">J</option>
+                                    <option value="K">K</option>
+                                    <option value="L">L</option>
+                                    <option value="M">M</option>
+                                    <option value="N">N</option>
+                                    <option value="O">O</option>
+                                    <option value="P">P</option>
+                                    <option value="Q">Q</option>
+                                    <option value="R">R</option>
+                                    <option value="S">S</option>
+                                    <option value="T">T</option>
+                                    <option value="U">U</option>
+                                    <option value="V">V</option>
+                                    <option value="W">W</option>
+                                    <option value="X">X</option>
+                                    <option value="Y">Y</option>
+                                    <option value="Z">Z</option>
+                                </select>
+                            </td>
+                            <td style="width:70px">
+                                <label style="width:70px; margin-left: 20px">促销类型</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="GIFTMETHOD" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="iterate">循环型</option>
+                                    <option value="list">列表型</option>
+                                    <option value="iteratelist">循环列表型</option>
+                                </select>
+                            </td>
+                            <td style="width: 70px">
+                                <label style="width: 70px; margin-left: 20px">累计方式</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="GIFTSCOPE" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="dept">全场</option>
+                                    <option value="counter">全柜</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 70px">
+                                <label style="width: 70px">替换方式:</label>
+                            </td>
+                        </tr>
+                        <tr id="GIFTCONVERTLINE0">
+                            <td style="width: 50px">
+                                <label style="width: 50px">原标记</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="GIFTOLDMARK0" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                    <option value="G">G</option>
+                                    <option value="H">H</option>
+                                    <option value="I">I</option>
+                                    <option value="J">J</option>
+                                    <option value="K">K</option>
+                                    <option value="L">L</option>
+                                    <option value="M">M</option>
+                                    <option value="N">N</option>
+                                    <option value="O">O</option>
+                                    <option value="P">P</option>
+                                    <option value="Q">Q</option>
+                                    <option value="R">R</option>
+                                    <option value="S">S</option>
+                                    <option value="T">T</option>
+                                    <option value="U">U</option>
+                                    <option value="V">V</option>
+                                    <option value="W">W</option>
+                                    <option value="X">X</option>
+                                    <option value="Y">Y</option>
+                                    <option value="Z">Z</option>
+                                </select>
+                            </td>
+                            <td style="width: 70px">
+                                <label style="width: 70px; margin-left: 20px">替换标记</label>
+                            </td>
+                            <td style="width: 100%">
+                                <select id="GIFTNEWMARK0" type="text" data-state="info"
+                                        style="height:30px;width:80px;margin-top: 3px">
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                    <option value="G">G</option>
+                                    <option value="H">H</option>
+                                    <option value="I">I</option>
+                                    <option value="J">J</option>
+                                    <option value="K">K</option>
+                                    <option value="L">L</option>
+                                    <option value="M">M</option>
+                                    <option value="N">N</option>
+                                    <option value="O">O</option>
+                                    <option value="P">P</option>
+                                    <option value="Q">Q</option>
+                                    <option value="R">R</option>
+                                    <option value="S">S</option>
+                                    <option value="T">T</option>
+                                    <option value="U">U</option>
+                                    <option value="V">V</option>
+                                    <option value="W">W</option>
+                                    <option value="X">X</option>
+                                    <option value="Y">Y</option>
+                                    <option value="Z">Z</option>
+                                </select>
+                            </td>
+                            <td style="width: 100%">
+                                <button id="addGiftConvertBtn" style="margin-left: 30px"> + </button>
+                            </td>
+                            <td style="width: 100%">
+                                <button id="removeGiftConvertBtn" style="display: none"> - </button>
+                            </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <table id="GIFTTABLE" style="width: 200px">
+                        <input type="hidden" id="hidGiftNum" name="hidGiftNum" value="0"/>
+                        <tr>
+                            <td style="width: 70px">
+                                <label style="width: 70px">赠礼方式:</label>
+                            </td>
+                            <td style="width: 80px">
+                            </td>
+                            <td style="width:70px">
+                            </td>
+                            <td style="width: 80px">
+                            </td>
+                            <td style="width: 70px">
+                            </td>
+                            <td style="width: 80px">
+                            </td>
+                            <td style="width: 90px">
+                            </td>
+                            <td style="width: 80px">
+                            </td>
+                            <td style="width: 60px">
+                            </td>
+                            <td style="width: 80px">
+                            </td>
+                        </tr>
+                        <tr id="GIFTLINE0">
+                            <td style="width: 50px">
+                                <label style="width: 50px">满</label>
+                            </td>
+                            <td style="width: 100%">
+                                <input id="GIFTBASE0" type="text" style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                            </td>
+                            <td style="width: 70px">
+                                <label style="width: 70px; margin-left: 20px">赠</label>
+                            </td>
+                            <td style="width: 100%">
+                                <input id="GIFTVALUE0" type="text" style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                            </td>
+                            <td style="width: 70px">
+                                <label style="width: 70px; margin-left: 20px">数量</label>
+                            </td>
+                            <td style="width: 100%">
+                                <input id="GIFTNUM0" type="text" style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                            </td>
+                            <td style="width: 100%">
+                                <button id="addGiftBtn" style="margin-left: 30px;display: none"> + </button>
+                            </td>
+                            <td style="width: 100%">
+                                <button id="removeGiftBtn" style="display: none"> - </button>
+                            </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <button id="addSonGiftRule" class="bg-mecBlue fg-white" style="width:100px">添加子规则</button>
+                    <br>
+                    <br>
+                    <table id="SHOWGIFTTABLE" style="width: 100%" border="1">
+                        <tr>
+                            <th>促销标志</th>
+                            <th>促销类型</th>
+                            <th>累计方式</th>
+                            <th>替换方式</th>
+                            <th>赠礼方式</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <br>
+
+
+            <button id="confirmModifyBTN" class="bg-mecBlue fg-white" style="width:100px">提交</button>
+            <button id="cancelBTN" class="bg-mecOrange fg-white" style="width:100px">取消</button>
+            <button id="deleteBTN" class="bg-gray fg-white" style="width:100px">删除规则</button>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+</body>

@@ -1,0 +1,32 @@
+﻿package sale;
+message order
+{
+	required string storecode=1;
+	required string salemancode=2;
+	required string salemanname=3;
+	required string vipcode=4;
+	required int32 ifreturn=5;
+	required int32 score=6;
+	required int32 isbirthday=7;
+	required string cardname=8;
+	required string msg=9;
+	required int32 congealcredit=10;
+	required int32 ifonline=11;
+	message itemList
+	{
+		required string itemcode = 1;
+		required string cabinet = 2;
+		required string unit = 3;
+		required string promotioncode = 4;
+		required string itemname = 5;
+		required double count = 6;
+		required double oriprice = 7;
+		required double discountprice = 8;
+		required string discount = 9;
+		required double actualprice = 10;
+		required double totaloriprice = 11;
+		required double handdiscount = 12;
+		required double merchantdiscount = 13;
+	}
+	repeated itemList items=12;
+}

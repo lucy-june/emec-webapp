@@ -1,0 +1,86 @@
+{
+  "ordercode": {
+    "type": "char(18)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": ""
+  },
+  "contentcode": {
+    "type": "char(26)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": ""
+  },
+  "itemcode": {
+    "type": "char(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": ""
+  },
+  "countercode": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "deptcode": {
+    "type": "char(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "num": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "originprice": {
+    "type": "decimal(12,2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0.00"
+  },
+  "promotionmark": {
+    "type": "char(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": ""
+  },
+  "finalmanual": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "flag": {
+    "type": "bigint(20)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "finalprice": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "pos": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  }
+}

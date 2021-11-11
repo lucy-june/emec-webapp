@@ -1,0 +1,218 @@
+{
+  "BRANDCODE": {
+    "type": "char(6)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "BRANDNAME": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "CURRENTGRADE": {
+    "type": "float(38,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "BRANDSTATE": {
+    "type": "char(2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "LOGO": {
+    "type": "varchar(255)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "品牌Logo地址，added by kcq 2015.4.2",
+    "defaultValue": null
+  },
+  "LETTER": {
+    "type": "varchar(4)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "FAMOUSCOMMENT": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "ORIGIN": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "QUALITYCOMMENT": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "STYLECOMMENT": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "EXPERTCOMMENT": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "IMAGECOMMENT": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "HISTORY": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "POTENTIAL": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "OVERLAY": {
+    "type": "float(5,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "BRANDCLASS": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "RECOMMENDMAN": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "PRICELEVEL": {
+    "type": "varchar(10)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "REGISTERCAPITAL": {
+    "type": "float(10,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "STOREYEARTURNOVER": {
+    "type": "varchar(10)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "DESIGNPRODUCE": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "AGENTSTRATEGY": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "IMAGECOUNTER": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "DEALAREA": {
+    "type": "float(6,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "SAMPLE": {
+    "type": "varchar(10)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "FUTURESALE": {
+    "type": "varchar(10)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "REMARK": {
+    "type": "varchar(150)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "INPUTPERSON": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "INPUTDATE": {
+    "type": "date",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "CHECKPERSON": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "CHECKDATE": {
+    "type": "date",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  }
+}

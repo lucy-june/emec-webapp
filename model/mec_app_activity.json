@@ -1,0 +1,54 @@
+{
+  "ACTIVITYID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "TITLE": {
+    "type": "varchar(255)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "DESCRIPTION": {
+    "type": "varchar(255)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "PIC": {
+    "type": "varchar(255)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "VALID": {
+    "type": "tinyint(2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0无效，1有效",
+    "defaultValue": "1"
+  },
+  "LASTOPERATEPERSON": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  }
+}

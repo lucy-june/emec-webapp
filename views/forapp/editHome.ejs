@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <!--<meta name="viewport"-->
+          <!--content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">-->
+    <meta name="product" content="Metro UI CSS Framework">
+    <title>主页编辑页面</title>
+
+    <link href="../../css/metro-bootstrap.css" rel="stylesheet">
+    <link href="../../css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="../../css/iconFont.css" rel="stylesheet">
+    <link href="../../css/docs.css" rel="stylesheet">
+    <link href="../../js/prettify/prettify.css" rel="stylesheet">
+    <link href="../../css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">
+    <script src="../../js/load-metro.js"></script>
+    <script src="../../js/jquery/jquery.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="../../js/jquery.jqGrid-4.6.0/css/themes/redmond/jquery-ui.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="../../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css"/>
+    <script type="text/javascript" src="../../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+    <script type="text/javascript" src="../../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+
+    <script src="../../js/jquery/jquery.widget.min.js"></script>
+    <script src="../../js/jquery/jquery.mousewheel.js"></script>
+    <script src="../../js/prettify/prettify.js"></script>
+    <script src="../../js/holder/holder.js"></script>
+    <script src="../../js/docs.js"></script>
+
+    <script src="../../js/metro/metro-scroll.js"></script>
+
+    <script src="../../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+
+    <script src="../../js/metro.js"></script>
+    <script src="../../js/github.js"></script>
+
+    <script src="../../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+
+
+    <script src="../../js/metro/metro-scroll.js"></script>
+    <script src="../../js/district/selectdistrict.js"></script>
+<script>
+    var AreaNumber=0;
+    var addHtml=function(theButton){
+        var numberStr=theButton.id.substring(9,theButton.id.length);
+        var divMain=document.getElementById("mainDiv");
+        //添加前保证顺序
+        for (var i=AreaNumber-1;i>=Number(numberStr)+1;i--){//从numberStr+1开始向后id增1
+            var div=document.getElementById("div"+ i.toString());
+            var divm=document.getElementById("modifybuttondiv"+i.toString());
+            var buttonm=document.getElementById("modifybutton"+i.toString());
+            var divd=document.getElementById("deletebuttondiv"+i.toString());
+            var buttond=document.getElementById("deletebutton"+i.toString());
+            var diva=document.getElementById("addbuttondiv"+i.toString());
+            var buttona=document.getElementById("addbutton"+i.toString());
+            div.id="div"+(i+1).toString();
+            divm.id="modifybuttondiv"+(i+1).toString();
+            divd.id="deletebuttondiv"+(i+1).toString();
+            diva.id="addbuttondiv"+(i+1).toString();
+            buttonm.id="modifybutton"+(i+1).toString();
+            buttond.id="deletebutton"+(i+1).toString();
+            buttona.id="addbutton"+(i+1).toString();
+        }
+        AreaNumber++;
+        //开始添加新一个元素的内容
+        var newNumberStr=(Number(numberStr)+1).toString();
+        if (Number(newNumberStr)>=AreaNumber-1){//在最后一个后面添加
+            var newdiv=document.createElement("div");
+            divMain.appendChild(newdiv);
+            newdiv.outerHTML='<div class="floor brand-floor" id="div'+newNumberStr+'">'+
+                    document.getElementById("div0").innerHTML+
+                    '</div>';
+
+            var modifyStr='<div style="width:100%" id="modifybuttondiv'+newNumberStr+'">' +
+                    '<button id="modifybutton'+newNumberStr+'" class="bg-lightOrange fg-white" style="width:120px;height:30px;" onclick="modifyHtml(this)">修改</button>' +
+                    '</div>';
+            var newdivm=document.createElement("div");
+            divMain.appendChild(newdivm);
+            newdivm.outerHTML=modifyStr;
+
+            var deleteStr='<div style="width:100%" id="deletebuttondiv'+newNumberStr+'">' +
+                    '<button id="deletebutton'+newNumberStr+'" class="bg-lightOrange fg-white" style="width:120px;height:30px;" onclick="deleteHtml(this)">删除</button>' +
+                    '</div>';
+            var newdivd=document.createElement("div");
+            divMain.appendChild(newdivd);
+            newdivd.outerHTML=deleteStr;
+
+            var addStr='<div style="width:100%" id="addbuttondiv'+newNumberStr+'">' +
+                    '<button id="addbutton'+newNumberStr+'" class="bg-lightOrange fg-white" style="width:120px;height:30px;" onclick="addHtml(this)">在这里添加</button>' +
+                    '</div>';
+            var newdiva=document.createElement("div");
+            divMain.appendChild(newdiva);
+            newdiva.outerHTML=addStr;
+        }else{//在非最后一个后面添加
+            var olddiv=document.getElementById("div"+(Number(numberStr)+2).toString());
+
+            var newdiv=document.createElement("div");
+            divMain.insertBefore(newdiv,olddiv);
+            newdiv.outerHTML='<div class="floor brand-floor" id="div'+newNumberStr+'">'+
+                    document.getElementById("div0").innerHTML+
+                    '</div>';
+
+            var modifyStr='<div style="width:100%" id="modifybuttondiv'+newNumberStr+'">' +
+                    '<button id="modifybutton'+newNumberStr+'" class="bg-lightOrange fg-white" style="width:120px;height:30px;" onclick="modifyHtml(this)">修改</button>' +
+                    '</div>';
+            var newdivm=document.createElement("div");
+            divMain.insertBefore(newdivm,olddiv);
+            newdivm.outerHTML=modifyStr;
+
+            var deleteStr='<div style="width:100%" id="deletebuttondiv'+newNumberStr+'">' +
+                    '<button id="deletebutton'+newNumberStr+'" class="bg-lightOrange fg-white" style="width:120px;height:30px;" onclick="deleteHtml(this)">删除</button>' +
+                    '</div>';
+            var newdivd=document.createElement("div");
+            divMain.insertBefore(newdivd,olddiv);
+            newdivd.outerHTML=deleteStr;
+
+            var addStr='<div style="width:100%" id="addbuttondiv'+newNumberStr+'">' +
+                    '<button id="addbutton'+newNumberStr+'" class="bg-lightOrange fg-white" style="width:120px;height:30px;" onclick="addHtml(this)">在这里添加</button>' +
+                    '</div>';
+            var newdiva=document.createElement("div");
+            divMain.insertBefore(newdiva,olddiv);
+            newdiva.outerHTML=addStr;
+        }
+    }
+
+    var deleteHtml=function(theButton){//删除
+        var numberStr=theButton.id.substring(12,theButton.id.length);
+        var divMain=document.getElementById("mainDiv");
+        divMain.removeChild(document.getElementById("div"+numberStr));
+        divMain.removeChild(document.getElementById("modifybuttondiv"+numberStr));
+        divMain.removeChild(document.getElementById("deletebuttondiv"+numberStr));
+        divMain.removeChild(document.getElementById("addbuttondiv"+numberStr));
+        //删除后保证顺序
+        for (var i=Number(numberStr)+1;i<AreaNumber;i++){//各元素保证顺序从0开始
+            var div=document.getElementById("div"+ i.toString());
+            var divm=document.getElementById("modifybuttondiv"+i.toString());
+            var buttonm=document.getElementById("modifybutton"+i.toString());
+            var divd=document.getElementById("deletebuttondiv"+i.toString());
+            var buttond=document.getElementById("deletebutton"+i.toString());
+            var diva=document.getElementById("addbuttondiv"+i.toString());
+            var buttona=document.getElementById("addbutton"+i.toString());
+
+            div.id="div"+(i-1).toString();
+            divm.id="modifybuttondiv"+(i-1).toString();
+            divd.id="deletebuttondiv"+(i-1).toString();
+            diva.id="addbuttondiv"+(i-1).toString();
+            buttonm.id="modifybutton"+(i-1).toString();
+            buttond.id="deletebutton"+(i-1).toString();
+            buttona.id="addbutton"+(i-1).toString();
+        }
+        AreaNumber--;
+    }
+
+    var modifyHtml=function(theButton){//修改的界面
+        var numberStr=theButton.id.substring(12,theButton.id.length);
+        var originalString=document.getElementById("div"+numberStr).outerHTML;
+        $.Dialog({
+            shadow: true,
+            overlay: true,
+            title: '',
+            draggable: true,
+            width:800 ,
+            height:950 ,
+            resizable:true,
+            maxWidth:1000,
+            maxHeight:1000,
+            padding: 10,
+            onShow: function (_dialog) {
+                var div=document.getElementById("div"+numberStr);
+                var content="";
+                //floor brand-floor模板
+                if (div.className=="floor brand-floor"){
+                    var title=div.getElementsByClassName("title").item(0);
+                    var divChild=div.getElementsByClassName("brand").item(0);
+                    var brand_half_floor=divChild.getElementsByClassName("brand-link brand-half-floor").item(0);
+                    var brand_up_floor=divChild.getElementsByClassName("brand-link brand-up-floor").item(0);
+                    var down_floor=divChild.getElementsByClassName("brand-link down-floor").item(0);
+                    content ='<div class="viewport" style="width:100%">' +
+                            '<div class="floor brand-floor" id="divtemp">'+
+                            div.innerHTML+
+                            '</div>'+
+                            '<div style="width:100%">'+
+                            '<label class="col-sm-2 control-label" style="width:150px">题目:</label>'+
+                            '<input id="modifyTitleI" value='+title.innerText+' type="text" style="width:200px;height:25px;" />'+
+                            '<button id="modifyTitleB" class="bg-lightOrange fg-white" style="width:100px;height:25px;margin-left: 30px" onclick="modifyTitle()">修改题目</button>'+
+                            '<label class="col-sm-2 control-label" style="width:200px">左上图:</label>'+
+                            '<label class="col-sm-2 control-label" style="width:200px">图片链接:</label>'+
+                            '<input id="modifyBrandhalffloorSrcI" value='+brand_half_floor.getElementsByTagName("img").item(0).src+' type="text" style="width:400px;height:25px;" />'+
+                            '<label class="col-sm-2 control-label" style="width:200px">次级页面链接:</label>'+
+                            '<input id="modifyBrandhalffloorHrefI" value='+brand_half_floor.href+' type="text" style="width:400px;height:25px;" />'+
+                            '<button id="modifyBrandhalffloorB" class="bg-lightOrange fg-white" style="width:100px;;height:25px;margin-left: 30px" onclick="modifyBrandhalffloor()">修改左上图</button>'+
+                            '<label class="col-sm-2 control-label" style="width:200px">左下图:</label>'+
+                            '<label class="col-sm-2 control-label" style="width:200px">图片链接:</label>'+
+                            '<input id="modifyDownfloorSrcI" value='+down_floor.getElementsByTagName("img").item(0).src+' type="text" style="width:400px;height:25px;" />'+
+                            '<label class="col-sm-2 control-label" style="width:200px">次级页面链接:</label>'+
+                            '<input id="modifyDownfloorHrefI" value='+down_floor.href+' type="text" style="width:400px;height:25px;" />'+
+                            '<button id="modifyDownfloorB" class="bg-lightOrange fg-white" style="width:100px;height:25px;margin-left: 30px" onclick="modifyDownfloor()">修改左下图</button>'+
+                            '<label class="col-sm-2 control-label" style="width:200px">右图:</label>'+
+                            '<label class="col-sm-2 control-label" style="width:200px">图片链接:</label>'+
+                            '<input id="modifyBrandupfloorSrcI" value='+brand_up_floor.getElementsByTagName("img").item(0).src+' type="text" style="width:400px;height:25px;" />'+
+                            '<label class="col-sm-2 control-label" style="width:200px">次级页面链接:</label>'+
+                            '<input id="modifyBrandupfloorHrefI" value='+brand_up_floor.href+' type="text" style="width:400px;height:25px;" />'+
+                            '<button id="modifyBrandupfloorB" class="bg-lightOrange fg-white" style="width:100px;height:25px;margin-left: 30px" onclick="modifyBrandupfloor()">修改右图</button>'+
+                            '<button id="saveModification'+numberStr+'" class="bg-lightOrange fg-white" style="width:100px;height:25px;margin-left: 30px" onclick="saveModification(this)">保存修改</button>'+
+                            '</div>'+
+                            '</div>';
+                }
+                //floor discount-floor模板
+                else if (div.className=="floor discount-floor"){
+                    var title=div.getElementsByClassName("title").item(0);
+                    var divChild=div.getElementsByClassName("discount").item(0);
+                    var half_floor=divChild.getElementsByClassName("discount-link half-floor").item(0);
+                    var up_floor=divChild.getElementsByClassName("discount-link up-floor").item(0);
+                    var down_floor=divChild.getElementsByClassName("discount-link down-floor").item(0);
+                    content ='<div class="viewport" style="width:100%">' +
+                            '<div class="floor discount-floor" id="divtemp">'+
+                            div.innerHTML+
+                            '</div>'+
+                            '<div style="width:100%">'+
+                            '<label class="col-sm-2 control-label" style="width:150px">题目:</label>'+
+                            '<input id="modifyTitleI" value='+title.innerText+' type="text" style="width:200px;height:25px;" />'+
+                            '<button id="modifyTitleB" class="bg-lightOrange fg-white" style="width:100px;height:25px;margin-left: 30px" onclick="modifyTitle()">修改题目</button>'+
+                            '<label class="col-sm-2 control-label" style="width:200px">左图:</label>'+
+                            '<label class="col-sm-2 control-label" style="width:200px">图片链接:</label>'+
+                            '<input id="modifyHalffloorSrcI" value='+half_floor.getElementsByTagName("img").item(0).src+' type="text" style="width:400px;height:25px;" />'+
+                            '<label class="col-sm-2 control-label" style="width:200px">次级页面链接:</label>'+
+                            '<input id="modifyHalffloorHrefI" value='+half_floor.href+' type="text" style="width:400px;height:25px;" />'+
+                            '<button id="modifyHalffloorB" class="bg-lightOrange fg-white" style="width:100px;;height:25px;margin-left: 30px" onclick="modifyHalffloor()">修改左图</button>'+
+                            '<label class="col-sm-2 control-label" style="width:200px">右上图:</label>'+
+                            '<label class="col-sm-2 control-label" style="width:200px">图片链接:</label>'+
+                            '<input id="modifyUpfloorSrcI" value='+up_floor.getElementsByTagName("img").item(0).src+' type="text" style="width:400px;height:25px;" />'+
+                            '<label class="col-sm-2 control-label" style="width:200px">次级页面链接:</label>'+
+                            '<input id="modifyUpfloorHrefI" value='+up_floor.href+' type="text" style="width:400px;height:25px;" />'+
+                            '<button id="modifyUpfloorB" class="bg-lightOrange fg-white" style="width:100px;height:25px;margin-left: 30px" onclick="modifyUpfloor()">修改右上图</button>'+
+                            '<label class="col-sm-2 control-label" style="width:200px">右下图:</label>'+
+                            '<label class="col-sm-2 control-label" style="width:200px">图片链接:</label>'+
+                            '<input id="modifyDownfloorSrcI" value='+down_floor.getElementsByTagName("img").item(0).src+' type="text" style="width:400px;height:25px;" />'+
+                            '<label class="col-sm-2 control-label" style="width:200px">次级页面链接:</label>'+
+                            '<input id="modifyDownfloorHrefI" value='+down_floor.href+' type="text" style="width:400px;height:25px;" />'+
+                            '<button id="modifyDownfloorB" class="bg-lightOrange fg-white" style="width:100px;height:25px;margin-left: 30px" onclick="modifyDownfloor2()">修改右下图</button>'+
+                            '<button id="saveModification'+numberStr+'" class="bg-lightOrange fg-white" style="width:100px;height:25px;margin-left: 30px" onclick="saveModification(this)">保存修改</button>'+
+                            '</div>'+
+                            '</div>';
+                }
+                $.Dialog.title("修改网页元素");
+                $.Dialog.content(content);
+                $.Metro.initInputs();
+            }
+        });
+        document.getElementById("div"+numberStr).outerHTML=originalString;
+    }
+
+    var modifyTitle=function(){
+        var div=document.getElementById("divtemp");
+        var title=div.getElementsByClassName("title").item(0);
+        title.innerText=document.getElementById("modifyTitleI").value;
+    }
+
+    var modifyBrandhalffloor=function(){
+        var div=document.getElementById("divtemp");
+        var divChild=div.getElementsByClassName("brand").item(0);
+        var brand_half_floor=divChild.getElementsByClassName("brand-link brand-half-floor").item(0);
+        brand_half_floor.getElementsByTagName("img").item(0).src=document.getElementById("modifyBrandhalffloorSrcI").value;
+        brand_half_floor.href=document.getElementById("modifyBrandhalffloorHrefI").value;
+    }
+
+    var modifyDownfloor=function(){
+        var div=document.getElementById("divtemp");
+        var divChild=div.getElementsByClassName("brand").item(0);
+        var down_floor=divChild.getElementsByClassName("brand-link down-floor").item(0);
+        down_floor.getElementsByTagName("img").item(0).src=document.getElementById("modifyDownfloorSrcI").value;
+        down_floor.href=document.getElementById("modifyDownfloorHrefI").value;
+    }
+
+    var modifyBrandupfloor=function(){
+        var div=document.getElementById("divtemp");
+        var divChild=div.getElementsByClassName("brand").item(0);
+        var brand_up_floor=divChild.getElementsByClassName("brand-link brand-up-floor").item(0);
+        brand_up_floor.getElementsByTagName("img").item(0).src=document.getElementById("modifyBrandupfloorSrcI").value;
+        brand_up_floor.href=document.getElementById("modifyBrandupfloorHrefI").value;
+    }
+
+    var saveModification=function(theButton){
+        var numberStr=theButton.id.substring(16,theButton.id.length);
+        var div=document.getElementById("div"+numberStr);
+        div.innerHTML=document.getElementById("divtemp").innerHTML;
+    }
+
+    var modifyHalffloor=function(){
+        var div=document.getElementById("divtemp");
+        var divChild=div.getElementsByClassName("discount").item(0);
+        var half_floor=divChild.getElementsByClassName("discount-link half-floor").item(0);
+        half_floor.getElementsByTagName("img").item(0).src=document.getElementById("modifyHalffloorSrcI").value;
+        half_floor.href=document.getElementById("modifyHalffloorHrefI").value;
+    }
+
+    var modifyUpfloor=function(){
+        var div=document.getElementById("divtemp");
+        var divChild=div.getElementsByClassName("discount").item(0);
+        var up_floor=divChild.getElementsByClassName("discount-link up-floor").item(0);
+        up_floor.getElementsByTagName("img").item(0).src=document.getElementById("modifyUpfloorSrcI").value;
+        up_floor.href=document.getElementById("modifyUpfloorHrefI").value;
+    }
+
+    var modifyDownfloor2=function(){
+        var div=document.getElementById("divtemp");
+        var divChild=div.getElementsByClassName("discount").item(0);
+        var down_floor=divChild.getElementsByClassName("discount-link down-floor").item(0);
+        down_floor.getElementsByTagName("img").item(0).src=document.getElementById("modifyDownfloorSrcI").value;
+        down_floor.href=document.getElementById("modifyDownfloorHrefI").value;
+    }
+
+    //获取主页的html
+    var getHomeHTML=function(){
+        var xmlhttp;
+        if (window.XMLHttpRequest) { // 兼容 IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else { // 兼容IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+//                document.getElementById("mainDiv").innerHTML = xmlhttp.responseText;
+                var bdhtml=xmlhttp.responseText;
+                var startstr= "<!--startMain-->";
+                var endstr= "<!--endMain-->";
+                var prnhtml=bdhtml.substring(bdhtml.indexOf(startstr));
+                prnhtml=prnhtml.substring(0,prnhtml.indexOf(endstr)+14);
+                document.getElementById("mainDiv").innerHTML=prnhtml;
+                insertButton();
+            }
+        }
+        xmlhttp.open("GET", "http://localhost:2002/app/home", true);
+        xmlhttp.send();
+    }
+    //给主页的html加上改删的按钮
+    var insertButton=function(){
+        var divMain=document.getElementById("mainDiv");
+        var divList= new Array();
+        for (var i=0;i<divMain.childElementCount;i++){
+            divList.push(divMain.children[i].outerHTML);
+        }
+        AreaNumber=divList.length;
+        var totalStr="";
+        for (var i=0;i<divList.length;i++){
+            totalStr+=divList[i];
+            var modifyStr='<div style="width:100%" id="modifybuttondiv'+i+'">' +
+                    '<button id="modifybutton'+i+'" class="bg-lightOrange fg-white" style="width:120px;height:30px;" onclick="modifyHtml(this)">修改</button>' +
+            '</div>';
+            var deleteStr='<div style="width:100%" id="deletebuttondiv'+i+'">' +
+                    '<button id="deletebutton'+i+'" class="bg-lightOrange fg-white" style="width:120px;height:30px;" onclick="deleteHtml(this)">删除</button>' +
+                    '</div>';
+            var addStr='<div style="width:100%" id="addbuttondiv'+i+'">' +
+                    '<button id="addbutton'+i+'" class="bg-lightOrange fg-white" style="width:120px;height:30px;" onclick="addHtml(this)">在这里添加</button>' +
+                    '</div>';
+            totalStr+=modifyStr+deleteStr+addStr;
+        }
+
+        document.getElementById("mainDiv").innerHTML=totalStr;
+    }
+
+    var saveToFile=function(){
+        var mainDiv=document.getElementById("mainDiv");
+        var savedHTML='<!DOCTYPE html>'+
+                    '<html>'+
+                    '<head>'+
+                    '<title>'+
+                    '汇金触屏版'+
+                    '</title>'+
+                    '<meta name="author" content="huijinbaihuo.com">'+
+                    '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">'+
+                    '<meta name="apple-mobile-web-app-capable" content="yes">'+
+                    '<meta name="apple-mobile-web-app-status-bar-style" content="black">'+
+                    '<meta name="format-detection" content="telephone=no">'+
+                    '<meta http-equiv="Expires" CONTENT="-1">'+
+                    '<meta http-equiv="Cache-Control" CONTENT="no-cache">'+
+                    '<meta http-equiv="Pragma" CONTENT="no-cache">'+
+                    '<link rel="stylesheet" type="text/css" href="../../css/layout2014.css" charset="gbk"/>'+
+                    '<link rel="stylesheet" type="text/css" href="../../css/home.css" charset="gbk"/>'+
+                    '</head>'+
+                    '<body>'+
+                    '<a name="top"></a>'+
+                    '<div class="viewport" id="mainDiv">'+
+                    '<!--startMain-->'+
+                        mainDiv.innerHTML+
+                    '<!--endMain-->'+
+                    '</div>'+
+                    '<div style="display:none;">'+
+                    '<img src="/ja.jsp?&amp;utmn=1944718496&amp;utmr=-&amp;utmp=%2Findex%2Findex.action%3F&amp;guid=ON&jav=html5&pin=-&utmac=MO-J2011-1&provinceId=&cityId=&countryId=&townId=&skuId=&skuPrice=&stockState=" />'+
+                    '</div>'+
+                    '</body>'+
+                    '</html>';
+        var txt = savedHTML;
+        b = window.open();
+        b.document.open();
+        b.document.write(txt);
+
+        b.document.execCommand('Saveas',false,'D:\\会员信息.html');
+//        b.window.close();
+    }
+</script>
+    <title>
+    </title>
+    <meta name="author" content="huijinbaihuo.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="Expires" CONTENT="-1">
+    <meta http-equiv="Cache-Control" CONTENT="no-cache">
+    <meta http-equiv="Pragma" CONTENT="no-cache">
+    <link rel="stylesheet" type="text/css" href="../../css/layout2014.css" charset="gbk"/>
+    <link rel="stylesheet" type="text/css" href="../../css/home.css" charset="gbk"/>
+</head>
+
+<!--<body class="metro">-->
+<body>
+<div class="viewport" >
+<div style="width:100%">
+    <button id="modify2" class="bg-lightOrange fg-white" style="width:140px;height:30px;" onclick="getHomeHTML()">获得主页信息</button>
+    <button id="saveToFile" class="bg-lightOrange fg-white" style="width:140px;height:30px;" onclick="saveToFile()">保存至文件</button>
+</div>
+</div>
+<div class="viewport" id="mainDiv">
+
+
+</div>
+
+</body>
+</html>

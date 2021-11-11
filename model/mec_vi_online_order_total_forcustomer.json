@@ -1,0 +1,125 @@
+{
+  "ONLINEORDERCODE": {
+    "type": "char(18)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "DELIVERYDEPTCODE": {
+    "type": "varchar(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "订单最终自提货或发货点"
+  },
+  "DELIVERYMODE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-自提 1-物流配送",
+    "defaultValue": "0"
+  },
+  "FINALPRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "FINALRULESTRING": {
+    "type": "varchar(1024)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "NOTE": {
+    "type": "varchar(256)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "ORDERSTATE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "见文档",
+    "defaultValue": "1"
+  },
+  "PAYMENTMODE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-现场支付，1-网上支付，2-到付",
+    "defaultValue": "0"
+  },
+  "SITEID": {
+    "type": "int(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "USERCODE": {
+    "type": "char(32)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "TIME": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "2000-01-01 00:00:00"
+  },
+  "PERSON": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "收货人",
+    "defaultValue": null
+  },
+  "TELEPHONE": {
+    "type": "varchar(16)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "收货人电话",
+    "defaultValue": null
+  },
+  "PROVINCE": {
+    "type": "varchar(16)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "省",
+    "defaultValue": null
+  },
+  "CITY": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "市",
+    "defaultValue": null
+  },
+  "DISTRICT": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "区",
+    "defaultValue": null
+  },
+  "DETAIL": {
+    "type": "varchar(256)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "详细地址",
+    "defaultValue": null
+  },
+  "POSTCODE": {
+    "type": "varchar(16)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "收货人邮编",
+    "defaultValue": null
+  }
+}

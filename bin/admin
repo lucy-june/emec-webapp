@@ -1,0 +1,69 @@
+#!/usr/bin/env node
+var debug           = require('debug')('generated-express-app');
+var web             = require('../web');
+var webSSL          = require('../webSSL');
+var https           = require('https');
+var http            = require('http');
+var ssl             = require('../security/ssl');
+var contextLogger   = require('../logging/contextLogger');
+var node_env        = process.env.NODE_ENV ? process.env.NODE_ENV : 'dev';
+var srhCfg          = require('../config/searchConfig')[node_env];
+var pmtCfg          = require('../config/engineConfig')[node_env];
+var portConfig      = require('../config/portConfig')[node_env];
+
+//console.log(process);
+
+//启动http服务
+web.set('port', portConfig["web"]);
+var server = web.listen(web.get('port'), function() {
+    var myLogger=contextLogger("http");
+    myLogger.trace('Express web server listening on port ' + portConfig["web"]);
+});
+
+//启动https的服务
+https.createServer(ssl,webSSL).listen(portConfig["webSSL"],function(){
+    var myLogger=contextLogger("https");
+    myLogger.trace('Express webSSL server listening on port '+portConfig["webSSL"]);
+});
+
+if (portConfig["srhProxy"]) {
+//搜索引擎转发服务
+    var proxy = http.createServer(function (request, response) {
+
+        var options = {
+            host: srhCfg["hostname"],
+            port: srhCfg["port"],
+            path: request.url,
+            method: request.method
+        };
+
+        var req = http.request(options,function (res) {
+            console.log("proxy to search engine: " + request.url);
+            res.pipe(response);
+        }).end();
+    }).listen(portConfig["srhProxy"],function(){
+            var myLogger=contextLogger("srhProxy");
+            myLogger.trace('Search proxy server listening on port ' + portConfig["srhProxy"]);
+    });
+}
+
+//if (portConfig["pmtProxy"]) {
+////促销引擎转发服务
+//    var proxy = http.createServer(function (request, response) {
+//
+//        var options = {
+//            host: pmtCfg["hostname"],
+//            port: pmtCfg["port"],
+//            path: request.url,
+//            method: request.method
+//        };
+//
+//        var req = http.request(options,function (res) {
+//            console.log("proxy to promotion engine: " + request.url);
+//            res.pipe(response);
+//        }).end();
+//    }).listen(portConfig["pmtProxy"],function(){
+//            var myLogger=contextLogger("pmtProxy");
+//            myLogger.trace('Promotion proxy server listening on port ' + portConfig["pmtProxy"]);
+//        });
+//}

@@ -1,0 +1,36 @@
+{
+  "ITEMTYPECODE": {
+    "type": "char(5)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "ITEMTYPENAME": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "TAXRATE": {
+    "type": "char(2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "01"
+  },
+  "EXCISERATE": {
+    "type": "char(2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "07"
+  },
+  "PURCHASETAXRATE": {
+    "type": "char(2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "01"
+  }
+}

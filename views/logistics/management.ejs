@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+
+
+    <link href="../css/metro-bootstrap.css" rel="stylesheet">
+    <link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/iconFont.css" rel="stylesheet">
+    <link href="../css/docs.css" rel="stylesheet">
+    <link href="../js/prettify/prettify.css" rel="stylesheet">
+    <!--<link href="../css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">-->
+    <script src="../js/load-metro.js"></script>
+    <!--<script src="../js/jquery/jquery.min.js"></script>-->
+
+    <link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/themes/redmond/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css" />
+    <script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+    <script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+
+    <script src="../js/jquery/jquery.widget.min.js"></script>
+    <script src="../js/jquery/jquery.mousewheel.js"></script>
+    <script src="../js/prettify/prettify.js"></script>
+    <script src="../js/holder/holder.js"></script>
+    <script src="../js/docs.js"></script>
+
+    <script src="../js/metro/metro-scroll.js"></script>
+
+    <script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+
+    <script src="../js/metro.js"></script>
+    <script src="../js/github.js"></script>
+
+    <script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+
+
+
+
+    <script type="text/javascript">
+        Date.prototype.Format = function (fmt) { //author: meizz
+            var o = {
+                "M+": this.getMonth() + 1,                 //月份
+                "d+": this.getDate(),                    //日
+                "h+": this.getHours(),                   //小时
+                "m+": this.getMinutes(),                 //分
+                "s+": this.getSeconds(),                 //秒
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                "S": this.getMilliseconds()             //毫秒
+            };
+            if (/(y+)/.test(fmt))
+                fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt))
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        }
+
+        var paymentModeMap={"0":"现金支付","1":"网上支付","2":"货到付款"};
+        var deliveryModeMap={"0":"门店自提","1":"物流配送"};
+        var deptcodeMap={"10201":"徐汇店","10202":"虹桥店"};
+        var stateMap= {
+            "0":"待营业员备货",
+            "1":"已备货",
+            "2":"已入集货区",
+            "4":"待调货它店",
+            "5":"调货途中",
+            "3":"集齐,合并待发货",
+            "7":"集齐,合并待自提",
+            "6":"待发货",
+            "8":"待自提",
+            "9":"发货途中"
+        }
+
+//        0-div0
+//        1-div1/div2
+//        2-div5
+//        3-div6
+//        4-div3
+//        5-div4
+//        6-div9
+//        7-div7
+//        8-div8
+//        9-div10
+
+        var tempDatefrom;
+        var tempDateto;
+        var tempState;
+        var tempPackageID;
+        var tempOrderID;
+        var tempCounterCode;
+        var orderTempData=[];
+        var packageTempData=[];
+
+        var orderDataAdapter=function(data){
+//            alert(JSON.stringify(data));
+            var result=[];
+            for(var k=0;k<data.length;k++){
+                var record={};
+                record.ORDERID=data[k].ORDERID;
+                record.PAYMENTMODE=paymentModeMap[data[k]["PAYMENTMODE"]];
+                record.DELIVERYMODE=deliveryModeMap[data[k]["DELIVERYMODE"]];
+                record.DELIVERYDEPTCODE=deptcodeMap[data[k]["DELIVERYDEPTCODE"]];
+                record.createdAt=new Date(data[k].createdAt).Format("yyyy-MM-dd hh:mm");
+                result.push(record);
+            }
+            return result;
+        }
+
+        var packageDataAdapter=function(data){
+            var result=[];
+            for(var k=0;k<data.length;k++){
+                var record={};
+                record.PACKAGEID=data[k].PACKAGEID;
+                record.STATE=stateMap[data[k]["STATE"]];
+                record.POSITION=data[k]["POSITION"];
+                record.COUNTERCODE=data[k]["COUNTERCODE"];
+                record.DEPTCODE=deptcodeMap[data[k]["DEPTCODE"]];
+                result.push(record);
+            }
+            return result;
+        }
+
+        var refreshOrder=function(){
+            $("#packageTable" ).clearGridData();
+            $("#orderTable" ).clearGridData();
+
+            var option={};
+            if($("#state").val()=="*") option.STATE=[0,1,2,3,4,5,6,7,8,9];
+            else option.STATE=$("#state").val();
+            option.datefrom=$("#datefrom").val();
+            option.dateto=$("#dateto").val();
+            if($("#ORDERID").val()&&$("#ORDERID").val()!=""){
+                option.ORDERID=$("#ORDERID").val();
+            }
+            if($("#PACKAGEID").val()&&$("#PACKAGEID").val()!=""){
+                option.PACKAGEID=$("#PACKAGEID").val();
+            }
+            if($("#COUNTERCODE").val()&&$("#COUNTERCODE").val()!=""){
+                option.COUNTERCODE=$("#COUNTERCODE").val();
+            }
+
+            tempDatefrom=$("#datefrom").val();
+            tempDateto=$("#dateto").val();
+            tempState=$("#state").val();
+            tempPackageID=$("#PACKAGEID").val();
+            tempOrderID=$("#ORDERID").val();
+            tempCounterCode=$("#COUNTERCODE").val();
+
+            $.ajax({
+                'url': '/logistics/getRelatedOrderLevel',
+                'type': 'post',
+                'data': option,
+                'datatype': 'json',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("查询失败！");
+                    return;
+                },
+                'success': function (msg) {
+                    if(msg.status==false){
+                        alert("查询失败！");
+                        return;
+                    }
+//                        alert(JSON.stringify(msg));
+                    $("#orderTable" ).clearGridData();
+                    $("#orderTable").jqGrid('setGridParam',{datatype: "local",data:orderDataAdapter(msg.data)}).trigger('reloadGrid');
+                    orderTempData=msg.data;
+                    return;
+                }
+            });
+        }
+
+        var refreshPackage=function(){
+            //                    alert("####"+JSON.stringify($("#packageTable").jqGrid('getGridParam','selarrrow')));
+            var ids=$("#orderTable").jqGrid('getGridParam','selarrrow');
+            var datas=[];
+            var orderids=[];
+            for(var k=0;k<ids.length;k++){
+                datas.push($("#orderTable").jqGrid('getRowData',ids[k]));
+                orderids.push($("#orderTable").jqGrid('getRowData',ids[k]).ORDERID);
+            }
+//                        alert(JSON.stringify(datas));
+//                    alert(JSON.stringify(packageids));
+
+            if(orderids.length==0){
+                $("#packageTable" ).clearGridData();
+                return;
+            }
+
+            var option={};
+            option.ORDERID=orderids;
+            if(tempState=="*") option.STATE=[0,1,2,3,4,5,6,7,8,9];
+            else option.STATE=tempState;
+            option.datefrom=tempDatefrom;
+            option.dateto=tempDateto;
+            if(tempPackageID&&tempPackageID!=""){
+                option.PACKAGEID=tempPackageID;
+            }
+            if(tempCounterCode&&tempCounterCode!=""){
+                option.COUNTERCODE=tempCounterCode;
+            }
+
+            $.ajax({
+                'url': '/logistics/getRelatedPackageLevel',
+                'type': 'post',
+                'data': option,
+                'datatype': 'json',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("查询失败！");
+                    return;
+                },
+                'success': function (msg) {
+                    if(msg.status==false){
+                        alert("查询失败！");
+                        return;
+                    }
+//                        alert(JSON.stringify(msg));
+                    $("#packageTable" ).clearGridData();
+                    $("#packageTable").jqGrid('setGridParam',
+                            {
+                                datatype: "local",
+                                data:packageDataAdapter(msg.data)
+//                                multiselect:['2','3','7','6','8','9'].indexOf($("#state").val())!=-1?false:true
+                            }).trigger('reloadGrid');
+
+                    packageTempData=msg.data;
+                    return;
+                }
+            });
+
+        }
+
+//       <div id="stepper" class="stepper rounded" data-steps="8" data-role="stepper" data-start="3" style="display:none"></div>
+
+        var showStepper=function(steps,start){
+            $("#stepper").remove();
+            $("#stepperContainer").append('<div id="stepper" class="stepper rounded" data-steps="'+steps+'" data-role="stepper" data-start="'+start+'"></div>');
+        }
+
+
+        var hideStepper=function(){
+            $("#stepper").remove();
+        }
+
+        var getSuggestPositions=function(){
+            var ids=$("#packageTable").jqGrid('getGridParam','selarrrow');
+            var packageids=[];
+            for(var k=0;k<ids.length;k++){
+                var packageid=$("#packageTable").jqGrid('getRowData',ids[k]).PACKAGEID;
+                packageids.push(packageid);
+            }
+
+//            alert(JSON.stringify(packageids));
+            $.ajax({
+                'url': '/logistics/getSuggestPositions',
+                'type': 'post',
+                'data': {"packageids":packageids},
+                'datatype': 'json',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("查询位置建议失败！");
+                    return;
+                },
+                'success': function (msg) {
+//                    alert(JSON.stringify(msg));
+                    $("#position1").val(msg.toString());
+                    $("#position4").val(msg.toString());
+                    return;
+                }
+            });
+        }
+
+        var orderSelectChange=function(){
+            var state=$("#state").val();
+
+            var ids=$("#orderTable").jqGrid('getGridParam','selarrrow');
+            var datas=[];
+            var orderids=[];
+            for(var k=0;k<ids.length;k++){
+                datas.push($("#orderTable").jqGrid('getRowData',ids[k]));
+                orderids.push($("#orderTable").jqGrid('getRowData',ids[k]).ORDERID);
+            }
+
+            if(orderids.length==0){
+                hideStepper();
+                showDiv();
+                return;
+            }
+
+//            for(var k=0;k<datas.length;k++){
+//                var deliverymode=datas[k].DELIVERYMODE;
+//                var deliverydeptcode=datas[k].DELIVERYDEPTCODE;
+//            }
+
+
+            if(state=='0'){
+                hideStepper();
+                showDiv("div0");
+
+            }
+            else if(state=='2'){
+                hideStepper();
+                showDiv("div5");
+            }
+            else if(state=='3'){
+                showStepper(6,4);
+                showDiv("div6");
+            }
+            else if(state=='7'){
+                showStepper(8,6);//可能有一部分只有6步
+                showDiv("div7");
+            }
+            else if(state=='6'){
+                if(orderids.length==1){
+                    showStepper(6,5);
+                    showDiv("div9");
+                }
+                else{
+                    hideStepper();
+                    showDiv();
+                }
+            }
+            else if(state=='8'){
+                if(orderids.length==1){
+                    showStepper(8,7);//可能有一部分只有6步
+                    showDiv("div8");
+                }
+                else{
+                    hideStepper();
+                    showDiv();
+                }
+            }
+            else if(state=='9'){
+                if(orderids.length==1){
+                    showStepper(6,6);
+                    showDiv("div10");
+                }
+            }
+            window.parent.SetWinHeight();
+            setTimeout(function(){window.parent.SetWinHeight();}, 200);
+            setTimeout(function(){window.parent.SetWinHeight();}, 500);
+            setTimeout(function(){window.parent.SetWinHeight();}, 1000);
+            setTimeout(function(){window.parent.SetWinHeight();}, 2000);
+        }
+
+
+        var packageSelectChange=function(id){
+            var state=$("#state").val();
+
+            var ids=$("#packageTable").jqGrid('getGridParam','selarrrow');
+            var datas=[];
+            var data;
+            for(var k=0;k<ids.length;k++){
+                var packageid=$("#packageTable").jqGrid('getRowData',ids[k]).PACKAGEID;
+                for(var n=0;n<packageTempData.length;n++){
+                    if(packageTempData[n]["PACKAGEID"]==packageid){
+                        datas.push(packageTempData[n]);
+                        break;
+                    }
+                }
+            }
+
+            for(var n=0;n<packageTempData.length;n++){
+                if(packageTempData[n]["PACKAGEID"]==$("#packageTable").jqGrid('getRowData',id).PACKAGEID){
+                    data=packageTempData[n];
+                    break;
+                }
+            }
+
+            if(datas.length==0) {
+                hideStepper();
+                showDiv();
+                return;
+            }
+
+//            alert(JSON.stringify(datas));
+
+            if(state=='*'){
+//                if(datas.length==1) {
+//                    if(datas[0].STATE=='0'){
+//                        hideStepper();
+//                        showDiv("div0");
+//                    }
+//                    else if(datas[0].STATE=='1'){
+//                        var deliverymode=datas[0].DELIVERYMODE;
+//                        var deptcode=datas[0].DEPTCODE;
+//                        var deliverydeptcode=datas[0].DELIVERYDEPTCODE;
+//                        var decision=(deliverymode==0&&deptcode!=deliverydeptcode);
+//                        if(decision){
+//                            showStepper("8","2");
+//                            showDiv("div2");
+//                        }
+//                        else{
+//                            showStepper("6","2");
+//                            showDiv("div1");
+//                        }
+//                    }
+//                    else if(datas[0].STATE=='2'){
+//                        hideStepper();
+//                        showDiv("div5");
+//                    }
+//                    else if(datas[0].STATE=='4'){
+//                        showStepper(8,3);
+//                        showDiv("div3");
+//                    }
+//                    else if(datas[0].STATE=='5'){
+//                        showStepper("8","4");
+//                        showDiv("div4");
+//                    }
+//                }
+//                else{
+//                hideStepper();
+//                    showDiv();
+//                }
+
+                if(data) {
+                    if(data.STATE=='0'){
+                        hideStepper();
+                        showDiv("div0");
+                    }
+                    else if(data.STATE=='1'){
+                        var deliverymode=data.DELIVERYMODE;
+                        var deptcode=data.DEPTCODE;
+                        var deliverydeptcode=data.DELIVERYDEPTCODE;
+                        var decision=(deliverymode==0&&deptcode!=deliverydeptcode);
+                        if(decision){
+                            showStepper("8","2");
+                            showDiv("div2");
+                        }
+                        else{
+                            showStepper("6","2");
+                            showDiv("div1");
+                        }
+                    }
+                    else if(data.STATE=='2'){
+                        hideStepper();
+                        showDiv("div5");
+                    }
+                    else if(data.STATE=='4'){
+                        showStepper(8,3);
+                        showDiv("div3");
+                    }
+                    else if(data.STATE=='5'){
+                        showStepper("8","4");
+                        showDiv("div4");
+                    }
+                    else{
+                        showDiv();
+                        hideStepper();
+                    }
+                }
+                else{
+                    hideStepper();
+                    showDiv();
+                }
+            }
+            if(state=='1'){
+                var deliverymode=datas[0].DELIVERYMODE;
+                var deptcode=datas[0].DEPTCODE;
+                var deliverydeptcode=datas[0].DELIVERYDEPTCODE;
+                var decision=(deliverymode==0&&deptcode!=deliverydeptcode);
+                var isReady=true;
+                for(var k=1;k<datas.length;k++){
+                    if(decision!=(datas[k].DELIVERYMODE==0&&datas[k].DEPTCODE!=datas[k].DELIVERYDEPTCODE)){
+                        isReady=false;
+                        break;
+                    }
+                }
+                if(isReady){
+                    if(decision){
+                        showStepper("8","2");
+                        showDiv("div2");
+                    }
+                    else{
+                        getSuggestPositions();
+                        showStepper("6","2");
+                        showDiv("div1");
+                    }
+                }
+                else{
+                    hideStepper();
+                    showDiv();
+                }
+            }
+            else if(state=='4'){
+                showStepper("8","3");
+                showDiv("div3");
+            }
+            else if(state=='5'){
+                getSuggestPositions();
+                showStepper("8","4");
+                showDiv("div4");
+            }
+            window.parent.SetWinHeight();
+            setTimeout(function(){window.parent.SetWinHeight();}, 200);
+            setTimeout(function(){window.parent.SetWinHeight();}, 500);
+            setTimeout(function(){window.parent.SetWinHeight();}, 1000);
+            setTimeout(function(){window.parent.SetWinHeight();}, 2000);
+        }
+
+        var showDiv=function(divName){
+            $("#div0").attr("style","width:100%;margin-top: 10px;display:none");
+            $("#div1").attr("style","width:100%;margin-top: 10px;display:none");
+            $("#div2").attr("style","width:100%;margin-top: 10px;display:none");
+            $("#div3").attr("style","width:100%;margin-top: 10px;display:none");
+            $("#div4").attr("style","width:100%;margin-top: 10px;display:none");
+            $("#div5").attr("style","width:100%;margin-top: 10px;display:none");
+            $("#div6").attr("style","width:100%;margin-top: 10px;display:none");
+            $("#div7").attr("style","width:100%;margin-top: 10px;display:none");
+            $("#div8").attr("style","width:100%;margin-top: 10px;display:none");
+            $("#div9").attr("style","width:100%;margin-top: 10px;display:none");
+            $("#div10").attr("style","width:100%;margin-top: 10px;display:none");
+
+            if(divName) {
+                $("#"+divName).attr("style","width:100%;margin-top: 10px");
+            }
+        }
+
+
+        var updateState=function(newstate,newposition,isSelected){
+            var ids=$("#packageTable").jqGrid('getGridParam','selarrrow');
+            var datas=[];
+            var packageids=[];
+            if(isSelected){//对于选择package的情况
+                for(var k=0;k<ids.length;k++){
+                    var packageid=$("#packageTable").jqGrid('getRowData',ids[k]).PACKAGEID;
+                    for(var n=0;n<packageTempData.length;n++){
+                        if(packageTempData[n]["PACKAGEID"]==packageid){
+                            datas.push(packageTempData[n]);
+                            packageids.push(packageid);
+                            break;
+                        }
+                    }
+                }
+            }
+            else{//对于不选择package的情况,会读取全部package
+                datas=packageTempData;
+                for(var n=0;n<packageTempData.length;n++){
+                    packageids.push(packageTempData[n]["PACKAGEID"]);
+                }
+            }
+
+//            alert(JSON.stringify(packageids));
+//            var oldstate=datas[0]["STATE"];
+//            var oldposition=datas[0]["POSITION"];
+//            if(newposition==null) newposition=oldposition;
+
+            $.ajax({
+                'url': '/logistics/updatePackageState',
+                'type': 'post',
+                'data': {
+                    "packageids":packageids,
+                    "oldstate":null,
+                    "newstate":newstate,
+                    "oldposition":null,
+                    "newposition":newposition
+                },
+                'datatype': 'json',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("系统错误！");
+                    return;
+                },
+                'success': function (msg) {
+                    if(msg.status==false){
+                        alert("系统错误！");
+                        return;
+                    }
+                    alert("成功确认!");
+                    refreshOrder();
+                    return;
+                }
+            });
+        }
+
+        $(function(){
+            jQuery("#orderTable").jqGrid({
+
+                //url:'https://192.168.0.53:3001/items/queryService?itemcode=1518506',
+                //datatype: "json",
+                height: 300,
+                colNames:['订单编码','支付方式','配货方式','自提或发货门店','下单时间'],
+                colModel:[
+                    {name:'ORDERID',index:'ORDERID', width:130},
+                    {name:'DELIVERYMODE',index:'DELIVERYMODE', width:70},
+                    {name:'PAYMENTMODE',index:'PAYMENTMODE', width:70},
+                    {name:'DELIVERYDEPTCODE',index:'DELIVERYDEPTCODE', width:105},
+                    {name:'createdAt',index:'createdAt', width:100}
+                ],
+                rowNum:50,
+                rowList:[10,20,50],
+                pager: '#orderDiv',
+                sortname: 'id',
+                viewrecords: true,
+                sortorder: "desc",
+                multiselect: true,
+                caption: "订单信息",
+                onSelectRow: function(id) {
+                    refreshPackage();
+                    orderSelectChange();
+                },
+                onSelectAll: function() {
+                    refreshPackage();
+                    orderSelectChange();
+                }
+            });
+            jQuery("#orderTable").jqGrid('navGrid','#orderDiv',{add:false,edit:false,del:false});
+
+            jQuery("#packageTable").jqGrid({
+                height: 300,
+                url:'subgrid.php?q=1&id=0',
+                datatype: "json",
+                colNames:["包裹编码","包裹状态","包裹位置","所属柜台","所属门店"],
+                colModel:[
+                    {name:'PACKAGEID',index:'PACKAGEID',width:230},
+                    {name:'STATE',index:'STATE',width:135},
+                    {name:'POSITION',index:'POSITION',width:85},
+                    {name:'COUNTERCODE',index:'COUNTERCODE',width:85},
+                    {name:'DEPTCODE',index:'DEPTCODE',width:85}
+                ],
+                rowNum:50,
+                rowList:[10,20,50],
+                pager: '#packageDiv',
+                sortname: 'item',
+                viewrecords: true,
+                sortorder: "asc",
+                multiselect: true,
+                width:window.screen.availWidth>1140?518:318,
+//                autowidth: false,
+                shrinkToFit: true,
+
+                caption:"订单包含的包裹信息",
+                onSelectRow: function(id) {
+                    var state=$("#state").val();//解决multiselect bug,确保职能选一个
+                    if(['*','0','2','3','7','6','8','9'].indexOf(state)!=-1) {
+                        var ids=$("#packageTable").jqGrid('getGridParam','selarrrow')
+                        if(ids.toString()!=id){
+                            $("#packageTable").trigger("reloadGrid");
+                            $("#packageTable").jqGrid('setSelection',id);
+                        }
+                        else{
+                            packageSelectChange(id);
+                        }
+                    }
+                    else{
+                        packageSelectChange(id);
+                    }
+                },
+                onSelectAll: function() {
+                    packageSelectChange();
+                }
+            }).navGrid('#packageDiv',{add:false,edit:false,del:false});
+            $("#packageTable").jqGrid('hideCol', 'cb');
+
+            $("#query").click(function(){
+                refreshOrder();
+                hideStepper();
+                showDiv();
+                window.parent.SetWinHeight();
+            });
+
+            $("#cancel").click(function(){
+                $("#state").val("*");
+                $("#datefrom").val("");
+                $("#dateto").val("");
+                $("#ORDERID").val("");
+                $("#PACKAGEID").val("");
+                $("#COUNTERCODE").val("");
+                $("#packageTable" ).clearGridData();
+                $("#orderTable" ).clearGridData();
+                hideStepper();
+                showDiv();
+                window.parent.SetWinHeight();
+            });
+
+            $("#state").change(function(){
+                var state=$("#state").val();
+                if(['*','0','2','3','7','6','8','9'].indexOf(state)!=-1){
+                    $("#packageTable" ).clearGridData();
+                    $("#orderTable" ).clearGridData();
+                    $("#packageTable").jqGrid('hideCol', 'cb');
+//                    $("#packageTable").jqGrid('setGridParam',{multiselect:false}).trigger('reloadGrid');
+                }
+                else{
+                    $("#packageTable" ).clearGridData();
+                    $("#orderTable" ).clearGridData();
+                    $("#packageTable").jqGrid('showCol', 'cb');
+//                    $("#packageTable").jqGrid('setGridParam',{multiselect:true}).trigger('reloadGrid');
+                }
+
+            });
+
+
+            $("#confirm1").click(function(){
+                 updateState("2",$("#position1").val(),true);
+            });
+
+            $("#confirm2").click(function(){
+                updateState("4",$("#position2").val(),true);
+            });
+
+            $("#confirm3").click(function(){
+                updateState("5","#",true);
+            });
+
+            $("#confirm4").click(function(){
+                updateState("2",$("#position4").val(),true);
+            });
+
+            $("#confirm6").click(function(){
+                updateState("6",$("#position6").val());
+            });
+
+            $("#confirm7").click(function(){
+                updateState("8",$("#position7").val());
+            });
+
+            $("#confirm8").click(function(){
+                updateState("11","#");
+            });
+
+            $("#confirm9").click(function(){
+
+            });
+
+        });
+
+
+    </script>
+
+    <style>
+        .ui-jqgrid ,
+        .ui-jqgrid * {
+            -webkit-box-sizing: content-box;
+            -moz-box-sizing: content-box;
+            -ms-box-sizing: content-box;
+            -o-box-sizing: content-box;
+            box-sizing: content-box;
+        }
+    </style>
+
+</head>
+<body class="metro">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp ">
+            <div  style="width: 100%">
+                <label class="inline-block" style="width: 80px"> 包裹状态: </label>
+
+                <select id="state" type="text" data-state="info"
+                        placeholder="" style="height:30px;width:250px">
+                    <option value="*">全部</option>
+                    <option value=0>待营业员备货</option>
+                    <option value=1>已备货,待物流员取货</option>
+                    <option value=2>已入集货区</option>
+                    <option value=4>待调货至其他门店</option>
+                    <option value=5>调货途中</option>
+                    <option value=3>集货完毕,请合并移入待发货区</option>
+                    <option value=7>集货完毕,请合并移入待自提区</option>
+                    <option value=6>待发货</option>
+                    <option value=8>待自提</option>
+                    <option value=9>发货途中</option>
+                </select>
+
+                <label class="inline-block" style="width: 80px;margin-left: 30px"> 时间范围: </label>
+
+                <div class="input-control text" data-role="datepicker" data-format="yyyy-mm-dd"
+                     data-week-start="1" style="width:215px;height:30px;margin-top: 10px;">
+                    <input id="datefrom" type="text">
+                    <button class="btn-date"></button>
+                </div>
+                <label class="inline-block"
+                       style="width: 80px;margin-left: 30px"> --------- </label>
+
+                <div class="input-control text" data-role="datepicker" data-format="yyyy-mm-dd"
+                     data-week-start="1" style="width:215px;height:30px;margin-top: 10px;">
+                    <input id="dateto" type="text">
+                    <button class="btn-date"></button>
+                </div>
+                <label class="inline-block" style="width: 80px"> 包裹编号: </label>
+
+                <input id="PACKAGEID" type="text" data-state="info"
+                       placeholder=""
+                       style="height:30px; width:250px"/>
+                <label class="inline-block" style="width: 80px;margin-left: 30px"> 订单编号: </label>
+
+                <input id="ORDERID" type="text" data-state="info"
+                       placeholder=""
+                       style="height:30px; width:215px"/>
+
+                <label class="inline-block" style="width: 80px;margin-left: 30px"> 柜台编号: </label>
+
+                <input id="COUNTERCODE" type="text" data-state="info"
+                       placeholder=""
+                       style="height:30px; width:215px"/>
+
+            </div>
+            <div style="width:100%;margin-top: 10px">
+                <button id="query" class="bg-darkCyan fg-white"
+                        style="width: 100px">查找包裹
+                </button>
+                <button id="cancel" class="bg-darkOrange fg-white"
+                        style="width: 100px">清空数据
+                </button>
+            </div>
+
+            <br>
+
+            <div style="width:100%;height: 400px">
+                <table style="width:100%">
+                    <tr style="width:100%">
+                        <td>
+                            <table id="orderTable"></table>
+                            <div id="orderDiv"></div>
+                        </td>
+                        <td style="width:100%">
+                            <table id="packageTable" ></table>
+                            <div id="packageDiv" ></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="panel" data-role="panel">
+                <div id="panelDiv" class="panel-header bg-darkGreen fg-white">操作区</div>
+                <div class="panel-content">
+                    <div id="stepperContainer">
+                    </div>
+
+                    <div width="100%">
+
+                        <div id="div0" style="width:100%;margin-top: 10px;display:none">
+                            备货中...
+                        </div>
+
+                        <div id="div1" style="width:100%;margin-top: 10px;display:none">
+                            <label class="inline-block" style="width: 80px"> 仓库位置: </label>
+
+                            <input id="position1" type="text" data-state="info"
+                                   placeholder=""
+                                   style="height:30px; width:215px"/>
+                            <button id="confirm1" class="bg-darkCyan fg-white"
+                                    style="width: 100px">移入集货区
+                            </button>
+                            <button id="print1" class="bg-darkOrange fg-white"
+                                    style="width: 100px;float:right">打印提货单
+                            </button>
+                        </div>
+
+                        <div id="div2" style="width:100%;margin-top: 10px;display:none">
+                            <label class="inline-block" style="width: 80px"> 仓库位置: </label>
+
+                            <input id="position2" type="text" data-state="info"
+                                   placeholder=""
+                                   style="height:30px; width:215px"/>
+                            <button id="confirm2" class="bg-darkCyan fg-white"
+                                    style="width: 100px">移入调货区
+                            </button>
+                            <button id="print2" class="bg-darkOrange fg-white"
+                                    style="width: 100px;float:right">打印调货单
+                            </button>
+                        </div>
+
+                        <div id="div3" style="width:100%;margin-top: 10px;display:none">
+                            <button id="confirm3" class="bg-darkCyan fg-white"
+                                    style="width: 115px">发往其他门店
+                            </button>
+                        </div>
+
+                        <div id="div4" style="width:100%;margin-top: 10px;display:none">
+                            <label class="inline-block" style="width: 80px"> 仓库位置: </label>
+
+                            <input id="position4" type="text" data-state="info"
+                                   placeholder=""
+                                   style="height:30px; width:215px"/>
+                            <button id="confirm4" class="bg-darkCyan fg-white"
+                                    style="width: 100px">移入集货区
+                            </button>
+                        </div>
+
+                        <div id="div5" style="width:100%;margin-top: 10px;display:none">
+                            集货中...
+                        </div>
+
+                        <div id="div6" style="width:100%;margin-top: 10px;display:none">
+                            <label class="inline-block" style="width: 80px"> 仓库位置: </label>
+
+                            <input id="position6" type="text" data-state="info"
+                                   placeholder=""
+                                   style="height:30px; width:215px"/>
+                            <button id="confirm6" class="bg-darkCyan fg-white"
+                                    style="width: 115px">移入待发货区
+                            </button>
+                        </div>
+
+                        <div id="div7" style="width:100%;margin-top: 10px;display:none">
+                            <label class="inline-block" style="width: 80px"> 仓库位置: </label>
+
+                            <input id="position7" type="text" data-state="info"
+                                   placeholder=""
+                                   style="height:30px; width:215px"/>
+                            <button id="confirm7" class="bg-darkCyan fg-white"
+                                    style="width: 115px">移入待自提区
+                            </button>
+                        </div>
+
+                        <div id="div8" style="width:100%;margin-top: 10px;display:none">
+                            <button id="confirm8" class="bg-darkCyan fg-white"
+                                    style="width: 100px">完成自提
+                            </button>
+                        </div>
+
+                        <div id="div9" style="width:100%;margin-top: 10px;display:none">
+                            <label class="inline-block" style="width: 80px"> 物流公司: </label>
+
+                            <select id="lgtcompany" type="text" data-state="info"
+                                    placeholder="" style="height:30px;width:215px">
+                                <option value=0>顺丰速递</option>
+                                <option value=1>圆通速递</option>
+                                <option value=2>中通快递</option>
+                                <option value=4>申通快递</option>
+                                <option value=5>韵达快递</option>
+                            </select>
+                            <label class="inline-block" style="width: 80px;margin-left: 30px"> 运单编号: </label>
+
+                            <input id="lgtnumber" type="text" data-state="info"
+                                   placeholder=""
+                                   style="height:30px; width:320px"/>
+                            <button id="confirm9" class="bg-darkCyan fg-white"
+                                    style="width: 100px">物流配送
+                            </button>
+                            <button id="print9" class="bg-darkOrange fg-white"
+                                    style="width: 100px;float:right">打印物流单
+                            </button>
+                        </div>
+
+                        <div id="div10" style="width:100%;margin-top: 10px;display:none">
+                            物流跟踪信息...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+

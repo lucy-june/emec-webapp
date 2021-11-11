@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+    <meta name="description" content="Simple responsive css framework">
+    <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+    <link href="../css/metro-bootstrap.css" rel="stylesheet">
+    <link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/iconFont.css" rel="stylesheet">
+    <link href="../css/docs.css" rel="stylesheet">
+    <link href="../js/prettify/prettify.css" rel="stylesheet">
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery.widget.min.js"></script>
+    <script src="../js/jquery/jquery.mousewheel.js"></script>
+    <script src="../js/prettify/prettify.js"></script>
+    <script src="../js/holder/holder.js"></script>
+    <script src="../js/load-metro.js"></script>
+    <script src="../js/docs.js"></script>
+    <script src="../js/github.info.js"></script>
+    <script src="../js/metro/metro-scroll.js"></script>
+    <script type="text/javascript">
+        function checkName(str) {
+            if(!str) {
+                return {result:false, msg:"请输入账号!"};
+            } else if (str.length > 14) {
+                return {result:false, msg:"账号应少于14位!"};
+            } else {
+                return {result:true, msg:""};
+            }
+        }
+
+
+        var resetInput = function () {
+            var arr = ["USERID"];
+            for (var k = 0; k < arr.length; k++) {
+                $("#" + arr[k]).val("");
+            }
+        };
+
+        var confirm = function () {
+            var nameResult = checkName($("#USERID").val());
+            if (!nameResult.result) {
+                alert(nameResult.msg);
+                return;
+            }
+
+            var options={};
+            options["USERCODE"] =$("#USERID").val();
+
+            $.ajax({
+                'url': '/super/resetPwdService',
+                'type': 'get',
+                'data': options,
+                'datatype': 'html',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("未知错误,重置密码失败!");
+                    resetInput();
+                    return;
+                },
+                'success': function (msg) {
+                    if(msg.status == true) {
+                        alert("成功重置该账户的密码!");
+                    } else if(msg.status == false) {
+                        alert(msg.data);
+                    } else {
+                        alert("未知错误,重置密码失败!");
+                    }
+                    resetInput();
+                }
+            });
+        }
+
+    </script>
+
+    <title>Mec Demo</title>
+    </title>
+</head>
+<body class="metro">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp bd-orange">
+
+                    <table style="width:100%">
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">账号*： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <input id="USERID" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" />
+                                </div>
+                            </td>
+                        </tr>
+
+
+                    </table>
+                    <br>
+                    <br>
+
+                    <div class="input-control switch" data-role="input-control" style="width:100%">
+                        <button class="bg-mecBlue fg-white" style="width:120px"
+                                onclick="confirm()">确认
+                        </button>
+                        <button class="bg-mecOrange fg-white" style="width:120px"
+                                onclick="resetInput()">重置
+                        </button>
+                    </div>
+                </div>
+
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "ID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": "图片编号"
+  },
+  "ITEMCODE": {
+    "type": "char(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "商品编码"
+  },
+  "IMGURL": {
+    "type": "varchar(256)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "图片链接\r\n            "
+  },
+  "DESCRIPTION": {
+    "type": "varchar(1024)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "图片描述",
+    "defaultValue": null
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "创建时间"
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "更新时间"
+  }
+}

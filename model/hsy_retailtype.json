@@ -1,0 +1,15 @@
+{
+  "RETAILTYPECODE": {
+    "type": "char(3)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "RETAILTYPENAME": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  }
+}

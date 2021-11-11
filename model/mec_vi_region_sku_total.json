@@ -1,0 +1,189 @@
+{
+  "REGIONID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "REGIONNAME": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "ITEMCODE": {
+    "type": "char(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "商品编码(mis系统编码)"
+  },
+  "BARCODE": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "条形码",
+    "defaultValue": null
+  },
+  "ITEMNAME": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品全称",
+    "defaultValue": null
+  },
+  "ITEMSHORTNAME": {
+    "type": "varchar(12)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品简称",
+    "defaultValue": null
+  },
+  "BRANDCODE": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "品牌编码",
+    "defaultValue": null
+  },
+  "ITEMTYPECODE": {
+    "type": "char(5)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品分类编码",
+    "defaultValue": null
+  },
+  "PRODUCINGAREA": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "产地",
+    "defaultValue": null
+  },
+  "PRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "核定售价",
+    "defaultValue": "0.00"
+  },
+  "TEMPPRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "统一暂时售价",
+    "defaultValue": "0.00"
+  },
+  "RETURNGOODS": {
+    "type": "decimal(1,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "是否允许退货：0：不允许 ，1：允许",
+    "defaultValue": null
+  },
+  "SPECIFICATION": {
+    "type": "varchar(30)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品规格",
+    "defaultValue": null
+  },
+  "PRODUCTCODE": {
+    "type": "varchar(30)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品货号",
+    "defaultValue": null
+  },
+  "UNIT": {
+    "type": "varchar(10)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "计量单位",
+    "defaultValue": null
+  },
+  "TITLE": {
+    "type": "varchar(128)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品上线的名称",
+    "defaultValue": null
+  },
+  "SCORE": {
+    "type": "double(6,5)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "评分 满分5分",
+    "defaultValue": "5.00000"
+  },
+  "SCOREPOPULARITY": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "评分人数",
+    "defaultValue": "0"
+  },
+  "PURCHASE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "购买数目",
+    "defaultValue": "0"
+  },
+  "PURCHASEPOPULARITY": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "购买人数",
+    "defaultValue": "0"
+  },
+  "PRAISERATE": {
+    "type": "int(3)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "好评率，单位是%",
+    "defaultValue": "100"
+  },
+  "ONLINETIME": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "BRANDNAME": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "ITEMTYPENAME": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "IMGURL": {
+    "type": "varchar(256)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "图片链接\r\n            ",
+    "defaultValue": null
+  },
+  "CATEGORYNAMES": {
+    "type": "text",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "REGIONNAMES": {
+    "type": "text",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  }
+}

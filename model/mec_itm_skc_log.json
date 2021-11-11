@@ -1,0 +1,78 @@
+{
+  "ID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "_ID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "SKCCODE": {
+    "type": "char(10)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "编号"
+  },
+  "ITEMCODE": {
+    "type": "char(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "商品编码"
+  },
+  "MERCHANTSKCCODE": {
+    "type": "char(16)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "SIZE": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "大小",
+    "defaultValue": null
+  },
+  "COLOR": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "颜色",
+    "defaultValue": null
+  },
+  "TMPSTATE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-增待审 1-删待审 2-改待审 3-增审过 4-删审过 5-改审过  6-拒绝"
+  },
+  "OPERATION": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-增 1-删 2-改 3-查 4-增加通过审核 5-删除通过审核 6-修改通过审核"
+  },
+  "OPERATEPERSON": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  }
+}

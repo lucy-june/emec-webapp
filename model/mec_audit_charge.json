@@ -1,0 +1,44 @@
+{
+  "CHARGEID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "ISONLINEORDER": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "ORDERCODE": {
+    "type": "char(18)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "CHARGECODE": {
+    "type": "char(2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "AMT": {
+    "type": "double",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "费用金额（减免费用为负数；顾客应付费用为正数）"
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  }
+}

@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="product" content="Metro UI CSS Framework">
+<meta name="description" content="Simple responsive css framework">
+<meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+<link href="../css/metro-bootstrap.css" rel="stylesheet">
+<link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+<link href="../css/iconFont.css" rel="stylesheet">
+<link href="../css/docs.css" rel="stylesheet">
+<link href="../js/prettify/prettify.css" rel="stylesheet">
+<!--<link href="../css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">-->
+<script src="../js/load-metro.js"></script>
+<!--<script src="../js/jquery/jquery.min.js"></script>-->
+
+<link rel="stylesheet" type="text/css" media="screen"
+      href="../js/jquery.jqGrid-4.6.0/css/themes/redmond/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css"/>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+
+<script src="../js/jquery/jquery.widget.min.js"></script>
+<script src="../js/jquery/jquery.mousewheel.js"></script>
+<script src="../js/prettify/prettify.js"></script>
+<script src="../js/holder/holder.js"></script>
+<script src="../js/docs.js"></script>
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+
+<script src="../js/metro.js"></script>
+<script src="../js/github.js"></script>
+
+<script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script>
+var haha= function(msg){
+    var arr = ["ITEMCODE",
+        "BARCODE",
+        "TERM",
+        "INPUTPERSON",
+        "BUSINESSMODE",
+        "PROPERTY",
+        "MERCHANTCODE",
+        "BRANDCODE",
+        "ITEMNAME",
+        "ITEMSHORTNAME",
+        "RETAILTYPECODE",
+        "ITEMTYPECODE",
+        "PRICE",
+        "TAXRATE",
+        "EXCISERATE",
+        "CASING",
+        "PRODUCTCODE",
+        "SPECIFICATION",
+        "UNIT",
+        "ITEMCODETYPE",
+        "AGENTCODE",
+        "RETURNGOODS",
+        "PRODUCINGAREA",
+        "GRADE",
+        "NETWEIGHT",
+        "GROSSWEIGHT",
+        "MARKETPRICE",
+        "DESCRIPTION",
+
+        "RETAILTYPECODE2",
+        "ITEMTYPECODE2",
+        "BRANDCODE2",
+        "MERCHANTCODE2",
+        "AGENTCODE2"
+
+    ];
+
+    for(var k=0;k<arr.length;k++){
+        $("#"+arr[k]).val(msg[arr[k]]);
+    }
+
+    var isonline=document.getElementById("isonline");
+    var isstock=document.getElementById("isstock");
+    var allownegative = document.getElementById("allownegative");
+    if(msg.ISCONSIDERSTOCK==1){
+        isstock.checked=true;
+    }
+    else{
+        isstock.checked=false;
+    }
+
+    if(msg.ISALLOWONLINE==1){
+        isonline.checked=true;
+    }
+    else{
+        isonline.checked=false;
+    }
+
+    if(msg.ISALLOWNEGATIVE==1){
+        allownegative.checked=true;
+    }
+    else{
+        allownegative.checked=false;
+    }
+//        if(isonline.checked) allownegative.disabled = false;;
+
+//        merchantCodeFunc(1);
+    brandCodeFunc(1);
+    retailtypeCodeFunc(1);
+    itemtypeCodeFunc(1);
+    agentCodeFunc(1);
+
+}
+
+Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+        "M+": this.getMonth() + 1,                 //月份
+        "d+": this.getDate(),                    //日
+        "h+": this.getHours(),                   //小时
+        "m+": this.getMinutes(),                 //分
+        "s+": this.getSeconds(),                 //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds()             //毫秒
+    };
+    if (/(y+)/.test(fmt))
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt))
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+var tmpObj=null;
+$(document).ready(function () {
+    jQuery("#itemTable").jqGrid({
+        url: '/items/getCheckableSku?qry=',
+        datatype: "json",
+        height: 220,
+        width: window.screen.availWidth > 1140 ? 1020 : 820,
+        autowidth: false,
+        shrinkToFit: false,
+        colNames: [
+            "商品编码",
+            "条形码",
+            "货号",
+            "全称",
+            "简称",
+
+            "品牌编码",
+            "销售分类编码",
+            "商品分类编码",
+            "供应商编码",
+            "招商人员编码",
+            "品牌名称",
+            "销售分类名称",
+            "商品分类名称",
+            "供应商名称",
+            "招商人员名称",
+
+            "商品编码类型",
+            "合同经销方式",
+            "核定售价",
+            "统一暂时售价",
+            "销项税率",
+            "消费税率",
+            "进项税率",
+            "是否允许退货",
+            "销售状态",
+
+            "规格",
+            "计量单位",
+            "产地",
+            "净重",
+            "毛重",
+            "等级",
+            "颜色",
+            "包装规格",
+            "尺寸",
+            "体积",
+            "质保期",
+
+            "最后进价",
+            "安全库存",
+            "最高存量",
+            "最低存量",
+            "最高订货量",
+            "最低订货量",
+            "商品属性",
+
+            "复查状态",
+            "错误信息",
+            "输入员",
+
+            "录入时间",
+            "最后一次更新时间",
+            "是否考虑库存",
+            "是否允许上线",
+            "是否允许负库存",
+            "ID"
+        ],
+        colModel: [
+
+            {name: 'ITEMCODE', index: 'ITEMCODE', width: 60, frozen: true},
+            {name: 'BARCODE', index: 'BARCODE', width: 120, frozen: true},
+            {name: 'PRODUCTCODE', index: 'PRODUCTCODE', width: 80, frozen: true},
+            {name: 'ITEMNAME', index: 'ITEMNAME', width: 120, frozen: true},
+            {name: 'ITEMSHORTNAME', index: 'ITEMSHORTNAME', width: 70, frozen: true},
+
+            {name: 'BRANDCODE', index: 'BRANDCODE'},
+            {name: 'RETAILTYPECODE', index: 'RETAILTYPECODE'},
+            {name: 'ITEMTYPECODE', index: 'ITEMTYPECODE'},
+            {name: 'MERCHANTCODE', index: 'MERCHANTCODE'},
+            {name: 'AGENTCODE', index: 'AGENTCODE'},
+            {name: 'BRANDNAME', index: 'BRANDNAME'},
+            {name: 'ITEMTYPENAME', index: 'ITEMTYPENAME'},
+            {name: 'RETAILTYPENAME', index: 'RETAILTYPENAME'},
+            {name: 'MERCHANTNAME', index: 'MERCHANTNAME'},
+            {name: 'AGENTNAME', index: 'AGENTNAME'},
+
+            {name: 'ITEMCODETYPE', index: 'ITEMCODETYPE', formatter: 'select', edittype: "select", editoptions: {value: "0:正常商品编码;1:大类码"}},
+            {name: 'BUSINESSMODE', index: 'BUSINESSMODE'},
+            {name: 'PRICE', index: 'PRICE'},
+            {name: 'TEMPPRICE', index: 'TEMPPRICE'},
+            {name: 'TAXRATE', index: 'TAXRATE'},
+            {name: 'EXCISERATE', index: 'EXCISERATE'},
+            {name: 'PURCHASETAXRATE', index: 'PURCHASETAXRATE'},
+            {name: 'RETURNGOODS', index: 'RETURNGOODS', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'SALESTATE', index: 'SALESTATE', formatter: 'select', edittype: "select", editoptions: {value: "0:正常;2:手工登记删除;3:合同到期自动登记删除"}},
+
+            {name: 'SPECIFICATION', index: 'SPECIFICATION'},
+            {name: 'UNIT', index: 'UNIT'},
+            {name: 'PRODUCINGAREA', index: 'PRODUCINGAREA'},
+            {name: 'NETWEIGHT', index: 'NETWEIGHT'},
+            {name: 'GROSSWEIGHT', index: 'GROSSWEIGHT'},
+            {name: 'GRADE', index: 'GRADE'},
+            {name: 'COLOR', index: 'COLOR'},
+            {name: 'CASING', index: 'CASING'},
+            {name: 'DIMENSION', index: 'DIMENSION'},
+            {name: 'VOLUME', index: 'VOLUME'},
+            {name: 'TERM', index: 'TERM'},
+
+            {name: 'LASTPURCHASEPRICE', index: 'LASTPURCHASEPRICE'},
+            {name: 'SAFESTOCK', index: 'SAFESTOCK'},
+            {name: 'MAXSTOCK', index: 'MAXSTOCK'},
+            {name: 'MINSTOCK', index: 'MINSTOCK'},
+            {name: 'MAXORDER', index: 'MAXORDER'},
+            {name: 'MINORDER', index: 'MINORDER'},
+            {name: 'PROPERTY', index: 'PROPERTY', formatter: 'select', edittype: "select", editoptions: {value: "0:普通商品;1:黄金商品;2:香烟商品"}},
+
+            {name: 'CHECKSTATE', index: 'CHECKSTATE', formatter: 'select', edittype: "select", editoptions: {value: "0:复查不通过(可改价格、招商人员、商品分类);1:复查通过(不可改价格、招商人员、商品分类);2:输入;3:变更(不可改价格、招商人员、商品分类);4:变更不通过(不可改价格、招商人员、商品分类)"}},
+            {name: 'ERRORINFO', index: 'ERRORINFO'},
+            {name: 'INPUTPERSON', index: 'INPUTPERSON'},
+
+            {name: 'createdAt', index: 'createdAt', formatter: dataFormat},
+            {name: 'updatedAt', index: 'updatedAt', formatter: dataFormat},
+
+            {name: 'ISCONSIDERSTOCK', index: 'ISCONSIDERSTOCK', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'ISALLOWONLINE', index: 'ISALLOWONLINE', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'ISALLOWNEGATIVE', index: 'ISALLOWNEGATIVE', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'ID', index:'ID'}
+
+        ],
+        rowNum: 20,
+        rowList: [20, 50, 100],
+        pager: '#itemDiv',
+        viewrecords: true,
+        sortname: 'ITEMCODE',
+        sortorder: "desc",
+//                multiselect: true,
+//                editurl:?,
+        caption: "商品信息",
+        fitColumns: true,
+        onSelectRow: function () {
+            var id = $("#itemTable").jqGrid('getGridParam', "selrow");
+            var obj = $("#itemTable").jqGrid('getRowData', id);
+            tmpObj=obj;
+            delete obj.createdAt;
+            delete obj.updatedAt;
+            haha(obj);
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function(){
+            var userdata=JSON.stringify($(this).getGridParam('userData'));
+            if(userdata!='{}' && userdata)
+                alert(userdata);
+//                alert(JSON.stringify($(this).getGridParam('total')));
+        },
+        gridComplete: function () {
+
+        }
+    });
+    jQuery("#itemTable").jqGrid('navGrid', '#itemDiv', {search:false, add: false, edit: false, del: false});
+    jQuery("#itemTable").jqGrid('setFrozenColumns');
+    jQuery("#itemTable").jqGrid('hideCol', 'ID');
+
+    function dataFormat(cellvalue,options,rowObject){
+        if(!cellvalue) return '';
+        return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+    }
+
+//            //formatter:imageFormat,unformat:imageUnFormat
+//            function imageFormat( cellvalue, options, rowObject ){
+//                return '<img src="'+cellvalue+'" />';
+//            }
+//            function imageUnFormat( cellvalue, options, cell){
+//                return $('img', cell).attr('src');
+//            }
+
+    $("#cancel").click(function () {
+        $("input").val("");
+        var tableObj = document.getElementById("recordsTable");
+        var hasAdviceListRows = tableObj.rows.length;
+        if (hasAdviceListRows > 0) {
+            while (tableObj.rows.length > 1) {
+                tableObj.deleteRow(1);
+            }
+        }
+    });
+
+    $("#query").click(function () {
+        var tableObj = document.getElementById("recordsTable");
+        var hasAdviceListRows = tableObj.rows.length;
+        if (hasAdviceListRows > 0) {
+            while (tableObj.rows.length > 1) {
+                tableObj.deleteRow(1);
+            }
+        }
+
+        var url = "../items/getValidations?";
+
+        if ($("#ITEMCODE1").val()) url += "ITEMCODE1=" + $("#ITEMCODE1").val() + "&";
+//                else {
+//                    alert("请输入完整商品编码范围");
+//                    return;
+//                }
+        if ($("#ITEMCODE2").val()) url += "ITEMCODE2=" + $("#ITEMCODE2").val() + "&";
+//                else {
+//                    alert("请输入完整商品编码范围");
+//                    return;
+//                }
+
+        url = url.substr(0, url.length - 1);
+
+        $.get(url, function (data, status) {
+            var ss = eval('('+data+')');
+            ss.forEach(function(dt){
+                //将null字段转化为空字符串
+                var keys= Object.keys(dt)
+                for(var x=0;x<keys.length;x++){
+                    if(!dt[keys[x]])dt[keys[x]]="";
+                }
+//                        var str=JSON.stringify(dt);
+//                        str.replaceAll("\'"," &quot;");
+//                        alert(str);
+//                        var  temp="###\"AAAA";
+                var str="<tr id='TR"+dt["ITEMCODE"]+"' onclick='haha("+JSON.stringify(dt)+")'><td>"
+                        + dt["ITEMCODE"] +
+                        "</td><td>" + dt["BUSINESSMODE"] +
+                        "</td><td >" + dt["MERCHANTNAME"] +
+                        "</td><td>" + dt["BRANDNAME"] +
+                        "</td><td >" + dt["RETAILTYPENAME"] +
+                        "</td><td>" + dt["ITEMTYPENAME"] +
+                        "</td><td >" + dt["ITEMNAME"] +
+                        "</td><td>" + dt["ITEMSHORTNAME"] +
+                        "</td><td >" + dt["PRICE"] +
+                        "</td><td>" +
+                        "</td><td >" +
+                        "</td><td>" + dt["TAXRATE"] +
+                        "</td><td >" + dt["EXCISERATE"] +
+                        "</td><td>" + dt["PURCHASETAXRATE"] +
+                        "</td><td >" + dt["BARCODE"] +
+                        "</td><td>" + dt["PRODUCTCODE"] +
+                        "</td><td >" + dt["SPECIFICATION"] +
+                        "</td><td>" + dt["UNIT"] +
+                        "</td><td >" +
+                        "</td><td>" + dt["ITEMCODETYPE"] +
+                        "</td><td >" +
+                        "</td><td>" +
+                        "</td><td >" +
+                        "</td><td>" + dt["RETURNGOODS"] +
+                        "</td><td >" + dt["AGENTNAME"] +
+                        "</td><td>" + dt["PRODUCINGAREA"] +
+                        "</td><td >" + dt["GRADE"] +
+                        "</td><td>" +
+                        "</td><td >" + dt["NETWEIGHT"] +
+                        "</td><td>" + dt["GROSSWEIGHT"] +
+                        "</td><td >" + dt["COLOR"] +
+                        "</td><td>" + dt["CASING"] +
+                        "</td><td >" +
+                        "</td><td>" +
+                        "</td><td >" + dt["LASTPURCHASEPRICE"] +
+                        "</td><td>" +
+                        "</td><td >" +
+                        "</td><td>" +
+                        "</td><td >" +
+                        "</td><td>" +
+                        "</td><td >" +
+                        "</td><td>" +
+                        "</td><td >" +
+                        "</td><td>" +
+                        "</td><td >" +
+                        "</td><td>" +
+                        "</td><td >" +
+                        "</td><td>" +
+                        "</td><td >" +
+                        "</td><td>" +
+                        "</td><td>" +
+                        "</td> </tr> ";
+//                        alert(str);
+                $("#recordsTable").append(str);
+            });
+
+            /*if (data != null && data.length > 0) {
+
+
+             *//*$('#recordsTable').dataTable({
+             "data": data,
+             "bDestroy": true,
+             "columns": [
+             { "data": "ITEMCODE" },
+             { "data": "BRANDCODE" },
+             { "data": "BARCODE"},
+             { "data": "ITEMNAME"},
+             { "data": "ITEMSHORTNAME"},
+
+             { "data": "RETAILTYPECODE"},
+             { "data": "ITEMTYPECODE"},
+             { "data": "MERCHANTCODE"},
+             { "data": "BUSINESSMODE"},
+             { "data": "PRODUCINGAREA"},
+             { "data": "GRADE"},
+             { "data": "PRICE"},
+             { "data": "TEMPPRICE"},
+             { "data": "TAXRATE"},
+             { "data": "EXCISERATE"},
+             { "data": "SALESTATE"},
+             //                            { "data":  "RETURNGOODS"},
+             { "data": "PRODUCTCODE"},
+             { "data": "SPECIFICATION"},
+             { "data": "NETWEIGHT"},
+             { "data": "GROSSWEIGHT"},
+             { "data": "UNIT"}
+
+             *//**//*{ "data":  "COLOR"},
+             { "data":  "CASING"},
+             { "data": "DIMENSION"},
+             { "data": "VOLUME"},
+             { "data": "ITEMCODETYPE"},
+
+             { "data":  "LASTPURCHASEPRICE"},
+             { "data":  "PURCHASETAXRATE"},
+             { "data": "SAFESTOCK"},
+             { "data": "MAXSTOCK"},
+             { "data": "MINSTOCK"},
+             { "data": "MAXORDER"},
+             { "data": "MINORDER"},
+             { "data":  "PROPERTY"},
+             { "data": "CHECKSTATE"},
+             { "data":  "ERRORINFO"},
+             { "data": "INPUTPERSON"},
+             { "data": "AGENTCODE"},
+             { "data": "TERM"},
+             { "data":"MARKETPRICE"},
+             { "data": "DESCRIPTION"},
+             { "data": "createdAt"},
+             { "data":  "updatedAt"}*//**//*
+             ]
+             });*//*
+             }*/
+        });
+
+    });
+
+    $("#confirm").click(function () {
+        if(!tmpObj){
+            alert("请选择待审核商品！");
+            return;
+        }
+        else if(!tmpObj.ID){
+            alert("系统错误！");
+            return;
+        }
+        var url = "../items/approveSku?";
+
+        url += "ID=" + tmpObj.ID;
+
+        alert("###"+url);
+        $.get(url, function (data, status) {
+            if(data.status==true){
+                alert("审核通过!"+JSON.stringify(data["data"]));
+                $("#TR"+$("#ITEMCODE").val()).remove();
+                $("#ITEMCODE").val("");
+                tmpObj=null;
+
+                var arr = ["ITEMCODE",
+                    "BARCODE",
+                    "TERM",
+                    "INPUTPERSON",
+                    "BUSINESSMODE",
+                    "PROPERTY",
+                    "MERCHANTNAME",
+                    "BRANDNAME",
+                    "ITEMNAME",
+                    "ITEMSHORTNAME",
+                    "RETAILTYPENAME",
+                    "ITEMTYPENAME",
+                    "PRICE",
+                    "TAXRATE",
+                    "EXCISERATE",
+                    "CASING",
+                    "PRODUCTCODE",
+                    "SPECIFICATION",
+                    "UNIT",
+                    "ITEMCODETYPE",
+                    "AGENTNAME",
+                    "RETURNGOODS",
+                    "PRODUCINGAREA",
+                    "GRADE",
+                    "NETWEIGHT",
+                    "GROSSWEIGHT",
+                    "MARKETPRICE",
+                    "DESCRIPTION"];
+
+                for(var k=0;k<arr.length;k++){
+                    $("#"+arr[k]).val("");
+                }
+                $("#itemTable").trigger('reloadGrid');
+            }
+            else{
+                alert("系统错误!"+JSON.stringify(data["data"]));
+            }
+        });
+    });
+
+    $("#invalid").click(function () {
+        if(!tmpObj){
+            alert("请选择待废弃的商品数据！");
+            return;
+        }
+        else if(!tmpObj.ID){
+            alert("系统错误！");
+            return;
+        }
+        var url = "../items/invalidSku?";
+
+        url += "ID=" + tmpObj.ID;
+
+        alert("###"+url);
+        $.get(url, function (data, status) {
+            if(data.status==true){
+                alert("作废成功!"+JSON.stringify(data["data"]));
+                $("#TR"+$("#ITEMCODE").val()).remove();
+                $("#ITEMCODE").val("");
+                tmpObj=null;
+
+                var arr = ["ITEMCODE",
+                    "BARCODE",
+                    "TERM",
+                    "INPUTPERSON",
+                    "BUSINESSMODE",
+                    "PROPERTY",
+                    "MERCHANTNAME",
+                    "BRANDNAME",
+                    "ITEMNAME",
+                    "ITEMSHORTNAME",
+                    "RETAILTYPENAME",
+                    "ITEMTYPENAME",
+                    "PRICE",
+                    "TAXRATE",
+                    "EXCISERATE",
+                    "CASING",
+                    "PRODUCTCODE",
+                    "SPECIFICATION",
+                    "UNIT",
+                    "ITEMCODETYPE",
+                    "AGENTNAME",
+                    "RETURNGOODS",
+                    "PRODUCINGAREA",
+                    "GRADE",
+                    "NETWEIGHT",
+                    "GROSSWEIGHT",
+                    "MARKETPRICE",
+                    "DESCRIPTION"];
+
+                for(var k=0;k<arr.length;k++){
+                    $("#"+arr[k]).val("");
+                }
+                $("#itemTable").trigger('reloadGrid');
+            }
+            else{
+                alert("系统错误!"+JSON.stringify(data["data"]));
+            }
+
+        });
+
+
+
+    });
+});
+
+
+
+var isonlineFunc= function(){
+    var isonline=document.getElementById("isonline");
+    var isstock=document.getElementById("isstock");
+    var allownegative = document.getElementById("allownegative");
+    if (isonline.checked==true){
+        isstock.checked=true;
+//        isstock.disabled= true;
+        allownegative.disabled = false;
+        //alert(isstock.checked);
+    }else{
+        if(isstock.checked){
+            allownegative.disabled = false;
+        }
+        //isstock.checked=false;
+//        isstock.disabled= false;
+//        allownegative.disabled = true;
+        //alert(isstock.checked);
+    }
+
+}
+var isstockFunc= function(){
+    var isonline=document.getElementById("isonline");
+    var isstock=document.getElementById("isstock");
+    var allownegative = document.getElementById("allownegative");
+    if (isstock.checked==true){
+        allownegative.disabled = false;
+    }else{
+        isonline.checked=false;
+        allownegative.checked=false;
+        allownegative.disabled = true;
+    }
+
+}
+
+//    var merchantCodeFunc=function(flag){
+//        var merchantcode=document.getElementById("MERCHANTCODE");
+//        var merchantcode2=document.getElementById("MERCHANTCODE2");
+//        merchantcode2.value="";//先清空隐藏的值
+//        //alert(merchantcode.value.length);
+//        var r = /^\+?[0-9][0-9]*$/;
+//        if ((r.test(merchantcode.value))&&(merchantcode.value.length<=6)){
+//            var url = "../other/queryMerchantService?";
+//            url += "merchantcode="+merchantcode.value;
+//
+//            $.get(url, function (data, status){
+//                //alert(JSON.stringify(data));
+//                if (data.length>0){
+//                    merchantcode.value=data[0].MERCHANTNAME;
+//                    merchantcode2.value=data[0].MERCHANTCODE;
+//                    //alert("me2:"+merchantcode2.value);
+//                }else{
+//                    merchantcode2.value=merchantcode;
+//                    if(!flag)   alert("该供应商编号不存在！");
+//                }
+//
+//            });
+//
+//        }else{
+//            if(!flag)  alert("供应商编号应为一个长度小于等于6位的非负整数！");
+//        }
+//    }
+
+var brandCodeFunc=function(flag){
+    var brandcode=document.getElementById("BRANDCODE");
+    var brandcode2=document.getElementById("BRANDCODE2");
+    brandcode2.value="";//先清空隐藏的值
+
+    var r = /^\+?[0-9][0-9]*$/;
+    if ((r.test(brandcode.value))&&(brandcode.value.length<=6)){
+        var url = "../other/queryBrandService?";
+        url += "brandcode="+brandcode.value;
+
+        $.get(url, function (data, status){
+            //alert(JSON.stringify(data));
+            if (data.length>0){
+                brandcode.value=data[0].BRANDNAME;
+                brandcode2.value=data[0].BRANDCODE;
+            }else{
+                brandcode2.value=brandcode;
+                if(!flag)  alert("该品牌编号不存在！");
+            }
+
+        });
+
+    }else{
+        if(!flag)  alert("品牌编号应为一个长度小于等于6位的非负整数！");
+    }
+}
+
+var retailtypeCodeFunc=function(flag){
+    var retailtypecode=document.getElementById("RETAILTYPECODE");
+    var retailtypecode2=document.getElementById("RETAILTYPECODE2");
+    retailtypecode2.value="";//先清空隐藏的值
+
+    var r = /^\+?[0-9][0-9]*$/;
+    if ((r.test(retailtypecode.value))&&(retailtypecode.value.length<=3)){
+        var url = "../other/queryRetailtypeService?";
+        url += "retailtypecode="+retailtypecode.value;
+
+        $.get(url, function (data, status){
+            //alert(JSON.stringify(data));
+            if (data.length>0){
+                retailtypecode.value=data[0].RETAILTYPENAME;
+                retailtypecode2.value=data[0].RETAILTYPECODE;
+            }else{
+                retailtypecode2.value=retailtypecode;
+                if(!flag)  alert("该销售分类编号不存在！");
+            }
+
+        });
+
+    }else{
+        if(!flag)  alert("销售分类编号应为一个长度小于等于3位的非负整数！");
+    }
+}
+
+
+var itemtypeCodeFunc=function(flag){
+    var itemtypecode=document.getElementById("ITEMTYPECODE");
+    var itemtypecode2=document.getElementById("ITEMTYPECODE2");
+    itemtypecode2.value="";//先清空隐藏的值
+
+    var r = /^\+?[0-9][0-9]*$/;
+    if ((r.test(itemtypecode.value))&&(itemtypecode.value.length<=5)){
+        var url = "../other/queryItemtypeService?";
+        url += "itemtypecode="+itemtypecode.value;
+
+        $.get(url, function (data, status){
+            //alert(JSON.stringify(data));
+            if (data.length>0){
+                itemtypecode.value=data[0].ITEMTYPENAME;
+                itemtypecode2.value=data[0].ITEMTYPECODE;
+            }else{
+                itemtypecode2.value=itemtypecode;
+                if(!flag) alert("该商品分类编号不存在！");
+            }
+
+        });
+
+    }else{
+        if(!flag)  alert("商品分类编号应为一个长度小于等于5位的非负整数！");
+    }
+}
+
+//    var agentCodeFunc=function(flag){
+//        var agentcode=document.getElementById("AGENTCODE");
+//        var agentcode2=document.getElementById("AGENTCODE2");
+//        agentcode2.value="";//先清空隐藏的值
+//
+//        var r = /^\+?[0-9][0-9]*$/;
+//        if ((r.test(agentcode.value))&&(agentcode.value.length<=3)){
+//            var url = "../other/queryAgentService?";
+//            url += "agentcode="+agentcode.value;
+//
+//            $.get(url, function (data, status){
+//                //alert(JSON.stringify(data));
+//                if (data.length>0){
+//                    agentcode.value=data[0].AGENTNAME;
+//                    agentcode2.value=data[0].AGENTCODE;
+//                }else{
+//                    agentcode2.value=agentcode;
+//                    if(!flag) alert("该招商人员编号不存在！");
+//                }
+//
+//            });
+//
+//        }else{
+//            if(!flag) alert("招商人员编号应为一个长度小于等于3位的非负整数！");
+//        }
+//    }
+
+$("#search").click(function () {
+    var qry=$("#qry").val().trim();//去除首尾空格
+    $("#itemTable").jqGrid('setGridParam',{ url: '/items/getCheckableSku?qry='+qry}).trigger('reloadGrid');
+})
+
+</script>
+<title>Mec Demo</title>
+
+<style type="text/css" class="init">
+    /*th, td {*/
+    /*white-space: nowrap;*/
+    /*}*/
+
+    /*div.dataTables_wrapper {*/
+    /*width: 800px;*/
+    /*margin: 0 auto;*/
+    /*}*/
+
+    .ui-jqgrid,
+    .ui-jqgrid * {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        -ms-box-sizing: content-box;
+        -o-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+</head>
+<body class="metro">
+
+<div id="maindiv">
+<div class=row>
+<div class="mectemp ">
+
+<div class="input-control text" style="width: 300px;">
+    <input id="qry" type="text" data-state="info"
+           placeholder="关键字" />
+    <button class="btn-search" id="search" value="搜索"/>
+</div>
+
+<br>
+
+<div style="width:100%">
+    <table style="width:100%">
+        <tr style="width:100%">
+            <td>
+                <table id="itemTable"></table>
+                <div id="itemDiv"></div>
+            </td>
+
+        </tr>
+    </table>
+</div>
+
+
+<br>
+
+<div class="panel" data-role="panel">
+<div class="panel-header bg-lightGray fg-black"> SKU信息</div>
+<div class="panel-content">
+<div style="width:100%">
+<table style="width:100%">
+
+<tr>
+    <!--<td style="width:25%;height:65px">-->
+    <!--<div class="input-control text size2" style="width:200px">-->
+    <!--<label class="col-sm-2 control-label" style="width:200px"> 经销方式* </label>-->
+    <!--<select id="BUSINESSMODE" type="text" data-state="info"-->
+    <!--placeholder="" style="height:30px;width:200px" onfocus="this.defaultIndex=this.selectedIndex;"-->
+    <!--onchange="this.selectedIndex=this.defaultIndex;">-->
+    <!--<option value="A">A</option>-->
+    <!--<option value="B">B</option>-->
+    <!--<option value="C">C</option>-->
+    <!--</select>-->
+    <!--</div>-->
+    <!--</td>-->
+    <!--<td style="width:25%;height:65px">-->
+    <!--<div class="input-control text size2" style="width:200px">-->
+    <!--<label class="col-sm-2 control-label" style="width:200px"> 供应商* </label>-->
+    <!--<input id="MERCHANTCODE" type="text" data-state="info"-->
+    <!--placeholder="" style="height:30px;width:200px" onchange="merchantCodeFunc();" readonly/>-->
+    <!--<input id="MERCHANTCODE2" type="hidden" data-state="info"-->
+    <!--placeholder="" style="height:30px;width:200px" readonly/>-->
+
+    <!--</div>-->
+    <!--</td>-->
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">品牌* </label>
+            <input id="BRANDCODE" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" onchange="brandCodeFunc();" readonly/>
+            <input id="BRANDCODE2" type="hidden" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">名称* </label>
+            <input id="ITEMNAME" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">简称* </label>
+            <input id="ITEMSHORTNAME" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">销售分类* </label>
+            <input id="RETAILTYPECODE" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" onchange="retailtypeCodeFunc();" readonly/>
+            <input id="RETAILTYPECODE2" type="hidden" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">销项税率* </label>
+            <select id="TAXRATE" type="text" data-state="info"
+                    placeholder="" style="height:30px;width:200px" onfocus="this.defaultIndex=this.selectedIndex;"
+                    onchange="this.selectedIndex=this.defaultIndex;">
+                <option value="01">01_百分之十七</option>
+                <option value="02">02_百分之十三</option>
+                <option value="03">03_百分之四</option>
+                <option value="04">04_百分之三</option>
+                <option value="05">05_百分之十</option>
+                <option value="06">06_百分之七</option>
+                <option value="07">07_零税率</option>
+                <option value="08">08_百分之五</option>
+                <option value="09">09_百分之六</option>
+            </select>
+        </div>
+    </td>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">消费税率*</label>
+            <select id="EXCISERATE" type="text" data-state="info"
+                    placeholder="" style="height:30px;width:200px" onfocus="this.defaultIndex=this.selectedIndex;"
+                    onchange="this.selectedIndex=this.defaultIndex;">
+                <option value="01">01_百分之十七</option>
+                <option value="02">02_百分之十三</option>
+                <option value="03">03_百分之四</option>
+                <option value="04">04_百分之三</option>
+                <option value="05">05_百分之十</option>
+                <option value="06">06_百分之七</option>
+                <option selected="selected" value="07">07_零税率</option>
+                <option value="08">08_百分之五</option>
+                <option value="09">09_百分之六</option>
+            </select>
+        </div>
+    </td>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">商品分类* </label>
+            <input id="ITEMTYPECODE" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" onchange="itemtypeCodeFunc();" readonly/>
+            <input id="ITEMTYPECODE2" type="hidden" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">核定售价* </label>
+            <input id="PRICE" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+</tr>
+<tr>
+
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:100px" style="width:100px">
+                条形码
+            </label>
+            <input id="BARCODE" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">货号 </label>
+            <input id="PRODUCTCODE" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">计量单位* </label>
+            <input id="UNIT" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">商品编码类型* </label>
+            <select id="ITEMCODETYPE" type="text" data-state="info"
+                    placeholder="" style="height:30px;width:200px" onfocus="this.defaultIndex=this.selectedIndex;"
+                    onchange="this.selectedIndex=this.defaultIndex;">
+                <option value="0">正常商品编码</option>
+                <option value="1">大类码</option>
+            </select>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">是否允许退货 </label>
+            <select id="RETURNGOODS" type="text" data-state="info"
+                    placeholder="" style="height:30px;width:200px" onfocus="this.defaultIndex=this.selectedIndex;"
+                    onchange="this.selectedIndex=this.defaultIndex;">
+                <option value="1">允许</option>
+                <option value="0">不允许</option>
+            </select>
+        </div>
+    </td>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">产地</label>
+            <input id="PRODUCINGAREA" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">规格 </label>
+            <input id="SPECIFICATION" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+
+    <!--<td style="width:25%;height:65px">-->
+    <!--<div class="input-control text size2" style="width:200px">-->
+    <!--<label class="col-sm-2 control-label" style="width:200px">招商人员 </label>-->
+    <!--<input id="AGENTCODE" type="text" data-state="info"-->
+    <!--placeholder="" style="height:30px;width:200px" onchange="agentCodeFunc();" readonly/>-->
+    <!--<input id="AGENTCODE2" type="hidden" data-state="info"-->
+    <!--placeholder="" style="height:30px;width:200px" readonly/>-->
+    <!--</div>-->
+    <!--</td>-->
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">等级 </label>
+            <input id="GRADE" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+
+</tr>
+<tr>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">净重 </label>
+            <input id="NETWEIGHT" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">毛重 </label>
+            <input id="GROSSWEIGHT" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">颜色</label>
+            <input id="COLOR" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">包装风格 </label>
+            <input id="CASING" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+
+</tr>
+<tr>
+    <td style="width:25%;height:65px">
+        <div class="input-control text size2" style="width:200px">
+            <label class="col-sm-2 control-label" style="width:200px">最近进价 </label>
+            <input id="LASTPURCHASEPRICE" type="text" data-state="info"
+                   placeholder="" style="height:30px;width:200px" readonly/>
+        </div>
+    </td>
+</tr>
+</table>
+</div>
+<br>
+<div class="input-control switch" data-role="input-control" style="width:100%">
+    <label class="inline-block" style="margin-right: 20px"> 是否上网销售
+        <input id="isonline" type="checkbox"  disabled="true" > </input>
+        <span class="check"></span>
+    </label>
+    <label class="inline-block" style="margin-right: 20px"> 是否管理库存
+        <input id="isstock" type="checkbox"  disabled="true" > </input>
+        <span class="check"></span>
+    </label>
+    <label class="inline-block" style="margin-right: 20px"> 是否允许负库存
+        <input id="allownegative" type="checkbox" disabled="true" > </input>
+        <span class="check"></span>
+    </label>
+</div>
+<br>
+
+<div >
+    <button id="confirm" class="bg-darkBlue fg-white">审核通过</button>
+    <button id="invalid" class="bg-green fg-white">废弃修改</button>
+</div>
+</div>
+</div>
+
+
+<input type="hidden" id="ITEMCODE" />
+
+</div>
+</div>
+</div>
+
+
+</body>
+</html>

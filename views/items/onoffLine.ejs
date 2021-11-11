@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="product" content="Metro UI CSS Framework">
+
+
+<link href="../css/metro-bootstrap.css" rel="stylesheet">
+<link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+<link href="../css/iconFont.css" rel="stylesheet">
+<link href="../css/docs.css" rel="stylesheet">
+<link href="../js/prettify/prettify.css" rel="stylesheet">
+<!--<link href="../css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">-->
+<script src="../js/load-metro.js"></script>
+<!--<script src="../js/jquery/jquery.min.js"></script>-->
+
+<link rel="stylesheet" type="text/css" media="screen"
+      href="../js/jquery.jqGrid-4.6.0/css/themes/redmond/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css"/>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+
+<script src="../js/jquery/jquery.widget.min.js"></script>
+<script src="../js/jquery/jquery.mousewheel.js"></script>
+<script src="../js/prettify/prettify.js"></script>
+<script src="../js/holder/holder.js"></script>
+<script src="../js/docs.js"></script>
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+
+<script src="../js/metro.js"></script>
+<script src="../js/github.js"></script>
+
+<script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script>
+
+Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+        "M+": this.getMonth() + 1,                 //月份
+        "d+": this.getDate(),                    //日
+        "h+": this.getHours(),                   //小时
+        "m+": this.getMinutes(),                 //分
+        "s+": this.getSeconds(),                 //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds()             //毫秒
+    };
+    if (/(y+)/.test(fmt))
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt))
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+
+//    var skcArr=[{MERCHANTSKCCODE:"11",COLOR:"11",SIZE:"111",ID:null,id:"a"},
+//        {MERCHANTSKCCODE:"22",COLOR:"222",SIZE:"2",ID:null,id:"b"},
+//        {MERCHANTSKCCODE:"3",COLOR:"33",SIZE:"333",ID:null,id:"c"},
+//        {MERCHANTSKCCODE:"4",COLOR:"444",SIZE:"4",ID:null,id:"d"}
+//    ];//一定要添加id字段
+function isonlineFunc(element){
+    var num=element.id.replace("isonline_","");
+//    alert("####"+num);
+
+    var countercode=$("#countercode_"+num).val();
+    var itemcode=$("#itemcode_"+num).val();
+
+    alert(countercode+" "+itemcode);
+
+    if(element.checked){
+        $.ajax({
+            'url': '/items/performOnline',
+            'type': 'post',
+            'data': {ITEMCODE:itemcode,COUNTERCODE:countercode},
+            'datatype': 'html',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("执行上线操作失败!");
+                element.checked=false;
+                return;
+            },
+            'success': function (msg) {
+                if (msg.status) {
+                    alert("成功上线!");
+                }
+                else {
+                    alert("执行上线操作失败!");
+                    element.checked=false;
+                    return;
+                }
+            }
+        });
+    }
+    else{
+        $.ajax({
+            'url': '/items/performOffline',
+            'type': 'post',
+            'data': {ITEMCODE:itemcode,COUNTERCODE:countercode},
+            'datatype': 'html',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("执行下线操作失败!");
+                element.checked=true;
+                return;
+            },
+            'success': function (msg) {
+                if (msg.status) {
+                    alert("成功下线!");
+                }
+                else {
+                    alert("执行下线操作失败!");
+                    element.checked=true;
+                    return;
+                }
+            }
+        });
+    }
+};
+
+$(document).ready(function () {
+    jQuery("#itemTable").jqGrid({
+        url: '/items/getOnlinePreparedSku?qry=',
+        datatype: "json",
+        height: 320,
+        width: window.screen.availWidth > 1140 ? 1020 : 820,
+        autowidth: false,
+        shrinkToFit: false,
+        colNames: [
+            "商品编码",
+            "条形码",
+            "货号",
+            "全称",
+            "简称",
+
+            "品牌编码",
+            "销售分类编码",
+            "商品分类编码",
+            "供应商编码",
+            "招商人员编码",
+            "品牌名称",
+            "销售分类名称",
+            "商品分类名称",
+            "供应商名称",
+            "招商人员名称",
+
+            "商品编码类型",
+            "合同经销方式",
+            "核定售价",
+            "统一暂时售价",
+            "销项税率",
+            "消费税率",
+            "进项税率",
+            "是否允许退货",
+            "销售状态",
+
+            "规格",
+            "计量单位",
+            "产地",
+            "净重",
+            "毛重",
+            "等级",
+            "颜色",
+            "包装规格",
+            "尺寸",
+            "体积",
+            "质保期",
+
+            "最后进价",
+            "安全库存",
+            "最高存量",
+            "最低存量",
+            "最高订货量",
+            "最低订货量",
+            "商品属性",
+
+            "复查状态",
+            "错误信息",
+            "输入员",
+
+            "审核时间",
+            "最后一次更新时间",
+
+            "是否考虑库存",
+            "是否允许上线",
+            "是否允许负库存",
+
+            "商品上线描述",
+            "商品评分",
+            "评分人数(满5分)",
+            "销售量",
+            "购买人数",
+            "好评率(%)",
+            "上线开卖时间"
+        ],
+        colModel: [
+
+            {name: 'ITEMCODE', index: 'ITEMCODE', width: 60, frozen: true},
+            {name: 'BARCODE', index: 'BARCODE', width: 120, frozen: true},
+            {name: 'PRODUCTCODE', index: 'PRODUCTCODE', width: 80, frozen: true},
+            {name: 'ITEMNAME', index: 'ITEMNAME', width: 120, frozen: true},
+            {name: 'ITEMSHORTNAME', index: 'ITEMSHORTNAME', width: 70, frozen: true},
+
+            {name: 'BRANDCODE', index: 'BRANDCODE'},
+            {name: 'RETAILTYPECODE', index: 'RETAILTYPECODE'},
+            {name: 'ITEMTYPECODE', index: 'ITEMTYPECODE'},
+            {name: 'MERCHANTCODE', index: 'MERCHANTCODE'},
+            {name: 'AGENTCODE', index: 'AGENTCODE'},
+            {name: 'BRANDNAME', index: 'BRANDNAME'},
+            {name: 'ITEMTYPENAME', index: 'ITEMTYPENAME'},
+            {name: 'RETAILTYPENAME', index: 'RETAILTYPENAME'},
+            {name: 'MERCHANTNAME', index: 'MERCHANTNAME'},
+            {name: 'AGENTNAME', index: 'AGENTNAME'},
+
+            {name: 'ITEMCODETYPE', index: 'ITEMCODETYPE', formatter: 'select', edittype: "select", editoptions: {value: "0:正常商品编码;1:大类码"}},
+            {name: 'BUSINESSMODE', index: 'BUSINESSMODE'},
+            {name: 'PRICE', index: 'PRICE'},
+            {name: 'TEMPPRICE', index: 'TEMPPRICE'},
+            {name: 'TAXRATE', index: 'TAXRATE'},
+            {name: 'EXCISERATE', index: 'EXCISERATE'},
+            {name: 'PURCHASETAXRATE', index: 'PURCHASETAXRATE'},
+            {name: 'RETURNGOODS', index: 'RETURNGOODS', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'SALESTATE', index: 'SALESTATE', formatter: 'select', edittype: "select", editoptions: {value: "0:正常;2:手工登记删除;3:合同到期自动登记删除"}},
+
+            {name: 'SPECIFICATION', index: 'SPECIFICATION'},
+            {name: 'UNIT', index: 'UNIT'},
+            {name: 'PRODUCINGAREA', index: 'PRODUCINGAREA'},
+            {name: 'NETWEIGHT', index: 'NETWEIGHT'},
+            {name: 'GROSSWEIGHT', index: 'GROSSWEIGHT'},
+            {name: 'GRADE', index: 'GRADE'},
+            {name: 'COLOR', index: 'COLOR'},
+            {name: 'CASING', index: 'CASING'},
+            {name: 'DIMENSION', index: 'DIMENSION'},
+            {name: 'VOLUME', index: 'VOLUME'},
+            {name: 'TERM', index: 'TERM'},
+
+            {name: 'LASTPURCHASEPRICE', index: 'LASTPURCHASEPRICE'},
+            {name: 'SAFESTOCK', index: 'SAFESTOCK'},
+            {name: 'MAXSTOCK', index: 'MAXSTOCK'},
+            {name: 'MINSTOCK', index: 'MINSTOCK'},
+            {name: 'MAXORDER', index: 'MAXORDER'},
+            {name: 'MINORDER', index: 'MINORDER'},
+            {name: 'PROPERTY', index: 'PROPERTY', formatter: 'select', edittype: "select", editoptions: {value: "0:普通商品;1:黄金商品;2:香烟商品"}},
+
+            {name: 'CHECKSTATE', index: 'CHECKSTATE', formatter: 'select', edittype: "select", editoptions: {value: "0:复查不通过(可改价格、招商人员、商品分类);1:复查通过(不可改价格、招商人员、商品分类);2:输入;3:变更(不可改价格、招商人员、商品分类);4:变更不通过(不可改价格、招商人员、商品分类)"}},
+            {name: 'ERRORINFO', index: 'ERRORINFO'},
+            {name: 'INPUTPERSON', index: 'INPUTPERSON'},
+
+            {name: 'createdAt', index: 'createdAt', formatter: dataFormat},
+            {name: 'updatedAt', index: 'updatedAt', formatter: dataFormat},
+
+            {name: 'ISCONSIDERSTOCK', index: 'ISCONSIDERSTOCK', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'ISALLOWONLINE', index: 'ISALLOWONLINE', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'ISALLOWNEGATIVE', index: 'ISALLOWNEGATIVE', formatter: 'checkbox', editoptions: {value: "1:0"}},
+
+            {name: 'TITLE', index: 'TITLE'},
+            {name: 'SCORE', index: 'SCORE'},
+            {name: 'SCOREPOPULARITY', index: 'SCOREPOPULARITY'},
+            {name: 'PURCHASE', index: 'PURCHASE'},
+            {name: 'PURCHASEPOPULARITY', index: 'PURCHASEPOPULARITY'},
+            {name: 'PRAISERATE', index: 'PRAISERATE'},
+            {name: 'ONLINETIME', index: 'ONLINETIME',formatter: dataFormat}
+
+        ],
+        rowNum: 20,
+        rowList: [20, 50, 100],
+        pager: '#itemDiv',
+        viewrecords: true,
+        sortname: 'ITEMCODE',
+        sortorder: "desc",
+        caption: "商品信息",
+        fitColumns: true,
+        onSelectRow: function () {
+            var id = $("#itemTable").jqGrid('getGridParam', "selrow");
+            var obj = $("#itemTable").jqGrid('getRowData', id);
+            var itemcode=obj.ITEMCODE;
+//            alert(itemcode);
+
+            $.ajax({
+                'url': '/items/getPreparedCounterBySku',
+                'type': 'get',
+                'data': {ITEMCODE:itemcode},
+                'datatype': 'json',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("获取选定商品的skc信息失败!");
+                    return;
+                },
+                'success': function (msg) {
+                    if(msg.status==false){
+                        alert("获取选定商品的skc信息失败!");
+                        return;
+                    }
+                    else{
+//                        alert(JSON.stringify(msg.data));
+                        var arr=msg.data;
+                        arr.sort(by('DEPTCODE',by('COUNTERCODE')));
+//                        alert(JSON.stringify(arr));
+
+                        clearContent();
+                        fillContent(arr);
+
+                    }
+                }
+            });
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function () {
+            var userdata = JSON.stringify($(this).getGridParam('userData'));
+            if (userdata != '{}' && userdata)
+                alert(userdata);
+        },
+        gridComplete: function () {
+
+        }
+    });
+    jQuery("#itemTable").jqGrid('navGrid', '#itemDiv', {search: false, add: false, edit: false, del: false});
+    jQuery("#itemTable").jqGrid('setFrozenColumns');
+
+    function dataFormat(cellvalue, options, rowObject) {
+        if (!cellvalue) return '';
+        return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+    }
+
+    var by = function(name,minor){
+        return function(o, p)
+        {
+            var a, b;
+            if (typeof o === "object" && typeof p === "object" && o && p)
+            {
+                a = o[name];
+                b = p[name];
+                if (a === b) {return typeof minor==='function' ?minor(o,p):0;}
+                if (typeof a === typeof b) { return a < b ? -1 : 1;}
+                return typeof a < typeof b ? -1 : 1;
+            }
+            else {throw ("error"); }
+        }
+    }
+
+    $("#search").click(function () {
+        var qry = $("#qry").val().trim();//去除首尾空格
+        $("#itemTable").jqGrid('setGridParam', { url: '/items/getOnlinePreparedSku?qry=' + qry}).trigger('reloadGrid');
+        clearContent();
+    })
+
+    var clearContent=function(){
+        $("#contentTable").empty();
+        window.parent.SetWinHeight();
+    }
+
+    var fillContent=function(arr){
+        for(var k=0;k<arr.length;k++){
+            var deptcode=arr[k].DEPTCODE;
+            var countercode=arr[k].COUNTERCODE;
+            var onlinestate=arr[k].ONLINESTATE;
+            var itemcode=arr[k].ITEMCODE;
+
+            var str=template.replace(/@id/g,k);
+            $("#contentTable").append(str);
+
+            $("#deptcode_"+k).val(deptcode);
+            $("#countercode_"+k).val(countercode);
+            $("#itemcode_"+k).val(itemcode);
+            document.getElementById("isonline_"+k).checked=(onlinestate==1);
+        }
+
+        window.parent.SetWinHeight();
+    }
+
+    var template='<tr id="tr_@id">\n'+
+            '                        <td>\n'+
+            '                            <label class="inline-block" style="width: 35px"> 门店: </label>\n'+
+            '                            <select id="deptcode_@id" type="text" data-state="info" placeholder=""\n'+
+            '                                     style="height:30px;width:150px"\n'+
+            '                                     onfocus="this.defaultIndex=this.selectedIndex;"\n'+
+            '                                     onchange="this.selectedIndex=this.defaultIndex;">\n'+
+            '                                <option value="10201">徐汇店</option>\n'+
+            '                                <option value="10202">虹桥店</option>\n'+
+            '                            </select>\n'+
+            '                        </td>\n'+
+            '                        <td>\n'+
+            '                            <label class="inline-block" style="width: 35px;margin-left:20px"> 柜号: </label>\n'+
+            '                            <input id="countercode_@id" type="text" data-state="info" placeholder=""\n'+
+            '                                   style="height: 30px; width: 150px" readonly/>\n'+
+            '                            <input id="itemcode_@id" type="hidden" data-state="info" placeholder=""\n'+
+            '                                   style="height: 30px; width: 150px" readonly/>\n'+
+            '                        </td>\n'+
+            '                        <td>\n'+
+            '                            <div class="input-control switch" data-role="input-control" style="width:100%;margin-left:20px;margin-top: 10px">\n'+
+            '                            <label class="inline-block" style="margin-right: 20px"> 网上在售与否\n'+
+            '                                <input id="isonline_@id" type="checkbox"  onchange="isonlineFunc(this);"> </input>\n'+
+            '                                <span class="check"></span>\n'+
+            '                            </label>\n'+
+            '                            </div>\n'+
+            '                        </td>\n'+
+            '                    </tr>';
+
+});
+
+</script>
+<title></title>
+<style type="text/css" class="init">
+    .ui-jqgrid,
+    .ui-jqgrid * {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        -ms-box-sizing: content-box;
+        -o-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+
+</head>
+<body class="metro">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp ">
+            <div class="input-control text" style="width: 300px;">
+                <input id="qry" type="text" data-state="info"
+                       placeholder="关键字" />
+                <button class="btn-search" id="search" value="搜索"/>
+            </div>
+
+            <br>
+
+            <div style="width:100%">
+                <table style="width:100%">
+                    <tr style="width:100%">
+                        <td>
+                            <table id="itemTable"></table>
+                            <div id="itemDiv"></div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+            <div style="width:100%">
+                <table id="contentTable">
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
+

@@ -1,0 +1,300 @@
+<!--非营业员用户登陆界面-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+    <meta name="description" content="Simple responsive css framework">
+    <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+
+    <link href="css/index.css" rel="stylesheet">
+
+
+    <script src="js/jquery/jquery.min.js"></script>
+    <!--<script src="js/jquery/jquery.widget.min.js"></script>-->
+    <!--<script src="js/jquery/jquery.mousewheel.js"></script>-->
+    <!--<script src="js/prettify/prettify.js"></script>-->
+    <!--<script src="js/holder/holder.js"></script>-->
+    <!--<script src="js/load-metro.js"></script>-->
+    <script src="js/jquery/jquery.form.min.js"></script>
+    <script src="js/sha1.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#myForm").submit(function(){
+                if(!signAndSubmit()){
+                    return false;
+                }
+                $(this).ajaxSubmit({
+                    success:function(responseText, statusText, xhr, $form){
+                        if(statusText=="success"){
+                            if(responseText.status){
+                                //登录成功，跳转
+                                if (responseText.state==1){
+                                    window.location.href="/main";
+                                }else if (responseText.state==2){
+                                    alert("检测到您未修改过密码，请修改密码，然后重新登录！");
+                                    window.location.href="/main";
+                                }
+
+                            }else{
+                                alert("登录失败："+responseText.data);
+                            }
+                        }else{
+                            alert("请求出错啦！");
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+
+        function plugin0()
+        {
+            return document.getElementById('plugin0');
+        }
+        plugin = plugin0;
+        function addEvent(obj, name, func)
+        {
+            if (obj.attachEvent) {
+                obj.attachEvent("on"+name, func);
+            } else {
+                obj.addEventListener(name, func, false);
+            }
+        }
+        var keyid;
+        function pluginLoaded() {
+            //alert("Plugin loaded!");
+            keyid=plugin().keyid;
+            if(keyid==""){
+                alert("未能检测到U盾，请插入U盾后刷新重试！");
+                disableInputs();
+                return;
+            }
+            $("#keyid").val(keyid);
+            $("#username").removeAttr('disabled');
+            $("#password").removeAttr('disabled');
+            //plugin().startDetection();
+            addEvent(plugin(), 'removed', function(){
+                alert("检测到U盾被拔出！");
+            });
+        }
+
+        function pluginValid()
+        {
+            if(!plugin().valid){
+                alert("控价没有运行！");
+                disableInputs();
+            }else{
+                $("#username").removeAttr('disabled');
+                $("#password").removeAttr('disabled');
+            }
+        }
+
+        function disableInputs(){
+            $("#username").attr("disabled", "disabled");
+            $("#username").attr("placeholder", "请插入U盾并允许控件运行刷新重试！");
+            $("#password").attr("disabled", "disabled");
+            $("#password").attr("placeholder", "请插入U盾并允许控件运行刷新重试！");
+        }
+
+        function signTest()
+        {
+            alert(plugin().sign("kanchuanqi"));
+        }
+
+        function signAndSubmit(){
+            if($("#username").val().length<=3){
+                alert("输入不合法！");
+                return false;
+            }
+            var signcode="";
+            for(var i=0;i<10;i++){
+                signcode=plugin().sign($("#rand").val());
+                if(signcode.length>5){
+                    break;
+                }
+            }
+            if(signcode.length<=5){
+                alert("使用U盾签名出错！"+signcode);
+                return false;
+            }
+            $("#signcode").val(signcode);
+            //alert(signcode);
+            return true;
+        }
+
+        function load()
+        {
+            if(plugin().valid){
+                //alert(plugin().echo("This plugin seems to be working!"));
+                pluginLoaded();
+            } else {
+                $.Dialog({
+                    modal:true,
+                    shadow: true,
+                    overlay: true,
+                    title: '提示',
+                    draggable:true,
+                    width: 400,
+                    height: 150,
+                    padding: 10,
+                    content:'<div>检测到控件没有运行，请确保下载并安装了安全控件。如果没有安装，点击<a href="/download/HuijinSecurityPlugin.msi">这里</a>进行下载！ </div>'
+                });
+                disableInputs();
+            }
+        }
+
+    </script>
+
+
+    <title><%= title %></title>
+</head>
+<body onload="load()"  >
+<!--<img border='0' src='../images/boat.jpg' width='100%' height='100%' style='position: absolute; z-index: -1;margin:0px;padding:0px'>-->
+<br><br>
+<div class="container">
+    <div class="row">
+
+            <img src="images/emec.jpg" style="margin-left: 45px;margin-bottom:5px;height: 25px">
+
+    </div>
+</div>
+
+<div class="wrapping-banner-home">
+    <div class="container">
+
+        <div class="row">
+            <div class="span7">
+                <div class="copy-block">
+
+                    <h1  style="margin-top:100px;">
+                        <span class="eyebrow-header" align="right">让&nbsp;&nbsp;生&nbsp;&nbsp;意&nbsp;&nbsp;&nbsp;更&nbsp;&nbsp;容&nbsp;&nbsp;<font color="orange" size="18" >易</font></span>
+                        <br />
+                        <br /> <br />
+                        <span class="header1">打通零售业任督二<font color="orange" size="18" >脉</font></span>
+                    </h1>
+                    <!--<h2 class="subhead"><i>e</i>MEC系统是一套实现零售业全融通的O2O解决方案，为客户提供<font color="yellow">单品管理</font>，<font color="green">库存共享</font>，<font color="#00008b">电子开单</font>，<font color="purple">随心支付</font>，<font color="#ff8c00">互动营销</font>和<font color="#f5f5f5">数据服务</font>六大利器。</h2>-->
+
+
+                    </div>
+
+                <!--</div>-->
+                <div style="margin-bottom: 10px;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>© 2015 上海卖科.  Terms · Privacy · Trademarks & Logos,</i>
+                </div>
+            </div>
+            <div class="span5">
+                <div class="hub-overlay">
+                    <h3>开始使用<i>e</i>MEC<font color="#4aff8c">销售系统</font></h3>
+                    <p>为供应链创造更多价值</p>
+                    <form id="myForm" class="hub-signup-form" action="/login" method="post">
+                        <input id="keyid" name="keyid" type="hidden" value="">
+                        <input id="signcode" name="signcode" type="hidden" value="">
+                        <input id="rand" name="rand" type="hidden" value="<%= rand %>">
+                        <div class="form-group">
+                            <input class="form-control" id="username" maxlength="30" name="username" placeholder="用户名" type="text" />
+                            <p class="error-message">This field has errored.</p>
+                        </div>
+
+                        <div class="form-group">
+                            <input class="form-control" id="password" name="password" placeholder="密码" type="password" />
+                            <p class="error-message">This field has errored.</p>
+                        </div>
+                        <div class="form-group">
+                            <input checked="checked" id="id_subscribe" name="subscribe" type="checkbox" />记住我
+                        </div>
+                        <button class="btn signup-button btn-block" type="submit">登     录</button>
+                    </form>
+                    <a href="/download/HuijinSecurityPlugin.msi">下载登录插件</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+<br>
+<br>
+
+
+<object id="plugin0" type="application/x-huijinsecurityplugin" width="0" height="0">
+    <!-- <param name="onload" value="pluginLoaded" />-->
+</object>
+
+<script type="text/javascript">
+    //获取验证码的sha1值
+    var gethash = function () {
+        $.ajax({
+            'url': '/ccap/ccapHash',
+            'type': 'get',
+            'datatype': 'html',
+            'timeout': 10000,
+            'error': function (msg) {
+
+            },
+            'success': function (msg) {
+                $("#ccapimghash").val(msg);
+            }
+        });
+    }
+
+    var clickReset = function () {
+        //$("#ccapimgtxt").attr("value","");
+        document.getElementById("ccapimgtxt").value = "";
+        $('#ccapimgstatus').val('0');
+        $('#i').attr("class", "icon-heart-2");
+        $('#ccapimgimg').attr("src", "/ccap/generateCcap/" + Math.floor(Math.random() * ( 1000000 + 1)));
+        gethash();
+    }
+
+    var checkCcapImg = function () {
+        if ($("#ccapimghash").val() == "") gethash();
+        var ccapimgtxt = $('#ccapimgtxt').val().toLowerCase();
+//        $.ajax({
+//            'url': '/checkccapimg',
+//            'type': 'get',
+//            'data': {ccapimgtxt: ccapimgtxt},
+//            'datatype': 'html',
+//            'error': function (msg) {
+//
+//            },
+//            'success': function (msg) {
+//                if (msg == '1') {
+//                    $('#ccapimgstatus').val('1');
+//                    $('#i').attr("class","icon-heart");
+//                    //$('#ccapimgspan').html('正确');
+//                }
+//                else{
+//                    $('#ccapimgstatus').val('0');
+//                    $('#i').attr("class","icon-heart-2");
+//                    //$('#ccapimgspan').html('');
+//                }
+//            }
+//        });
+        var hash = hex_sha1(ccapimgtxt);
+        if (hash == $("#ccapimghash").val()) {
+            $('#ccapimgstatus').val('1');
+            $('#i').attr("class", "icon-heart");
+        }
+        else {
+            $('#ccapimgstatus').val('0');
+            $('#i').attr("class", "icon-heart-2")
+        }
+    }
+
+    var check = function () {
+        if ($('#ccapimgstatus').val() == "0") {
+            alert("请重新输入验证码");
+            document.getElementById("ccapimgtxt").value = "";
+            $('#ccapimgstatus').val('0');
+            $('#i').attr("class", "icon-heart-2");
+            $('#ccapimgimg').attr("src", "/ccap/generateCcap/" + Math.floor(Math.random() * ( 1000000 + 1)));
+            gethash();
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>

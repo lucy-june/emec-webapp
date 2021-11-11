@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+    <meta name="description" content="Simple responsive css framework">
+    <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+    <link href="../css/metro-bootstrap.css" rel="stylesheet">
+    <link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/iconFont.css" rel="stylesheet">
+    <link href="../css/docs.css" rel="stylesheet">
+    <link href="../js/prettify/prettify.css" rel="stylesheet">
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery.form.min.js"></script>
+    <script src="../js/jquery/jquery.widget.min.js"></script>
+    <script src="../js/jquery/jquery.mousewheel.js"></script>
+    <script src="../js/prettify/prettify.js"></script>
+    <script src="../js/holder/holder.js"></script>
+    <script src="../js/load-metro.js"></script>
+    <script src="../js/docs.js"></script>
+    <script src="../js/metro/metro-scroll.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#myForm2").submit(function(){
+                $(this).ajaxSubmit({
+                    success:function(responseText, statusText, xhr, $form){
+                        if(statusText=="success"){
+                            if(responseText.status){
+                                alert("修改成功！");
+                                var arr =["KEYID3"];
+                                for (var k = 0; k < arr.length; k++) {
+                                    $("#" + arr[k]).val("");
+                                }
+                            }else{
+                                alert(responseText.msg);
+                            }
+                        }else{
+                            alert("请求出错啦！");
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+
+        function plugin0()
+        {
+            return document.getElementById('plugin0');
+        }
+        plugin = plugin0;
+
+        function checkKey(hh) {
+            var keyid=plugin().keyid;
+            if(keyid==""){
+                alert("未能检测到U盾，请手动输入！");
+            }else{
+                if(hh==1){
+                    $("#KEYID").val(keyid);
+                }else if(hh==2){
+                    $("#KEYID2").val(keyid);
+                }else if(hh==3){
+                    $("#KEYID3").val(keyid);
+                }else if(hh==4){
+                    $("#COUNTERID3").val(keyid);
+                }
+            }
+        }
+
+        function checkUserid(str) {
+            if(!str) {
+                return {result:false, msg:"请输入柜台号!"};
+            } else if (str.length != 6) {
+                return {result:false, msg:"柜台号不合法!"};
+            } else {
+                return {result:true, msg:""};
+            }
+        }
+
+        function checkKeyid(str) {
+            if(!str) {
+                return {result:false, msg:"请输入U盾ID!"};
+            } else if (str.length != 16) {
+                return {result:false, msg:"U盾ID不合法!"};
+            } else {
+                return {result:true, msg:""};
+            }
+        }
+
+        function checkFile(str){
+            alert(str);
+            if(!str) {
+                return {result:false, msg:"请选择公钥文件！"};
+            } else if (str!=$("#KEYID").val()) {
+                return {result:false, msg:"公钥文件与U盾不配对!"};
+            } else {
+                return {result:true, msg:""};
+            }
+        }
+
+        var resetInput = function () {
+            var arr = ["USERID", "NAME", "GENDER","IDNUMBER", "TELEPHONE"];
+            for (var k = 0; k < arr.length; k++) {
+                $("#" + arr[k]).val("");
+            }
+        };
+
+        var getkeyInfo=function(){
+            var keyidResult = checkKeyid($("#KEYID2").val());
+            if (!keyidResult.result) {
+                alert(keyidResult.msg);
+                return;
+            }
+            var options = {};
+            options["KEYID"]=$("#KEYID2").val();
+            $.ajax({
+                'url': '/super/getKeyInfoService',
+                'type': 'post',
+                'data': options,
+                'datatype': 'json',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("未知错误,添加账号失败!");
+                    return;
+                },
+                'success': function (msg) {
+                    if(msg.status){
+                        var info=msg.data;
+                        alert("U盾ID:"+info.KEYID+"\n"+"U盾类型："+info.KEYTYPE+"\n"+"U盾状态："+info.STATUS+"\n"+"柜台号："+info.COUNTER.COUNTERCODE+"\n"+"柜台名字："+info.COUNTER.COUNTERNAME);
+                    }else{
+                        alert(msg.data);
+                    }
+                }
+            });
+        }
+
+        //更改公钥文件
+        var changePublicKey=function(){
+            var useridResult = checkKeyid($("#KEYID3").val());
+            if (!useridResult.result) {
+                alert(useridResult.msg);
+                return;
+            }
+            if ($("#PUBLICKEY2").val().split("\\").pop()!=$("#KEYID3").val()) {
+                alert("U盾和公钥不匹配!");
+                return;
+            }
+            $("#UKEYID2").val($("#KEYID3").val());
+            $("#myForm2").submit();
+        }
+
+    </script>
+
+    <title>Mec Demo</title>
+</head>
+<body class="metro">
+
+<object id="plugin0" type="application/x-huijinsecurityplugin" width="0" height="0">
+    <param name="onload" value="pluginLoaded" />
+</object><br />
+
+
+        <div class="mectemp bd-orange">
+
+                    <table style="width:100%">
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">U盾ID*： </label>
+                                </div>
+                            </td>
+                            <td style="width:200px;height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <input id="KEYID3" name="KEYID3" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" />
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <button class="bg-mecOrange fg-white" style="margin-top:-15px;height:30px;width:120px"
+                                        onclick="checkKey(3)">检测
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">公钥文件*： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <form id="myForm2" method="post" enctype="multipart/form-data" action="/super/changePublicKey">
+                                    <input id="UKEYID2" name="UKEYID2" type="hidden" value="">
+                                    <input id="PUBLICKEY2" name="PUBLICKEY2" type="file">
+                                </form>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="height:65px">
+                                <button class="bg-mecBlue fg-white" style="height:30px;width:120px"
+                                        onclick="changePublicKey()">更新公钥文件
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+
+    </div>
+
+</body>
+</html>

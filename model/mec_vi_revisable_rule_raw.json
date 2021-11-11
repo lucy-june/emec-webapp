@@ -1,0 +1,78 @@
+{
+  "ID": {
+    "type": "int(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "RULEID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "RULENAME": {
+    "type": "varchar(128)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": ""
+  },
+  "RULEDESCRIPTION": {
+    "type": "text",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "RULESCRIPT": {
+    "type": "text",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "DATE-EFFECTIVE": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0000-00-00 00:00:00"
+  },
+  "DATE-EXPIRES": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0000-00-00 00:00:00"
+  },
+  "SALIENCE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "DEPTCODE": {
+    "type": "varchar(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "TMPSTATE": {
+    "type": "int(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "LASTOPERATEPERSON": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  }
+}

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+    <meta name="description" content="Simple responsive css framework">
+    <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+    <link href="../css/metro-bootstrap.css" rel="stylesheet">
+    <link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/iconFont.css" rel="stylesheet">
+    <link href="../css/docs.css" rel="stylesheet">
+    <link href="../js/prettify/prettify.css" rel="stylesheet">
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery.widget.min.js"></script>
+    <script src="../js/jquery/jquery.mousewheel.js"></script>
+    <script src="../js/prettify/prettify.js"></script>
+    <script src="../js/holder/holder.js"></script>
+    <script src="../js/load-metro.js"></script>
+    <script src="../js/docs.js"></script>
+    <script src="../js/github.info.js"></script>
+    <script src="../js/metro/metro-scroll.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#button1").click(function(){
+                var price=$("#input0").val();
+                var itemcode=$("#input1").val();
+                var countercode=$("#input2").val();
+//                alert(itemcode+" "+countercode);
+                if(!price){
+                    alert("输入price");
+                    return;
+                }
+                if(!itemcode){
+                    alert("输入itemcode");
+                    return;
+                }
+                if(!countercode){
+                    alert("输入柜号");
+                    return;
+                }
+                $.ajax({
+                    'url': '/super/testToCounter',
+                    'type': 'get',
+                    'data': {MEMBERPRICE:price,STORECHECKEDPRICE:price,STORETEMPPRICE:price,ITEMCODE:itemcode,COUNTERCODE:countercode},
+                    'datatype': 'html',
+                    'timeout': 10000,
+                    'error': function (msg) {
+                        alert("到柜失败!"+JSON.stringify(msg));
+                        return;
+                    },
+                    'success': function (msg) {
+                        if(msg.status){
+                            alert("成功"+JSON.stringify(msg));
+                        }
+                        else{
+                            alert("到柜失败!"+JSON.stringify(msg));
+                            return;
+                        }
+                    }
+                });
+            })
+
+            $("#button2").click(function(){
+                var ordercode1=$("#input3").val();
+                var ordercode2=$("#input4").val();
+                var ordercode3=$("#input5").val();
+                var isonlinepay=document.getElementById("checkbox1").checked;
+
+//                alert(ordercode1+" "+ordercode2+" "+ordercode3+" "+isonlineorder);
+
+                var options={}
+                options.PAYMENTMODE=isonlinepay?1:0;
+                options.ORDERCODES=[];
+                if(ordercode1) options.ORDERCODES.push(ordercode1);
+                if(ordercode2) options.ORDERCODES.push(ordercode2);
+                if(ordercode3) options.ORDERCODES.push(ordercode3);
+
+                $.ajax({
+                    'url': '/super/testPay',
+                    'type': 'post',
+                    'data': options,
+                    'datatype': 'html',
+                    'timeout': 10000,
+                    'error': function (msg) {
+                        alert("支付失败!"+JSON.stringify(msg));
+                        return;
+                    },
+                    'success': function (msg) {
+                        if(msg.status){
+                            alert("支付成功"+JSON.stringify(msg));
+                        }
+                        else{
+                            alert("支付失败!"+JSON.stringify(msg));
+                            return;
+                        }
+                    }
+                });
+            })
+
+            $("#button3").click(function(){
+                var orderorgroupcode=$("#input6").val();
+
+                $.ajax({
+                    'url': '/super/rollbackPaid',
+                    'type': 'get',
+                    'data': {orderorgroupcode:orderorgroupcode},
+                    'datatype': 'html',
+                    'timeout': 10000,
+                    'error': function (msg) {
+                        alert("回滚失败!"+JSON.stringify(msg));
+                        return;
+                    },
+                    'success': function (msg) {
+                        if(msg.status){
+                            alert("回滚成功"+JSON.stringify(msg));
+                        }
+                        else{
+                            alert("回滚失败!"+JSON.stringify(msg));
+                            return;
+                        }
+                    }
+                });
+            })
+        })
+    </script>
+
+</head>
+<body class="metro">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp ">
+            <div>
+                <input id="input0" placeholder="柜价格"/>
+                <input id="input1" placeholder="sku编码"/>
+                <input id="input2" placeholder="柜号"/>
+                <button id="button1"> 到柜 </button>
+            </div>
+            <br><br><br>
+            输入单个线上订单或者若干线下订单:
+            <div>
+                <input id="input3" placeholder="订单1"/>
+                <input id="input4" placeholder="订单2"/>
+                <input id="input5" placeholder="订单3"/>
+                <button id="button2"> 支付 </button>
+                <small> (是:手机银联支付,否:pos机线下支付) </small>
+                <input id="checkbox1" type="checkbox" >
+            </div>
+            <br><br><br>
+            <div>
+                <form action="http://116.228.21.162:9127/umsFrontWebQmjf/infoCheckPay!getOrderCheck.ac"
+                      method="post" id="form1" >
+                    <table >
+                        <tr>
+                            <td>签名：</td><td><input id="merSign" name="merSign" type="text" style="width:500px"></td>
+                        </tr>
+                        <tr>
+                            <td>特 征码 ：</td><td><input id="chrCode" name="chrCode" type="text" style="width:500px"></td>
+                        </tr>
+                        <tr>
+                            <td>订单号：</td><td><input id="tranId" name="tranId" type="text" style="width:500px" ></td>
+                        </tr>
+                        <tr>
+                            <td> 商 户 地 址 ： </td><td><input id="url" name="url" type="text"
+                                                  value="http://www.baidu.com" style="width:500px"></td>
+                        </tr>
+                        <tr>
+                            <td><s:property value="error"/></td>
+                        </tr>
+                        <tr>
+                            <td><input id="sub" type="submit" value="提交" >
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <br><br><br>
+            将已支付的订单回滚到未支付状态
+            <div>
+                <input id="input6" placeholder="已支付的订单(组)号"/>
+                <button id="button3"> 回滚 </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="product" content="Metro UI CSS Framework">
+
+
+<link href="../css/metro-bootstrap.css" rel="stylesheet">
+<link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+<link href="../css/iconFont.css" rel="stylesheet">
+<link href="../css/docs.css" rel="stylesheet">
+<link href="../js/prettify/prettify.css" rel="stylesheet">
+<!--<link href="../css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">-->
+<script src="../js/load-metro.js"></script>
+<!--<script src="../js/jquery/jquery.min.js"></script>-->
+
+<link rel="stylesheet" type="text/css" media="screen"
+      href="../js/jquery.jqGrid-4.6.0/css/themes/redmond/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css"/>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+
+<script src="../js/jquery/jquery.widget.min.js"></script>
+<script src="../js/jquery/jquery.mousewheel.js"></script>
+<script src="../js/prettify/prettify.js"></script>
+<script src="../js/holder/holder.js"></script>
+<script src="../js/docs.js"></script>
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+
+<script src="../js/metro.js"></script>
+<script src="../js/github.js"></script>
+
+<script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+
+
+<script src="../js/metro/metro-scroll.js"></script>
+<script src="../js/district/selectdistrict.js"></script>
+<script src="../js/ukey.js"></script>
+<script>
+
+    Date.prototype.Format = function (fmt) { //author: meizz
+        var o = {
+            "M+": this.getMonth() + 1,                 //月份
+            "d+": this.getDate(),                    //日
+            "h+": this.getHours(),                   //小时
+            "m+": this.getMinutes(),                 //分
+            "s+": this.getSeconds(),                 //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds()             //毫秒
+        };
+        if (/(y+)/.test(fmt))
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+    $(document).ready(function () {
+        //assistantList获取
+        var assMap={};
+        <% assistantList.forEach(function(assistant){ %>
+        var assid= '<%= assistant.SALESMANCODE %>';
+        var name= '<%= assistant.SALESMANNAME %>';
+        assMap[assid]=name;
+        <% }); %>
+//        alert(JSON.stringify(assMap));
+
+
+        jQuery("#buyTable1").jqGrid({
+            url:"/orders/getOnlineOrderUnpay",
+            datatype: "json",
+            height: 200,
+            width: window.screen.availWidth > 1140 ? 1020 : 820,
+            autowidth: true,
+            shrinkToFit: true,
+            colNames: [
+                "订单编码",
+                "总价",
+                "app用户",
+                "联系方式",
+                "自提或配送",
+                "支付方式",
+                "下单时间",
+                ""
+            ],
+            colModel: [
+                {name: 'ONLINEORDERCODE', index: 'ONLINEORDERCODE',width:180},
+                {name: 'FINALPRICE', index: 'FINALPRICE',width:100,align:'right',formatter:'number'},
+                {name: 'USERCODE', index: 'USERCODE',width:90,align:'center'},
+                {name: 'TELEPHONE', index: 'TELEPHONE'},
+                {name: 'DELIVERYMODE', index: 'DELIVERYMODE',width:80,formatter: deliveryFormat},
+                {name: 'PAYMENTMODE', index: 'PAYMENTMODE',width:80,formatter: 'select', edittype: "select", editoptions: {value: "0:现场付款;1:在线付款;2:货到付款"}},
+                {name: 'TIME', index: 'TIME',formatter:dateFormat},
+                {name: 'ONLINEORDERCODE', index: 'ONLINEORDERCODE',align:'center', width:90 ,sortable: false, formatter: conFormat1}
+            ],
+            rowNum: 10,
+            rowList: [10, 30, 50],
+            pager: '#buyDiv1',
+            viewrecords: true,
+            sortname: 'TIME',
+            sortorder: "desc",
+            caption: "",
+            fitColumns: true,
+            editurl: 'clientArray',
+            onSelectRow: function () {
+
+            },
+            onSelectAll: function () {
+
+            },
+            loadComplete: function () {
+
+            },
+            gridComplete: function () {
+
+            }
+        });
+        jQuery("#buyTable1").jqGrid('navGrid', "#buyDiv1", {search: false, edit: false, add: false, del: false})
+        jQuery("#buyTable1").jqGrid('setGridParam', {data: []}).trigger('reloadGrid');
+
+
+        jQuery("#buyTable2").jqGrid({
+            url:"/orders/getOnlineOrderConfirmable",
+            datatype: "json",
+            height: 240,
+            width: window.screen.availWidth > 1140 ? 1020 : 820,
+            autowidth: true,
+            shrinkToFit: true,
+            colNames: [
+                "订单编码",
+                "总价",
+                "app用户",
+                "联系方式",
+                "自提或配送",
+                "支付方式",
+                "下单时间",
+                ""
+            ],
+            colModel: [
+                {name: 'ONLINEORDERCODE', index: 'ONLINEORDERCODE',width:180},
+                {name: 'FINALPRICE', index: 'FINALPRICE',width:100,align:'right',formatter:'number'},
+                {name: 'USERCODE', index: 'USERCODE',width:90,align:'center'},
+                {name: 'TELEPHONE', index: 'TELEPHONE'},
+                {name: 'DELIVERYMODE', index: 'DELIVERYMODE',width:80,formatter: deliveryFormat},
+                {name: 'PAYMENTMODE', index: 'PAYMENTMODE',width:80,formatter: 'select', edittype: "select", editoptions: {value: "0:现场付款;1:在线付款;2:货到付款"}},
+                {name: 'TIME', index: 'TIME',formatter:dateFormat},
+                {name: 'ONLINEORDERCODE', index: 'ONLINEORDERCODE',align:'center', width:90 ,sortable: false, formatter: conFormat1}
+            ],
+            rowNum: 10,
+            rowList: [10, 30, 50],
+            pager: '#buyDiv2',
+            viewrecords: true,
+            sortname: 'TIME',
+            sortorder: "desc",
+            caption: "",
+            fitColumns: true,
+            editurl: 'clientArray',
+            onSelectRow: function () {
+
+            },
+            onSelectAll: function () {
+
+            },
+            loadComplete: function () {
+
+            },
+            gridComplete: function () {
+
+            }
+        });
+        jQuery("#buyTable2").jqGrid('navGrid', "#buyDiv2", {search: false, edit: false, add: false, del: false})
+        jQuery("#buyTable2").jqGrid('setGridParam', {data: []}).trigger('reloadGrid');
+
+
+        jQuery("#orderTable").jqGrid({
+            url:"/orders/getOnlineOrderAcceptedToday",
+            datatype: "json",
+            height: 360,
+            width: window.screen.availWidth > 1140 ? 1000 : 800,
+//            autowidth: true,
+            shrinkToFit: true,
+            colNames: [
+                "订单编码",
+                "总价",
+                "app用户",
+                "联系方式",
+                "自提或配送",
+                "支付方式",
+                "接单营业员",
+                "下单时间",
+                "订单状态",
+                ""
+            ],
+            colModel: [
+                {name: 'ONLINEORDERCODE', index: 'ONLINEORDERCODE',width:200},
+                {name: 'FINALPRICE', index: 'FINALPRICE',width:100,align:'right',formatter:'number'},
+                {name: 'USERCODE', index: 'USERCODE',width:90,align:'center'},
+                {name: 'TELEPHONE', index: 'TELEPHONE'},
+                {name: 'DELIVERYMODE', index: 'DELIVERYMODE',width:80,formatter: deliveryFormat},
+                {name: 'PAYMENTMODE', index: 'PAYMENTMODE',width:80,formatter: 'select', edittype: "select", editoptions: {value: "0:现场付款;1:在线付款;2:货到付款"}},
+                {name: 'SALESMANCODE', index: 'SALESMANCODE',width:80,formatter:assFormat},
+                {name: 'TIME', index: 'TIME',formatter:dateFormat},
+                {name: 'ORDERSTATE', index: 'ORDERSTATE',width:80,formatter:stateFormat},
+                {name: 'ONLINEORDERCODE', index: 'ONLINEORDERCODE',align:'center', width:90 ,sortable: false, formatter: conFormat2}
+            ],
+            rowNum: 30,
+            rowList: [10, 30, 50],
+            pager: '#orderDiv',
+            viewrecords: true,
+            sortname: 'TIME',
+            sortorder: "desc",
+            caption: "",
+            fitColumns: true,
+            editurl: 'clientArray',
+            onSelectRow: function () {
+
+            },
+            onSelectAll: function () {
+
+            },
+            loadComplete: function () {
+
+            },
+            gridComplete: function () {
+                var rowdata = $("#orderTable").jqGrid('getRowData');
+                var rowid = $("#orderTable").jqGrid('getDataIDs');
+                for(var i = 0; i < rowdata.length; i++) {
+                    var data = rowdata[i].ORDERSTATE;
+                    var id = rowid[i];
+                    if(data == "未支付") {
+                        //未支付-蓝色
+                        $("#orderTable").find("tr[id = '" + id + "']").find("td").css("background-color", "#97CBFF");
+                    } else if(data == "待确认") {
+                        //待确认-紫色
+                        $("#orderTable").find("tr[id = '" + id + "']").find("td").css("background-color", "#FF44FF");
+                    } else if(data == "待别柜确认") {
+                        //待别柜确认-黄色
+                        $("#orderTable").find("tr[id = '" + id + "']").find("td").css("background-color", "#FFE66F");
+                    } else if(data == "已确认") {
+                        //已确认-绿色
+                        $("#orderTable").find("tr[id = '" + id + "']").find("td").css("background-color", "#79FF79");
+                    } else if(data == "交易成功") {
+                        //交易完成-白色
+                        $("#orderTable").find("tr[id = '" + id + "']").find("td").css("background-color", "#FFFFFF");
+                    } else if(data == "交易关闭") {
+                        //交易关闭-灰色
+                        $("#orderTable").find("tr[id = '" + id + "']").find("td").css("background-color", "#d0d0d0");
+                    }
+                }
+            }
+        });
+        jQuery("#orderTable").jqGrid('navGrid', "#orderDiv", {search: false, edit: false, add: false, del: false})
+        jQuery("#orderTable").jqGrid('setGridParam', {data: []}).trigger('reloadGrid');
+
+        function stateFormat(cellvalue, options, rowObject){
+//            "0:未支付;4:支付完成;5:支付完成;6:支付完成;7:支付完成;8:交易成功;9:交易关闭;10:交易关闭;11:交易关闭;12:交易关闭;13:交易关闭"
+            var orderstate=rowObject.ORDERSTATE;
+            var confirmstate=rowObject.CONFIRMSTATE;
+            var deliverymode=rowObject.DELIVERYMODE;
+            var paymentmode=rowObject.PAYMENTMODE;
+
+            if(orderstate==1 && paymentmode!=2){
+                return "未支付";
+            }
+            else if((orderstate==2 || (orderstate==1 && paymentmode==2)) && confirmstate==0){
+                return "待确认";
+            }
+            else if((orderstate==2 || (orderstate==1 && paymentmode==2)) && confirmstate==1){
+                return "待别柜确认";
+            }
+            else if(orderstate==3||orderstate==5||orderstate==6||orderstate==7){
+                return "已确认"
+            }
+            else if(orderstate==8){
+                return "交易成功"
+            }
+            else{
+                return "交易关闭"
+            }
+        }
+
+        function assFormat(cellvalue, options, rowObject) {
+            var name=assMap[cellvalue];
+            if(name) return name;
+            else if(cellvalue) return cellvalue;
+            else return "";
+        }
+
+        function dateFormat(cellvalue, options, rowObject) {
+            if (!cellvalue) return '';
+            return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+        }
+
+        function numFormat(cellvalue, options, rowObject) {
+            //            alert(JSON.stringify(rowObject));
+            var id=rowObject.id;
+            var str = '<div id="spinnerDiv_'+id+'" onclick="changeNum(this)">'+
+                    '<input class="myspinner" id="spinner_'+id+'" name="value1" value="'+cellvalue+'" min=1 style="width:50px" onkeyup="changeNum(this)" >'+
+                    '</div>';
+
+            return str;
+        }
+
+        function deliveryFormat(cellvalue, options, rowObject) {
+            if(cellvalue==0) return "自提";
+            var ordercode=rowObject.ONLINEORDERCODE;
+            var str="配送"+
+                    "<i class='icon-location-3 on-right on-left' " +
+                    "style='cursor:hand; color: green;'  " +
+                    "onmouseout='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand;color: green;&quot;)' " +
+                    "onmouseover='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand; color: red; &quot;)' " +
+                    "id='delivery_" + ordercode + "' onclick='clickDelivery(this)'></i>";
+            return str;
+        }
+
+        function delFormat(cellvalue, options, rowObject) {
+//            alert(JSON.stringify(rowObject));
+            var str = "<i class='icon-cancel-2 on-right on-left' " +
+                    "style='cursor:hand;background: darkRed; color: white; padding: 4px; border-radius: 50%;'  " +
+                    "onmouseout='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand;background: darkRed; color: white; padding: 4px; border-radius: 50%;&quot;)' " +
+                    "onmouseover='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand;background: Red; color: white; padding: 4px; border-radius: 50%;&quot;)' " +
+                    "id='del_" + cellvalue + "' onclick='clickDel(this)'></i>";
+
+            return str;
+        }
+
+        function conFormat1(cellvalue, options, rowObject) {
+//            alert(JSON.stringify(rowObject));
+            var orderstate=rowObject.ORDERSTATE;
+            var confirmstate=rowObject.CONFIRMSTATE;
+            var deliverymode=rowObject.DELIVERYMODE;
+            var paymentmode=rowObject.PAYMENTMODE;
+
+            var flag=null;
+            var color=null;
+            if(orderstate==1 && paymentmode!=2){
+                flag="未支付";
+                color='orange';
+            }
+            else if((orderstate==2 || (orderstate==1 && paymentmode==2)) && confirmstate==0){
+                flag="待确认";
+                color='green'
+            }
+            var str = '<button id="content_'+cellvalue+'" value="'+flag+'"  class="bg-'+color+' fg-white" style="width:45px;height:13px;margin-top:2px;margin-bottom:2px" onclick="showContent1(this)">查看明细</button>';
+
+            return str;
+        }
+
+        function conFormat2(cellvalue, options, rowObject) {
+//            alert(JSON.stringify(rowObject));
+            var str = '<button id="content_'+cellvalue+'" class="bg-lightBlue fg-white" style="width:45px;height:13px;margin-top:2px;margin-bottom:2px" onclick="showContent2(this)">查看明细</button>';
+
+            return str;
+        }
+
+        function dateFormat(cellvalue, options, rowObject) {
+            if (!cellvalue) return '';
+            return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+        }
+
+        function delFormat(cellvalue, options, rowObject) {
+            var str = "<input id='del_" + cellvalue + "' type='button'>删除<input/>";
+            return str;
+        }
+
+    });
+
+    var showContent1=function(element){
+        var flag=element.value;
+        var ordercode=element.id.replace("content_","");
+//        alert(flag);
+//        alert(ordercode);
+        $.ajax({
+            'url': '/orders/getOnlineContentByOrder',
+            'type': 'get',
+            'data': {ONLINEORDERCODE:ordercode},
+            'datatype': 'json',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("获取订单明细失败");
+                return;
+            },
+            'success': function (msg) {
+                if(msg.status==false){
+                    alert("获取订单明细失败");
+                    return;
+                }
+                else{
+//                            alert(JSON.stringify(msg.data));
+                    var contents=msg.data;
+                    $.Dialog({
+                        shadow: true,
+                        overlay: true,
+                        title: '',
+                        draggable: true,
+                        width: 900,
+                        height: 220,
+                        padding: 10,
+                        onShow: function (_dialog) {
+                            var content=null;
+                            if(flag=='待确认'){
+                                content = '<div style="width:100%">' +
+                                        '<table style="width:100%;margin-bottom: 7px">' +
+                                        '<tr style="width:100%">' +
+                                        '<td>' +
+                                        ' <table id="contentTable"></table>' +
+                                        '</td>' +
+                                        '</tr>' +
+                                        ' </table>' +
+                                        '</div>'+
+                                        '<div style="width:100%">' +
+                                        '<select id="selAssistant_'+ordercode+'" style="width:100px;height:25px;margin-bottom: 6px;">' +
+                                        '<option value="">------操作员*------</option>' +
+                                        '<% if (assistantList.length) { %>' +
+                                        '<% assistantList.forEach(function(assistant){ %>' +
+                                        '<option value="<%= assistant.SALESMANCODE %>"> <%= assistant.SALESMANNAME %> </option>' +
+                                        '<% }) %>' +
+                                        '<% } %>' +
+                                        '</select>' +
+                                        '<button id="confirmOrder_'+ordercode+'" class="bg-green fg-white" style="width:100px;margin-bottom: 6px;margin-left: 8px" onclick="confirmOrder(this);">接单</button>'+
+                                        '<button id="cancelOrder_'+ordercode+'" class="bg-orange fg-white" style="width: 100px;margin-bottom: 6px;margin-left: 8px" onclick="cancelOrder(this);">拒绝</button>'+
+                                        '</div>';
+                            }
+                            else{
+                                content = '<div style="width:100%">' +
+                                        '<table style="width:100%;margin-bottom: 7px">' +
+                                        '<tr style="width:100%">' +
+                                        '<td>' +
+                                        ' <table id="contentTable"></table>' +
+                                        '</td>' +
+                                        '</tr>' +
+                                        ' </table>' +
+                                        '</div>'+
+                                        '<div style="width:100%">' +
+                                        '<select id="selAssistant_'+ordercode+'" style="width:100px;height:25px;margin-bottom: 6px;">' +
+                                        '<option value="">------操作员*------</option>' +
+                                        '<% if (assistantList.length) { %>' +
+                                        '<% assistantList.forEach(function(assistant){ %>' +
+                                        '<option value="<%= assistant.SALESMANCODE %>"> <%= assistant.SALESMANNAME %> </option>' +
+                                        '<% }) %>' +
+                                        '<% } %>' +
+                                        '</select>' +
+                                        '<button id="cancelOrder_'+ordercode+'" class="bg-orange fg-white" style="width: 100px;margin-bottom: 6px;margin-left: 8px" onclick="cancelOrder(this);">拒绝</button>'+
+                                        '</div>';
+                            }
+
+
+                            $.Dialog.title("订单详情");
+                            $.Dialog.content(content);
+                            $.Metro.initInputs();
+
+                            jQuery("#contentTable").jqGrid({
+                                datatype: "local",
+                                height: 150,
+                                width: 900,
+                                autowidth: true,
+                                shrinkToFit: true,
+                                colNames: [
+                                    "商品编码",
+                                    "SKC编码",
+                                    "名称",
+                                    "品牌",
+                                    "颜色",
+                                    "尺码",
+                                    "单价",
+                                    "数量"
+                                ],
+                                colModel: [
+                                    {name: 'ITEMCODE', index: 'ITEMCODE'},
+                                    {name: 'SKCCODE', index: 'SKCCODE'},
+                                    {name: 'ITEMNAME', index: 'ITEMNAME'},
+                                    {name: 'BRANDNAME', index: 'BRANDNAME'},
+                                    {name: 'COLOR', index: 'COLOR'},
+                                    {name: 'SIZE', index: 'SIZE'},
+//                                    {name: 'PRICE', index: 'PRICE', sortable: false},
+                                    {name: 'PRICE', index: 'PRICE',align:'right',formatter:'number'},
+                                    {name: 'NUM', index: 'NUM'}
+                                ],
+                                rowNum: 10000,
+                                rowList: [10000],
+                                pager: '',
+                                viewrecords: true,
+                                sortname: 'ITEMCODE',
+                                sortorder: "asc",
+                                caption: "",
+                                onSelectRow: function () {
+
+                                }
+                            });
+                            $("#contentTable").jqGrid('setGridParam', {data: contents}).trigger('reloadGrid');
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    var showContent2=function(element){
+        var ordercode=element.id.replace("content_","");
+//        alert(ordercode);
+        $.ajax({
+            'url': '/orders/getOnlineContentByOrder',
+            'type': 'get',
+            'data': {ONLINEORDERCODE:ordercode},
+            'datatype': 'json',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("获取订单明细失败");
+                return;
+            },
+            'success': function (msg) {
+                if(msg.status==false){
+                    alert("获取订单明细失败");
+                    return;
+                }
+                else{
+//                            alert(JSON.stringify(msg.data));
+                    var contents=msg.data;
+                    $.Dialog({
+                        shadow: true,
+                        overlay: true,
+                        title: '',
+                        draggable: true,
+                        width: 900,
+                        height: 220,
+                        padding: 10,
+                        onShow: function (_dialog) {
+                            var content = '<div style="width:100%">' +
+                                    '<table style="width:100%;margin-bottom: 7px">' +
+                                    '<tr style="width:100%">' +
+                                    '<td>' +
+                                    ' <table id="contentTable"></table>' +
+                                    '</td>' +
+                                    '</tr>' +
+                                    ' </table>' +
+                                    '</div>';
+
+                            $.Dialog.title("订单详情");
+                            $.Dialog.content(content);
+                            $.Metro.initInputs();
+
+                            jQuery("#contentTable").jqGrid({
+                                datatype: "local",
+                                height: 150,
+                                width: 900,
+                                autowidth: true,
+                                shrinkToFit: true,
+                                colNames: [
+                                    "商品编码",
+                                    "SKC编码",
+                                    "供应商SKC编码",
+                                    "名称",
+                                    "品牌",
+                                    "颜色",
+                                    "尺码",
+                                    "单价",
+                                    "数量"
+                                ],
+                                colModel: [
+                                    {name: 'ITEMCODE', index: 'ITEMCODE'},
+                                    {name: 'SKCCODE', index: 'SKCCODE'},
+                                    {name: 'MERCHANTSKCCODE', index: 'MERCHANTSKCCODE'},
+                                    {name: 'ITEMNAME', index: 'ITEMNAME'},
+                                    {name: 'BRANDNAME', index: 'BRANDNAME'},
+                                    {name: 'COLOR', index: 'COLOR'},
+                                    {name: 'SIZE', index: 'SIZE'},
+//                                    {name: 'PRICE', index: 'PRICE', sortable: false},
+                                    {name: 'PRICE', index: 'PRICE',align:'right',formatter:'number'},
+                                    {name: 'NUM', index: 'NUM'}
+                                ],
+                                rowNum: 10000,
+                                rowList: [10000],
+                                pager: '',
+                                viewrecords: true,
+                                sortname: 'ITEMCODE',
+                                sortorder: "asc",
+                                caption: "",
+                                onSelectRow: function () {
+
+                                }
+                            });
+                            $("#contentTable").jqGrid('setGridParam', {data: contents}).trigger('reloadGrid');
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    var confirmOrder=function(element){
+//        alert(element.id);
+        var ordercode=element.id.replace("confirmOrder_","");
+        var assid=$("#selAssistant_"+ordercode).val();
+        if(!assid||assid==""){
+            alert("请选择营业员");
+            return;
+        }
+        var options={ONLINEORDERCODE:ordercode,SALESMANCODE:assid};
+        var stext=sign($("#rand").val());
+        var params={data:options,sign:stext};
+        if(stext.length<5){
+            alert("使用U盾签名出错，请稍后重试或联系技术人员");
+            return;
+        }
+        $.ajax({
+            'url': '/orders/confirmOnlineOrder',
+            'type': 'post',
+            'data': params,
+            'datatype': 'json',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("接单失败!")
+                return;
+            },
+            'success': function (msg) {
+                if(msg.status==false){
+                    alert("接单失败!")
+                    return;
+                }
+                else{
+                    alert(JSON.stringify(msg.data));
+                    var res=msg.data;
+                    if(res==0){
+                        alert("接单成功,等待分摊本单的其他柜接单!");
+                    }
+                    else if(res==1){
+                        alert("接单成功!");
+                    }
+                    else if(res==2){
+                        alert("接单时已经被分摊本单的其他柜拒绝!")
+                    }
+                    $.Dialog.close();
+                    $("#buyTable1").trigger('reloadGrid');
+                    $("#buyTable2").trigger('reloadGrid');
+                    $("#orderTable").trigger('reloadGrid');
+                }
+            }
+        });
+    }
+
+    var cancelOrder=function(element){
+//        alert(element.id);
+        var ordercode=element.id.replace("cancelOrder_","");
+        var assid=$("#selAssistant_"+ordercode).val();
+        if(!assid||assid==""){
+            alert("请选择营业员");
+            return;
+        }
+        var options={ONLINEORDERCODE:ordercode,SALESMANCODE:assid};
+        var params={data:options,sign:sign($("#rand").val())};
+        $.ajax({
+            'url': '/orders/cancelOnlineOrder',
+            'type': 'post',
+            'data': params,
+            'datatype': 'json',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("取消订单失败!")
+                return;
+            },
+            'success': function (msg) {
+                if(msg.status==false){
+                    alert("取消订单失败!")
+                    return;
+                }
+                else{
+                    alert("取消订单成功!");
+                    $.Dialog.close();
+                    $("#buyTable1").trigger('reloadGrid');
+                    $("#buyTable2").trigger('reloadGrid')
+                    $("#orderTable").trigger('reloadGrid');
+                }
+            }
+        });
+    }
+
+    var clickDelivery=function(element){
+        var ordercode=element.id.replace("delivery_","");
+//        alert(ordercode);
+        $.ajax({
+            'url': '/orders/getSiteInfoByOrder',
+            'type': 'get',
+            'data': {ONLINEORDERCODE:ordercode},
+            'datatype': 'json',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("获取配送地址信息失败!");
+                return;
+            },
+            'success': function (msg) {
+                if(msg.status==false){
+                    alert("获取配送地址信息失败!");
+                    return;
+                }
+                else{
+//                    alert(JSON.stringify(msg.data));
+                    var siteinfo =msg.data;
+                    if(!siteinfo||Object.keys(siteinfo).length==0){
+                        alert("没有找到配送地址信息!");
+                        return;
+                    }
+                    $.Dialog({
+                        shadow: true,
+                        overlay: true,
+                        title: '',
+                        draggable: true,
+                        width: 600,
+                        height: 200,
+                        padding: 10,
+                        onShow: function (_dialog) {
+                            var content =
+                                    '<table width="100%" > '+
+                                    '<tr style="width:100%"> '+
+                                    '<td style="width:20%;height:42px"> '+
+                                    '<label class="col-sm-2 control-label" style="width:150px"> 收货人: </label>'+
+                                    '<input id="site_person_'+ordercode+'" type="text" data-state="info" '+
+                                    '   placeholder="收货人*" style="height:30px;width:90%" readonly/> '+
+                                    '</td> '+
+                                    '<td style="width:20%;height:42px"> '+
+                                    '<label class="col-sm-2 control-label" style="width:150px"> 收货人手机: </label>'+
+                                    '<input id="site_telephone_'+ordercode+'" type="text" data-state="info" '+
+                                    '   placeholder="联系方式*" style="height:30px;width:90%" readonly/> '+
+                                    '</td> '+
+                                    ' '+
+                                    '<td style="width:20%;height:42px"> '+
+                                    '<label class="col-sm-2 control-label" style="width:150px"> 省: </label>'+
+                                    '<input id="selProvince_'+ordercode+'" type="text" data-state="info" '+
+                                    '   placeholder="省" style="height:30px;width:90%" readonly/> '+
+                                    '</td> '+
+                                    '<td style="width:20%;height:42px"> '+
+                                    '<label class="col-sm-2 control-label" style="width:150px"> 市: </label>'+
+                                    '<input id="selCity_'+ordercode+'" type="text" data-state="info" '+
+                                    '   placeholder="市" style="height:30px;width:90%" readonly/> '+
+                                    '</td> '+
+                                    '<td style="width:20%;height:42px"> '+
+                                    '<label class="col-sm-2 control-label" style="width:150px"> 区: </label>'+
+                                    '<input id="selArea_'+ordercode+'" type="text" data-state="info" '+
+                                    '   placeholder="区" style="height:30px;width:90%" readonly/> '+
+                                    '</td> '+
+                                    '</tr> '+
+                                    ' '+
+                                    '<tr style="width:100%"> '+
+                                    '<td colspan="5"> '+
+                                    '<label class="col-sm-2 control-label" style="width:200px"> 详细地址: </label>'+
+                                    '<input id="site_detail_'+ordercode+'" type="text" data-state="info" placeholder="详细地址*" '+
+                                    '   style="height:30px;width:98%" readonly/> '+
+                                    '</td> '+
+                                    '</tr> '+
+                                    '</table>';
+
+                            $.Dialog.title("配送地址");
+                            $.Dialog.content(content);
+                            $.Metro.initInputs();
+
+                            $("#site_person_"+ordercode).val(siteinfo.PERSON);
+                            $("#site_telephone_"+ordercode).val(siteinfo.TELEPHONE);
+                            $("#selProvince_"+ordercode).val(siteinfo.PROVINCE);
+                            $("#selCity_"+ordercode).val(siteinfo.CITY);
+                            $("#selArea_"+ordercode).val(siteinfo.DISTRICT);
+                            $("#site_detail_"+ordercode).val(siteinfo.DETAIL);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
+</script>
+<title></title>
+<style type="text/css" class="init">
+    .ui-jqgrid,
+    .ui-jqgrid * {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        -ms-box-sizing: content-box;
+        -o-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+
+</head>
+<body class="metro" onload="load()">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp ">
+            <div class="tab-control" data-role="tab-control">
+                <ul class="tabs">
+                    <li class="active"><a href="#_page_1">接单</a></li>
+                    <li><a href="#_page_2">今日已接订单</a></li>
+                </ul>
+
+                <div class="frames">
+                    <div class="frame" id="_page_1">
+
+                        <nav class="breadcrumbs" style="margin-top: 2px">
+                            <ul>
+                                <li><a><i class="icon-diamond"></i></a><a>已支付/到付</a></li>
+                            </ul>
+                        </nav>
+                        <div style="width:100%">
+                            <table style="width:100%">
+                                <tr style="width:100%">
+                                    <td>
+                                        <table id="buyTable2"></table>
+                                        <div id="buyDiv2"></div>
+                                    </td>
+
+                                </tr>
+                            </table>
+                        </div>
+                        <br>
+                        <nav class="breadcrumbs" style="margin-top: 2px">
+                            <ul>
+                                <li><a><i class="icon-diamond"></i></a><a>未支付</a></li>
+                            </ul>
+                        </nav>
+                        <div style="width:100%">
+                            <table style="width:100%">
+                                <tr style="width:100%">
+                                    <td>
+                                        <table id="buyTable1"></table>
+                                        <div id="buyDiv1"></div>
+                                    </td>
+
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <div class="frame" id="_page_2">
+                        <div class="input-control text" style="width: 300px;">
+                            <input id="qry" type="text" data-state="info"
+                                   placeholder="关键字" />
+                            <button class="btn-search" id="search" value="搜索"/>
+                        </div>
+                        <br>
+                        <div style="width:100%">
+                            <table style="width:100%">
+                                <tr style="width:100%">
+                                    <td>
+                                        <table id="orderTable"></table>
+                                        <div id="orderDiv"></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<object id="plugin0" type="application/x-huijinsecurityplugin" width="0" height="0">
+    <param name="onload" value="pluginLoaded" />
+</object>
+<input id="rand" name="rand" type="hidden" value="<%= rand %>">
+
+</body>
+</html>
+

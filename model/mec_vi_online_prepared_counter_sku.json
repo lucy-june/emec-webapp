@@ -1,0 +1,28 @@
+{
+  "ITEMCODE": {
+    "type": "char(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "商品编码(mis系统编码)"
+  },
+  "COUNTERCODE": {
+    "type": "char(6)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "DEPTCODE": {
+    "type": "varchar(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "ONLINESTATE": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-未上线 1-上线",
+    "defaultValue": "0"
+  }
+}

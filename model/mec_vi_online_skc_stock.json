@@ -1,0 +1,15 @@
+{
+  "SKCCODE": {
+    "type": "char(10)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "编号"
+  },
+  "AMOUNT": {
+    "type": "decimal(32,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  }
+}

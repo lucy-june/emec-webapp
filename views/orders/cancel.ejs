@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+    <meta name="description" content="Simple responsive css framework">
+    <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+    <link href="../css/metro-bootstrap.css" rel="stylesheet">
+    <link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/iconFont.css" rel="stylesheet">
+    <link href="../css/docs.css" rel="stylesheet">
+    <link href="../js/prettify/prettify.css" rel="stylesheet">
+    <link href="../css/jquery.dataTables.css" rel="stylesheet">
+    <link href="../css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">
+
+    <script src="../js/load-metro.js"></script>
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="../js/jquery/jquery.widget.min.js"></script>
+    <script src="../js/jquery/jquery.mousewheel.js"></script>
+    <script src="../js/prettify/prettify.js"></script>
+    <script src="../js/holder/holder.js"></script>
+    <script src="../js/docs.js"></script>
+
+    <script src="../js/metro/metro-scroll.js"></script>
+    <script src="../js/jquery.dataTables.js"></script>
+    <script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+    <script src="../js/ukey.js"></script>
+    <script>
+
+        var haha= function(msg){
+//            alert(JSON.stringify(msg));
+//            $("#ORDERID").val(msg["ORDERID"]);
+//            alert(JSON.stringify(msg.DETAILS));
+//                    "ITEMCODE": "1518506",
+//                    "ITEMNAME": "大衣",
+//                    "PRICE": 2380,
+//                    "MARKETPRICE": 2380,
+//                    "URL": "http://d01.res.meilishuo.net/pic/_o/27/cb/9d76c19c24bf2b9a3dfccd83fd5d_800_800.jpg",
+//                    "BRANDNAME": "BASICHOUSE(女装）",
+//                    "COLOR": "黑",
+//                    "SIZE": "38",
+//                    "SKCID": 5,
+//                    "COUNTERCODE": "000430",
+//                    "NUM": 1
+            var tableObj2 = document.getElementById("recordsTable2");
+            var hasAdviceListRows2 = tableObj2.rows.length;
+            if (hasAdviceListRows2 > 0) {
+                while (tableObj2.rows.length > 1) {
+                    tableObj2.deleteRow(1);
+                }
+            }
+            msg.DETAILS.forEach(function (dt) {
+                //将null字段转化为空字符串
+                var keys= Object.keys(dt)
+                for(var x=0;x<keys.length;x++){
+                    if(!dt[keys[x]])dt[keys[x]]="";
+                }
+                var str = "<tr ><td>"
+                        + dt["ITEMCODE"] + "</td><td>"
+                        + dt["ITEMNAME"] + "</td><td >"
+                        + dt["PRICE"] + "</td><td>"
+                        + dt["MARKETPRICE"] + "</td><td >"
+//                        + dt["URL"] + "</td><td>"
+                        + dt["BRANDNAME"] + "</td><td >"
+                        + dt["COLOR"] + "</td><td>"
+                        + dt["SIZE"] + "</td><td>"
+                        + dt["SKCID"] + "</td><td >"
+                        + dt["NUM"]
+                        + "</td> </tr> ";
+                $("#recordsTable2").append(str);
+            });
+        }
+
+        var test = function(){
+            var tableObj = document.getElementById("recordsTable");
+            var hasAdviceListRows = tableObj.rows.length;
+            if (hasAdviceListRows > 0) {
+                while (tableObj.rows.length > 1) {
+                    tableObj.deleteRow(1);
+                }
+            }
+            var tableObj2 = document.getElementById("recordsTable2");
+            var hasAdviceListRows2 = tableObj2.rows.length;
+            if (hasAdviceListRows2 > 0) {
+                while (tableObj2.rows.length > 1) {
+                    tableObj2.deleteRow(1);
+                }
+            }
+
+            var url = "../orders/getOwn?";
+//            url += "countercode=000430&";
+
+            if ($("#dateto").val())
+                url += "dateto=" + $("#dateto").val() + "&";
+            if ($("#datefrom").val())
+                url += "datefrom=" + $("#datefrom").val()
+
+
+            $.get(url, function (data, status) {
+                var ss = eval('(' + data + ')');
+                ss.data.forEach(function (dt) {
+                    //将null字段转化为空字符串
+                    var keys= Object.keys(dt)
+                    for(var x=0;x<keys.length;x++){
+                        if(!dt[keys[x]])dt[keys[x]]="";
+                    }
+                    if(dt["STATE"]==5||dt["STATE"]==6){}
+                    else{
+                        var str = "<tr id='TR" + dt["ORDERID"]
+                                +"'><td "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["ORDERID"] + "</td><td "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["ISONLINE"] + "</td><td "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["createdAt"] + "</td><td "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["STATE"] + "</td><td  "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["USERID"] + "</td><td "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["PAYMENTMODE"] + "</td><td  "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["DELIVERYMODE"] + "</td><td "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["DEPTCODE"] + "</td><td "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["NOTE"] + "</td><td>"
+                                + ((dt["STATE"]==1||dt["STATE"]==0)?("<button class='bg-darkCyan fg-white' onclick='hehe(&quot;"+dt["ORDERID"]+"&quot;)'>取消订单</button>"):"")
+                                + "</td> </tr> ";
+                        $("#recordsTable").append(str);
+                    }
+                });
+            });
+        }
+
+        var hehe = function(msg){
+//            alert(msg);
+            //var params={data:{"orderid":msg},sign:sign($("#rand").val())};
+            var stext=sign($("#rand").val());
+            var params={data:{"orderid":msg},sign:stext};
+            if(stext.length<5){
+                alert("使用U盾签名出错，请稍后重试或联系技术人员");
+                return;
+            }
+            $.ajax({
+                'url': '/orders/cancelOrder',
+                'type': 'post',
+                'data': params,
+                'datatype': 'html',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("删除订单失败！");
+                    return;
+                },
+                'success': function (msg) {
+                    alert("成功删除订单！");
+                    test();
+//                    var tableObj2 = document.getElementById("recordsTable2");
+//                    var hasAdviceListRows2 = tableObj2.rows.length;
+//                    if (hasAdviceListRows2 > 0) {
+//                        while (tableObj2.rows.length > 1) {
+//                            tableObj2.deleteRow(1);
+//                        }
+//                    }
+//                    $("#TR"+msg).remove();
+                    return;
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $("#datefrom").datepicker({
+                onSelect: function (dateText, inst) {
+                    $("#datefrom").datepicker("option", "minDate", dateText);
+                }
+            });
+            $("#dateto").datepicker({
+                onSelect: function (dateText, inst) {
+                    $("#dateto").datepicker("option", "maxDate", dateText);
+                }
+            });
+
+
+            $("#cancel").click(function () {
+                $("input").val("");
+                var tableObj = document.getElementById("recordsTable");
+                var hasAdviceListRows = tableObj.rows.length;
+                if (hasAdviceListRows > 0) {
+                    while (tableObj.rows.length > 1) {
+                        tableObj.deleteRow(1);
+                    }
+                }
+                var tableObj2 = document.getElementById("recordsTable2");
+                var hasAdviceListRows2 = tableObj2.rows.length;
+                if (hasAdviceListRows2 > 0) {
+                    while (tableObj2.rows.length > 1) {
+                        tableObj2.deleteRow(1);
+                    }
+                }
+            });
+
+            $("#query").click(function () {
+                var tableObj = document.getElementById("recordsTable");
+                var hasAdviceListRows = tableObj.rows.length;
+                if (hasAdviceListRows > 0) {
+                    while (tableObj.rows.length > 1) {
+                        tableObj.deleteRow(1);
+                    }
+                }
+                var tableObj2 = document.getElementById("recordsTable2");
+                var hasAdviceListRows2 = tableObj2.rows.length;
+                if (hasAdviceListRows2 > 0) {
+                    while (tableObj2.rows.length > 1) {
+                        tableObj2.deleteRow(1);
+                    }
+                }
+
+                var url = "../orders/getOwn?";
+                if ($("#dateto").val())
+                    url += "dateto=" + $("#dateto").val() + "&";
+                if ($("#datefrom").val())
+                    url += "datefrom=" + $("#datefrom").val()
+
+
+                $.get(url, function (data, status) {
+                    var ss = eval('(' + data + ')');
+                    ss.data.forEach(function (dt) {
+                        //将null字段转化为空字符串
+                        var keys= Object.keys(dt)
+                        for(var x=0;x<keys.length;x++){
+                            if(!dt[keys[x]])dt[keys[x]]="";
+                        }
+                        if(dt["STATE"]==5||dt["STATE"]==6){}
+                        else{
+                        var str = "<tr id='TR" + dt["ORDERID"]
+                                +"'><td "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["ORDERID"] + "</td><td "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["ISONLINE"] + "</td><td "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["createdAt"] + "</td><td "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["STATE"] + "</td><td  "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["USERID"] + "</td><td "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["PAYMENTMODE"] + "</td><td  "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["DELIVERYMODE"] + "</td><td "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["DEPTCODE"] + "</td><td "+ "onclick='haha("+ JSON.stringify(dt) + ")'>"
+                                + dt["NOTE"] + "</td><td>"
+                                + ((dt["STATE"]==1||dt["STATE"]==0)?("<button class='bg-darkCyan fg-white' onclick='hehe(&quot;"+dt["ORDERID"]+"&quot;)'>取消订单</button>"):"")
+                                + "</td> </tr> ";
+                        $("#recordsTable").append(str);
+                        }
+                    });
+                });
+            });
+
+
+        });
+    </script>
+
+    <!--<script>
+        //        var haha = function (msg) {
+        //            //            alert(JSON.stringify(msg));
+        //            $("#ORDERID").val(msg["ORDERID"]);
+        //
+        ////            var arr = [ "ITEMCODE", "BARCODE", "TERM", "INPUTPERSON",
+        ////                "BUSINESSMODE", "PROPERTY", "MERCHANTCODE", "BRANDCODE",
+        ////                "ITEMNAME", "ITEMSHORTNAME", "RETAILTYPECODE", "ITEMTYPECODE",
+        ////                "PRICE", "TAXRATE", "EXCISERATE", "CASING", "PRODUCTCODE",
+        ////                "SPECIFICATION", "UNIT", "ITEMCODETYPE", "AGENTCODE",
+        ////                "RETURNGOODS", "PRODUCINGAREA", "GRADE", "NETWEIGHT",
+        ////                "GROSSWEIGHT", "MARKETPRICE", "DESCRIPTION" ];
+        ////
+        ////            for (var k = 0; k < arr.length; k++) {
+        ////                $("#" + arr[k]).val(msg[arr[k]]);
+        ////            }
+        //        }
+
+        $(document).ready(function () {
+            $("#cancel").click(function () {
+                alert("&&&&&&&&&&&&&&&&&&");
+                $("input").val("");
+                var tableObj = document.getElementById("recordsTable");
+                var hasAdviceListRows = tableObj.rows.length;
+                if (hasAdviceListRows > 0) {
+                    while (tableObj.rows.length > 1) {
+                        tableObj.deleteRow(1);
+                    }
+                }
+
+                var tableObj2 = document.getElementById("recordsTable2");
+                var hasAdviceListRows2 = tableObj2.rows.length;
+                if (hasAdviceListRows2 > 0) {
+                    while (tableObj2.rows.length > 1) {
+                        tableObj2.deleteRow(1);
+                    }
+                }
+            });
+
+            $("#query").click(function () {
+                alert("#####");
+                var tableObj = document
+                        .getElementById("recordsTable");
+                var hasAdviceListRows = tableObj.rows.length;
+                if (hasAdviceListRows > 0) {
+                    while (tableObj.rows.length > 1) {
+                        tableObj.deleteRow(1);
+                    }
+                }
+
+                var tableObj2 = document.getElementById("recordsTable2");
+                var hasAdviceListRows2 = tableObj2.rows.length;
+                if (hasAdviceListRows2 > 0) {
+                    while (tableObj2.rows.length > 1) {
+                        tableObj2.deleteRow(1);
+                    }
+                }
+
+                var url = "../orders/getOwn?";
+               if ($("#dateto").val())
+                url += "dateto=" + $("#dateto").val() + "&";
+            if ($("#datefrom").val())
+                url += "datefrom=" + $("#datefrom").val()
+
+                alert("url");
+
+                $.get(url, function (data, status) {
+                    alert(data);
+                    var ss = eval('(' + data + ')');
+                    ss.forEach(function (dt) {
+                    //将null字段转化为空字符串
+                       var keys= Object.keys(dt)
+                       for(var x=0;x<keys.length;x++){
+                           if(!dt[keys[x]])dt[keys[x]]="";
+                       }
+                        var str = "<tr id='TR" + dt["ORDERID"]
+                                + "' onclick='haha("
+                                + JSON.stringify(dt) + ")'><td>"
+                                + dt["ORDERID"] + "</td><td>"
+                                + dt["ISONLINE"] + "</td><td >"
+                                + dt["createdAt"] + "</td><td>"
+                                + dt["STATE"] + "</td><td >"
+                                + dt["USERID"] + "</td><td>"
+                                + dt["PAYMENTMODE"] + "</td><td >"
+                                + dt["DELIVERYMODE"] + "</td><td>"
+                                + dt["SITEID"] + "</td><td >"
+                                + dt["DEPTCODE"] + "</td><td>"
+                                + dt["NOTE"] + "</td><td >"
+                                + "<button class='bg-darkCyan fg-white'>取消订单</button>"
+                                + "</td> </tr> ";
+                        $("#recordsTable").append(str);
+                    });
+                });
+            });
+        });
+
+    </script>-->
+    <title>Mec Demo</title>
+
+    <style type="text/css" class="init">
+        th, td {
+            white-space: nowrap;
+        }
+
+        div.dataTables_wrapper {
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="metro">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp ">
+
+            <div class="input-control switch" data-role="input-control"
+                 style="width: 100%">
+
+                <label class="inline-block" style="width: 110px"> 选择日期范围 </label>
+                <input id="datefrom"  data-state="info" placeholder=""
+                        style="height: 30px; width: 260px"/>
+                <label class="inline-block"
+                       style="width: 20px"> --- </label>
+                <input id="dateto"  data-state="info" placeholder=""
+                       style="height: 30px; width: 260px"/>
+                <button id="query" class="bg-darkCyan fg-white"
+                        style="width: 100px">查找
+                </button>
+                <button id="cancel" class="bg-darkOrange fg-white"
+                        style="width: 100px">取消
+                </button>
+            </div>
+            <br>
+
+            <div
+                    style="height: 400px; overflow: scroll; border: 2px solid #efeae3">
+                <table id="recordsTable" class="table striped bordered hovered">
+                    <thead>
+                    <tr class="info">
+
+                        <!--
+                        "ORDERID": "014072653663000001",
+                        "ISONLINE": 0,
+                        "createdAt": "2014-07-26 20:06",
+                        "STATE": 1,
+                        "USERID": null,
+                        "PAYMENTMODE": 0,
+                        "DELIVERYMODE": 0,
+                        "SITEID": null,
+                        "DEPTCODE": null,
+                        "NOTE": null,
+                        -->
+
+                        <th>订单编号</th>
+                        <th>线上单与否</th>
+                        <th>下单时间</th>
+                        <th>订单状态</th>
+                        <th>顾客ID</th>
+                        <th>支付方式</th>
+                        <th>发货方式</th>
+                        <th>所属门店</th>
+                        <th>订单备注</th>
+                        <th>操作</th>
+
+                    </tr>
+
+                    </thead>
+                </table>
+            </div>
+            <br>
+
+            <div class="panel" data-role="panel">
+                <div class="panel-header bg-darkEmerald fg-white">订单详细信息</div>
+                <div class="panel-content">
+                    <div
+                            style="height: 280px; overflow: scroll; border: 2px solid #efeae3">
+                        <table id="recordsTable2" class="table striped bordered hovered">
+                            <thead>
+                            <tr class="warning">
+
+
+                                <th>商品编码</th>
+                                <th>商品名称</th>
+                                <th>价格</th>
+                                <th>市场价格</th>
+                                <!--<th>商品图片</th>-->
+                                <th>品牌名称</th>
+                                <th>颜色</th>
+                                <th>尺寸</th>
+                                <th>SKC编码</th>
+                                <th>数量</th>
+
+                            </tr>
+
+                            </thead>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            <input type="hidden" id="ORDERID"/>
+
+        </div>
+    </div>
+</div>
+
+<object id="plugin0" type="application/x-huijinsecurityplugin" width="0" height="0">
+    <param name="onload" value="pluginLoaded" />
+</object>
+<input id="rand" name="rand" type="hidden" value="<%= rand %>">
+</body>
+</html>
+

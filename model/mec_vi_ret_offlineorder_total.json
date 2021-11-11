@@ -1,0 +1,71 @@
+{
+  "COUNTERCODE": {
+    "type": "char(6)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": ""
+  },
+  "OFFLINEORDERCODE": {
+    "type": "char(18)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "ORDERSTATE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "见文档",
+    "defaultValue": "0"
+  },
+  "PLACETIME": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "下单时间",
+    "defaultValue": null
+  },
+  "STORECODE": {
+    "type": "char(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "门店号",
+    "defaultValue": null
+  },
+  "RETUSERCODE": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "退货人员编码",
+    "defaultValue": null
+  },
+  "RETBACKCOUPON": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "退货后收回的现金券",
+    "defaultValue": null
+  },
+  "RETORIPOSTRANSCODE": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "RECEIVABLEAMT": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "应收金额",
+    "defaultValue": "0.00"
+  },
+  "ISMULTICOUNTERS": {
+    "type": "int(0)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  }
+}

@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+var debug           = require('debug')('generated-express-app');
+var saleSSL          = require('../saleSSL');
+var https           = require('https');
+var http            = require('http');
+var ssl             = require('../security/ssl');
+var contextLogger   = require('../logging/contextLogger');
+var node_env        = process.env.NODE_ENV ? process.env.NODE_ENV : 'dev';
+var portConfig      = require('../config/portConfig')[node_env];
+
+console.log(process);;
+
+//启动https的服务
+https.createServer(ssl,saleSSL).listen(portConfig["saleSSL"],function(){
+    var myLogger=contextLogger("https");
+    myLogger.trace('Express saleSSL server listening on port ' + portConfig["saleSSL"]);
+});
+

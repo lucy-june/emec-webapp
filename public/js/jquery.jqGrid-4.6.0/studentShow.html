@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="stylesheet" type="text/css" media="screen" href="jquery-ui-1.11.2.custom/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/ui.jqgrid.css" />
+	<style type="text/css">
+		html, body {
+   			margin: 0;
+    		padding: 0;
+    		font-size: 22;
+		}
+	</style>
+	<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="js/i18n/grid.locale-en.js"></script>
+	<script type="text/javascript" src="js/jquery.jqGrid.min.js"></script>
+
+	<script type="text/javascript"> 
+$.fx.speeds._default = 400;
+var lastsel3; //选择一行进行编辑时用到的
+var url = 'studentShow_do.jsp';
+function valiAge(value,colname) {
+        if (value < 0 || value >120) {
+           return [false,"请填写0-120之间的数字!"];
+		}
+        else {
+           return [true,"ok"];
+		}
+}
+
+$(function(){ 
+  $("#list").jqGrid({
+	    url: url+"?oper=1",
+	    datatype: 'json',
+	    mtype: 'post',
+	    colNames:['学号','姓名', '年龄','生日','操作'],
+	    colModel :[ 
+	      {name:'sid', index:'sid', width:155, align:'center',editable:true}, 
+	      {name:'sname', index:'sname', width:190, align:'center',editable:true,edittype:'select',editoptions:{value:"1:张三;2:李四;3:王五"}}, //edittype 修改时设置编辑框的HTML样式的
+	      {name:'age', index:'age', width:180, align:'center',editable:true,editrules:{custom:true,custom_func:valiAge}}, 
+	      /**对于时间格式的显示formatter:'date'格式化时间和formatoptions:{srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s'} 配合使用, H:i:s用于显示时分秒
+	       *newformat: 'Y-m-d',当Y为小写时 只显示年份的后两位如1988则显示88;m(月),d(日)为大写时则显示英文(简写)的月日;
+	       */
+	      {name:'brith', index:'brith',formatter:'date',formatoptions:{srcformat: 'Y-m-d', newformat: 'Y-m-d'}, width:250, align:'center',editable:true,sorttype:"date"}, 
+	      {name:'operate', index:'operate', width:155, align:'center',editable:false}, 
+	    ],
+	    //forceFit : true,//调整列宽度
+	    pager: '#pager',//定义页码控制条Page Bar,需要一个div
+	    rownumbers: true, //如果为ture则会在表格左边新增一列，显示行顺序号，从1开始递增(翻页后的值与rowList有关)。此列名为'rn'.
+	    rowNum:5, //一页中显示的最大条数,返回条数大于此值时,仍显示此值的条数.
+	    rowList:[5,10,20],//一个数组，用于设置Grid可以接受的rowNum值
+	    sortname: 'sid',//初始根据哪个列来排序, 当在表格中点击不同的列头,可以实现动态根据某列来排序,将会把点击的列名传到后台来实现根据不同的字段来排序
+	    sortable:true, 
+	    viewrecords: true, //设置是否在Pager Bar显示所有记录的总数
+	    sortorder: 'asc',//排序asc or desc
+	    //prmNames:{page:'page',rows:'rows',totalrows:'totalrows',sort:"sidx"},//设置默认传到后台的参数名称
+	    loadtext:'等等',
+	    height: '80%',
+	    altRow:true,
+	    multiselect: true,	//是否显示多选框
+	    multiboxonly: false, //是否只有点击多选框时,才执行选择多选框checkbox.默认为false,点击一行亦选定此行的多选框
+	    multiselectWidth: 50, //多选框所在列的宽度
+	    page:1,//初始显示第几页
+	    cellEdit: true,//与colModel中editable属性配合使用,当editable:true,cellEdit:true时可以对editable:true的列进行单个单元格编辑,cellEdit:false时(colModel中所有列editable都为true时)整行编辑
+	    editurl:'ok.jsp',//编辑栏编辑后发送的地址(整行)
+	    cellurl:'ok.jsp',//单元格的发送地址
+	   	gridview: true,//构造一行数据后添加到grid中，如果设为true则是将整个表格的数据都构造完成后再添加到grid中，但treeGrid, subGrid, or afterInsertRow 不能用
+	   	//subGrid : true,//开启显示子表的按钮
+	    caption: "jqGrid test",
+    	
+    	onSelectRow	: function(rowid,sid,status){
+    		//alert(rowid);
+    		//alert(status);
+    		//$("#"+sid).datepicker({dateFormat:"yy-mm-dd"});
+    		//alert(sid);//结果为true or false
+    		if(rowid && rowid!==lastsel3){//当选中的不是上一次选中的行就(restoreRow)释放(恢复)上一次选中的行,避免选中多行
+				jQuery('#list').jqGrid('restoreRow',lastsel3);
+				jQuery('#list').jqGrid('editRow',rowid,true,pickdates);
+				lastsel3=rowid;
+			}else{
+				jQuery('#list').jqGrid('editRow',rowid,true,pickdates);
+				lastsel3=rowid;
+			}
+    	},
+    	gridComplete: function(){ 
+    		var rowSize=$("#list").jqGrid('getDataIDs');
+				for(var i = 0;i < rowSize.length;i++){
+					var id=rowSize[i].substring(0,rowSize[i].length-2);
+					var btn="<input type='button' id='"+id+"' value='确认收货"+i+"'/>";
+					$("#list").jqGrid('setRowData',rowSize[i],{operate:btn});
+					//$("#list input:eq("+i+")").button();
+					$("#"+id).click(function(){
+						$.post(url,{
+						oper : 3,
+						TWZ1000 : this.id
+						},function(data){
+							if("true" == data.rs){
+								alert("操作成功");
+								$("#list").trigger('reloadGrid');//重载表格
+							}else{
+								alert("操作失败");
+							}
+						},'json');
+					});
+				}
+    	}
+  	});
+  	//多重表头
+  		//顶级表头
+	jQuery("#list").jqGrid('setGroupHeaders', {
+		useColSpanStyle: false, //没有表头的列是否与表头列位置的空单元格合并
+		groupHeaders:[
+			//合并 startColumnName(开始列),以sid列开始; numberOfColumns(合并几列),合并2列; titleText(合并后父列名),合并后父列名为All Student
+			{startColumnName: 'sid', numberOfColumns: 4, titleText: 'All Student Info'}
+		]	
+	});
+	//二级表头
+	jQuery("#list").jqGrid('setGroupHeaders', {
+		useColSpanStyle: false, //没有表头的列是否与表头列位置的空单元格合并
+		groupHeaders:[
+			//合并 startColumnName(开始列),以sid列开始; numberOfColumns(合并几列),合并2列; titleText(合并后父列名),合并后父列名为All Student
+			{startColumnName: 'sid', numberOfColumns: 3, titleText: 'Base Student Info'},
+			{startColumnName: 'brith', numberOfColumns: 2, titleText: 'other'}
+		]
+	});
+	jQuery("#list").jqGrid('navGrid','#pager',{edit:true,add:true,del:true});
+	
+	//$("#list").jqGrid('inlineNav','#pager');//行内编辑 (或与单元格编辑(选择) 引冲突)
+ 	//对话框
+ 	$("#dialog").dialog({
+		autoOpen: false,
+		show: "blind",
+		hide: "explode"
+	});
+
+	$("#opener").click(function() {
+		$("#dialog").dialog("open");
+			return false;
+	});
+	$("#search").click(function(){
+		alert('ok');
+		$("#list").jqGrid('searchGrid',
+			{sopt:['cn','bw','eq','ne','lt','gt','ew','fack']}
+		);
+	});
+	$("#hc").click( function() { 
+		$("#list").jqGrid('navGrid','hideCol',"brith"); 
+	}); 
+	$("#sc").click( function() { 
+		$("#list").jqGrid('navGrid','showCol',"brith"); 
+	});
+	$("#t").datepicker({dateFormat:"yy-mm-dd"});
+	
+	//打印
+	$("#print_button").click(function(){								// mode: "popup"预览
+		$("#list").jqGrid('setGridParam',{pager:null}).trigger("reloadGrid");
+		$("#printArea").printArea({popHt: 600, popWd: 900,popTitle:'学生信息',mode: "popup", popClose: false,author: ""});
+	});
+});
+
+function pickdates(rowid){
+	$("#"+rowid+"_brith","#list").datepicker({dateFormat:"yy-mm-dd"});
+}
+
+</script>
+	
+  </head>
+  <body>
+  <input type="button" id="print_button" value="print"/>
+  <div id="printArea">
+  	<table border="1" rules="none" style="font-size: 22; border:1px solid;border-collapse:collapse;" cellspacing="0" cellpadding="0">
+  		<tr>
+  			<th colspan="3" align="center" style="border:1px solid"><h3>学生详细信息</h3></th>	
+  		</tr>
+  		<tr>
+  			<td align="left">&nbsp;&nbsp;&nbsp;&nbsp;制表人:XXX</td>
+  			<td align="center">制表时间:2012-06-01</td>
+  			<td align="right">单位:XXXX&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  		</tr>
+  		<tr>
+  			<td colspan="3"><table id="list" rules="none" style="font-size: 14px; border:1px solid;border-collapse:collapse;" ></table></td>	
+  		</tr>
+  		<tr>
+  			<td colspan="3">0000000000000000000000000000000</td>	
+  		</tr>
+  	</table>
+    </div>
+	<div id="pager"></div>
+	<div id="dialog" title="Basic dialog">
+		<p>展示所有学生信息</p>
+	</div>
+	<div>
+	<input type="button" id="opener" value="帮助">
+	<input type="button" id="search" value="搜索">
+	<input type="text" id="t"/>
+	<p></p>
+	<a href="javascript:void(0);" id="hc">隐藏生日</a>
+	<a href="javascript:void(0);" id="sc">显示生日</a>
+	</div>
+  </body>
+</html>

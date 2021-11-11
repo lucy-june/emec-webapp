@@ -1,0 +1,74 @@
+{
+  "ID": {
+    "type": "int(20)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "ORDERCODE": {
+    "type": "char(18)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "ISONLINEORDER": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "LGTCOMPANY": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "LGTNUMBER": {
+    "type": "char(64)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "LGTSTATE": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-待发货 1-发货途中 2-已收货",
+    "defaultValue": "0"
+  },
+  "OPERATEPERSON": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "DEPTCODE": {
+    "type": "varchar(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "POSITIONCODE": {
+    "type": "char(16)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "内部物流放到的位置",
+    "defaultValue": null
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  }
+}

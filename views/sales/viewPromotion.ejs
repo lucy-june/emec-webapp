@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="product" content="Metro UI CSS Framework">
+
+
+<link href="../css/metro-bootstrap.css" rel="stylesheet">
+<link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+<link href="../css/iconFont.css" rel="stylesheet">
+<link href="../css/docs.css" rel="stylesheet">
+<link href="../js/prettify/prettify.css" rel="stylesheet">
+<script src="../js/load-metro.js"></script>
+
+<link rel="stylesheet" type="text/css" media="screen"
+      href="../js/jquery.jqGrid-4.6.0/css/themes/ui-lightness/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css"/>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+
+<script src="../js/jquery/jquery.widget.min.js"></script>
+<script src="../js/jquery/jquery.mousewheel.js"></script>
+<script src="../js/prettify/prettify.js"></script>
+<script src="../js/holder/holder.js"></script>
+<script src="../js/docs.js"></script>
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+
+<script src="../js/metro.js"></script>
+<script src="../js/github.js"></script>
+
+<script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script>
+
+Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+        "M+": this.getMonth() + 1,                 //月份
+        "d+": this.getDate(),                    //日
+        "h+": this.getHours(),                   //小时
+        "m+": this.getMinutes(),                 //分
+        "s+": this.getSeconds(),                 //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds()             //毫秒
+    };
+    if (/(y+)/.test(fmt))
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt))
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+
+$(document).ready(function () {
+
+    //记录规则
+    jQuery("#ruleTable").jqGrid({
+        url: '/sales/getCheckedPromotion',
+        datatype: "json",
+        height: document.body.clientHeight * 0.3,
+        width: document.body.clientWidth ,
+        autowidth: false,
+        shrinkToFit: true,
+        colNames: [
+            "ID",
+            "活动编号",
+            "活动内容",
+            "开始时间",
+            "结束时间",
+            "规则状态",
+            "适用门店",
+              "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
+        ],
+        colModel: [
+            {name:'ID', index:'ID'},
+            {name:'RULECODE', index:'RULECODE', width: 80, frozen:true},
+            {name:'RULECONTENT', index:'RULECONTENT', width:120, frozen:true},
+            {name:'DATEEFFECTIVE', formatter: dateFormat},
+            {name:'DATEEXPIRES', formatter: dateFormat},
+            {name:'STATE', index:'STATE', formatter: 'select', edittype: "select", editoptions: {value: "0:禁用;1:启用"}},
+            {name:'DEPTCODE', index:'DEPTCODE', formatter: 'select', edittype: "select", editoptions: {value: "10201:徐汇店;10202:虹桥店;10200:线上"}},
+            {name:'REDUCECONVERT', index:'REDUCECONVERT', hidden:true},
+            {name:'REDUCE', index:'REDUCE',hidden:true},
+            {name:'COUPONCONVERT', index:'COUPONCONVERT', hidden:true},
+            {name:'COUPON', index:'COUPON', hidden:true},
+            {name:'GIFTCONVERT', index:'GIFTCONVERT',hidden:true},
+            {name:'GIFT', index:'GIFT', hidden:true},
+            {name:'RULESCRIPT', index:'RULESCRIPT', hidden:true},
+            {name:'RECORDSTATE', index:'RECORDSTATE', hidden:true},
+            {name:'VIPSALIENCE', index:'VIPSALIENCE',hidden:true},
+            {name:'COUPONVIPGRADE', index:'COUPONVIPGRADE', hidden:true},
+            {name:'COUPONPOSACCU', index:'COUPONPOSACCU', hidden:true},
+            {name:'COUPONVIPMORE', index:'COUPONVIPMORE',hidden:true},
+            {name:'COUPONALLOWERROR', index:'COUPONALLOWERROR',hidden:true},
+            {name:'GIFTVIPGRADE', index:'GIFTVIPGRADE', hidden:true},
+            {name:'GIFTPOSACCU', index:'GIFTPOSACCU',hidden:true},
+            {name:'GIFTVIPMORE', index:'GIFTVIPMORE', hidden:true},
+            {name:'GIFTALLOWERROR', index:'GIFTALLOWERROR', hidden:true}
+        ],
+        rowNum: 20,
+        rowList: [20, 50, 100],
+        pager: '#ruleDiv',
+        viewrecords: true,
+        sortname: 'ID',
+        sortorder: "desc",
+        caption: '促销规则',
+        fitColumns: true,
+        onSelectRow: function () {
+            var rid = $("#ruleTable").jqGrid('getGridParam', "selrow");
+            var ruleobj = $("#ruleTable").jqGrid('getRowData', rid);
+            showRule(ruleobj);
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function () {
+
+        },
+        gridComplete: function () {
+
+        }
+    });
+
+    jQuery("#ruleTable").jqGrid('navGrid', '#ruleDiv', {search: false, add:false, edit:false, del:false});
+    jQuery("#ruleTable").jqGrid('hideCol', 'ID');
+   // jQuery("#ruleTable").jqGrid('setFrozenColumns');
+
+    function dateFormat(cellvalue,options,rowObject){
+        if(!cellvalue) return '';
+        return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+    }
+
+    $("#search").click(function () {
+        var startDate =  $("#searchDateEffective").val();
+        var endDate =  $("#searchDateExpire").val();
+        var deptcode =  $("#searchDeptCode").val();
+        var qry="";
+        if(startDate&&startDate!=""){
+            qry+="startDate="+startDate;
+        }
+        if(endDate&&endDate!=""){
+            if(qry.length >0)
+               qry+="&";
+            qry+="endDate="+endDate;
+        }
+        if(deptcode&&deptcode!=""){
+            if(qry.length >0)
+                qry+="&";
+            qry+="deptCode="+deptcode;
+        }
+        $("#ruleTable").jqGrid('setGridParam', {url: '/sales/getCheckedPromotion?' + qry}).trigger('reloadGrid');
+    })
+
+    var showRule = function (ruleObj) {
+                $("#MODIFYRULEDIV").attr("style", "display: block");
+                $("#RULECODE").val(ruleObj.RULECODE);
+                $("#RULECONTENT").val(ruleObj.RULECONTENT);
+                var rulestarttime = ruleObj.DATEEFFECTIVE;
+              //  var rulestartdate = new Date(rulestarttime).Format("yyyy-MM-dd");
+                var ruleendtime = ruleObj.DATEEXPIRES;
+              //  var ruleenddate = new Date(ruleendtime).Format("yyyy-MM-dd");
+                $("#DATE-EFFECTIVE").val(rulestarttime);
+                $("#DATE-EXPIRES").val(ruleendtime);
+                var deptcode = ruleObj.DEPTCODE;
+                var deptname = "";
+                switch (deptcode)
+                {
+                    case "10200":
+                        deptname = "线上店";
+                        break;
+                    case "10201":
+                        deptname = "徐汇店";
+                        break;
+                    case "10202":
+                        deptname = "虹桥店";
+                        break;
+                    default :
+                        deptname = "未知门店，请重试";
+                        break;
+                }
+                $("#DEPTNAME").val(deptname);
+                $("#SALIENCE").val(ruleObj.VIPSALIENCE);
+                $("#STATE").val(ruleObj.STATE);
+
+                $("#COUPONPOSACCU").val(ruleObj.COUPONPOSACCU);
+                $("#COUPONVIPGRADE").val(ruleObj.COUPONVIPGRADE);
+                $("#GIFTPOSACCU").val(ruleObj.GIFTPOSACCU);
+                $("#GIFTVIPGRADE").val(ruleObj.GIFTVIPGRADE);
+
+                //处理满减规则
+                var reduceConvertString = ruleObj.REDUCECONVERT;
+                var reduceString = ruleObj.REDUCE;
+                $("#SHOWREDUCETABLE tr").empty();
+                if(reduceConvertString != '') {
+                    var reduceConvertJson = JSON.parse(reduceConvertString);
+                    var reduceJson = JSON.parse(reduceString);
+                    //对于JSON中，依次取出key，通过key再取出value
+                    for(var key in reduceConvertJson) {
+                        var mark = key;
+                        var trid = "tr[id='" + mark + "']";
+                        $("#SHOWREDUCETABLE").find(trid).remove();
+                        var convertMap = reduceConvertJson[key];
+                        var reduceMap = reduceJson[key];
+                        //先将取出的规则放入记录规则的JSON对象中
+                        var scopeval = convertMap["scope"];
+                        var methodval = reduceMap["method"];
+                        var methodString = "";
+                        var scopeString = "";
+                        if(methodval == "iterate") {
+                            methodString = "循环型";
+                        } else if(methodval == "list") {
+                            methodString = "列表型";
+                        } else {
+                            methodString = "循环列表型";
+                        }
+                        if(scopeval == "dept") {
+                            scopeString = "全场";
+                        } else {
+                            scopeString = "全柜";
+                        }
+                        var convertString = JSON.stringify(convertMap.convert);
+                        var reduceString = JSON.stringify(reduceMap.rule);
+                        reduceString = reduceString.replace("base", "满");
+                        reduceString = reduceString.replace("value", "减");
+                        //生成一列，加入到规则列表中
+                        var trstring = "<tr id=" + mark + "><td>" + mark + "</td><td>" + methodString + "</td><td>" + scopeString + "</td><td>" + convertString + "</td><td>" + reduceString + "</td></tr>";
+                        $("#SHOWREDUCETABLE").append(trstring);
+                    }
+                }
+
+                //处理赠券规则，基本同满减
+                var couponConvertString = ruleObj.COUPONCONVERT;
+                var couponString = ruleObj.COUPON;
+                $("#SHOWCOUPONTABLE tr").empty();
+                if(couponConvertString != '') {
+                    var couponConvertJson = JSON.parse(couponConvertString);
+                    var couponJson = JSON.parse(couponString);
+                    //对于JSON中，依次取出key，通过key再取出value
+                    for(var key in couponConvertJson) {
+                        var mark = key;
+                        var trid = "tr[id='" + mark + "']";
+                        $("#SHOWCOUPONTABLE").find(trid).remove();
+                        var couponConvertMap = couponConvertJson[key];
+                        var couponMap = couponJson[key];
+                        //先将取出的规则放入记录规则的JSON对象中
+                        var scopeval = couponConvertMap["scope"];
+                        var methodval = couponMap["method"];
+                        var methodString = "";
+                        var scopeString = "";
+                        if(methodval == "iterate") {
+                            methodString = "循环型";
+                        } else if(methodval == "list") {
+                            methodString = "列表型";
+                        } else {
+                            methodString = "循环列表型";
+                        }
+                        if(scopeval == "dept") {
+                            scopeString = "全场";
+                        } else {
+                            scopeString = "全柜";
+                        }
+                        var couponConvertString = JSON.stringify(couponConvertMap.convert);
+                        var couponString = JSON.stringify(couponMap.rule);
+                        couponString = couponString.replace("base", "满");
+                        couponString = couponString.replace("value", "赠");
+                        //生成一列，加入到规则列表中
+                        var trstring = "<tr id=" + mark + "><td>" + mark + "</td><td>" + methodString + "</td><td>" + scopeString + "</td><td>" + couponConvertString + "</td><td>" + couponString + "</td></tr>";
+                        $("#SHOWCOUPONTABLE").append(trstring);
+                    }
+                }
+
+                //处理赠礼规则，基本同满减
+                var giftConvertString = ruleObj.GIFTCONVERT;
+                var giftString = ruleObj.GIFT;
+                $("#SHOWGIFTTABLE tr").empty();
+                if(giftConvertString != '') {
+                    var giftConvertJson = JSON.parse(giftConvertString);
+                    var giftJson = JSON.parse(giftString);
+                    //对于JSON中，依次取出key，通过key再取出value
+                    for(var key in giftConvertJson) {
+                        var mark = key;
+                        var trid = "tr[id='" + mark + "']";
+                        $("#SHOWGIFTTABLE").find(trid).remove();
+                        var giftConvertMap = giftConvertJson[key];
+                        var giftMap = giftJson[key];
+                        //先将取出的规则放入记录规则的JSON对象中
+                        var scopeval = giftConvertMap["scope"];
+                        var methodval = giftMap["method"];
+                        var methodString = "";
+                        var scopeString = "";
+                        if(methodval == "iterate") {
+                            methodString = "循环型";
+                        } else if(methodval == "list") {
+                            methodString = "列表型";
+                        } else {
+                            methodString = "循环列表型";
+                        }
+                        if(scopeval == "dept") {
+                            scopeString = "全场";
+                        } else {
+                            scopeString = "全柜";
+                        }
+                        var giftConvertString = JSON.stringify(giftConvertMap.convert);
+                        var giftString = JSON.stringify(giftMap.rule);
+                        giftString = giftString.replace("base", "满");
+                        giftString = giftString.replace("value", "赠");
+                        giftString = giftString.replace("num", "数量");
+                        //生成一列，加入到规则列表中
+                        var trstring = "<tr id=" + mark + "><td>" + mark + "</td><td>" + methodString + "</td><td>" + scopeString + "</td><td>" + giftConvertString + "</td><td>" + giftString + "</td></tr>";
+                        $("#SHOWGIFTTABLE").append(trstring);
+                    }
+                }
+
+                window.parent.SetWinHeight();
+
+
+    }
+
+
+    //审核通过
+    $("#acceptBTN").click(function () {
+
+        var rid = $("#hidmodifyid").val();
+        var starttime = $("#DATE-EFFECTIVE").val();
+        var endtime = $("#DATE-EXPIRES").val();
+        var tmpstate = $("#hidtmpstate").val();
+
+        var afterstate = 3;
+        if(tmpstate == 1) {
+            afterstate = 4;
+        } else if(tmpstate == 2) {
+            afterstate = 5;
+        }
+        var data = {};
+        data.rid = rid;
+        data.afterstate = afterstate;
+        data.starttime = starttime;
+        data.endtime = endtime;
+        $.ajax({
+            'url': '/sales/acceptValidatePromotion',
+            'type': 'post',
+            'data': data,
+            'datatype': 'html',
+            'timeout': 10000,
+            'error': function (err) {
+                alert("审核通过失败！" + JSON.stringify(err));
+            },
+            'success': function (msg) {
+                if(msg.status == true) {
+
+                    if (msg.data == 9) {
+                        alert("该时间段已有启用的规则");
+                        $("#ruleTable").trigger('reloadGrid');
+                        $("#MODIFYRULEDIV").attr("style", "display: none");
+                        window.parent.SetWinHeight();
+                    } else if (msg.data == 3) {
+                        alert("添加审核通过");
+                        $("#ruleTable").trigger('reloadGrid');
+                        $("#MODIFYRULEDIV").attr("style", "display: none");
+                        window.parent.SetWinHeight();
+                    } else if (msg.data == 4) {
+                        alert("删除审核通过");
+                        $("#ruleTable").trigger('reloadGrid');
+                        $("#MODIFYRULEDIV").attr("style", "display: none");
+                        window.parent.SetWinHeight();
+                    } else if (msg.data == 5) {
+                        alert("修改审核通过");
+                        $("#ruleTable").trigger('reloadGrid');
+                        $("#MODIFYRULEDIV").attr("style", "display: none");
+                        window.parent.SetWinHeight();
+                    }
+                } else {
+                    alert("审核通过失败！" + JSON.stringify(err));
+                    $("#ruleTable").trigger('reloadGrid');
+                    $("#MODIFYRULEDIV").attr("style", "display: none");
+                    window.parent.SetWinHeight();
+                }
+            }
+        });
+
+    });
+
+    //审核拒绝
+    $("#refuseBTN").click(function () {
+
+        var rid = $("#hidmodifyid").val();
+
+        var data = {};
+        data.rid = rid;
+        $.ajax({
+            'url': '/sales/refuseValidatePromotion',
+            'type': 'post',
+            'data': data,
+            'datatype': 'html',
+            'timeout': 10000,
+            'error': function (err) {
+                alert("审核拒绝失败！" + JSON.stringify(err));
+            },
+            'success': function (msg) {
+                alert("审核拒绝成功！");
+                $("#ruleTable").trigger('reloadGrid');
+                $("#MODIFYRULEDIV").attr("style", "display: none");
+                window.parent.SetWinHeight();
+            }
+        });
+
+    });
+
+});
+
+</script>
+
+<title>Mec Demo</title>
+
+<style type="text/css" class="init">
+    .ui-jqgrid,
+    .ui-jqgrid * {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        -ms-box-sizing: content-box;
+        -o-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+</head>
+
+<body class="metro">
+<div id="maindiv">
+
+<div class="mectemp bd-orange">
+
+<div class="grid span18">
+    <div class="row">
+        <div class="span2">
+            <div class="input-control text" data-role="datepicker" data-format="yyyy-mm-dd"
+                 data-week-start="1" style="width:100%;height:30px;">
+                <input id="searchDateEffective" type="text">
+                <button class="btn-date"></button>
+
+            </div>
+            </div>
+        <div class="span1">
+        ---
+        </div>
+
+
+        <div class="span2 ">
+            <div class="input-control text" data-role="datepicker" data-format="yyyy-mm-dd"
+                 data-week-start="1" style="width:100%;height:30px;">
+                <input id="searchDateExpire" type="text">
+                <button class="btn-date"></button>
+            </div>
+        </div>
+        <div class="span2 offset1">
+            <select id="searchDeptCode" type="text" data-state="info"
+                     style="height:30px;width:100%;">
+                <option value="">全部门店</option>
+                <option value="10201">徐汇店</option>
+                <option value="10202">虹桥店</option>
+                <option value="10200">线上店</option>
+            </select>
+        </div>
+
+        <div class="span1 offset2">
+        <button class="bg-mecBlue fg-white" id="search" style="width:100px;height: 30px;" >搜索</button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <table id="ruleTable" class="span14"></table>
+    <div id="ruleDiv"></div>
+</div>
+
+<br>
+
+<div  id="MODIFYRULEDIV" style="display: none">
+
+<!--<div class="panel-content" id="MODIFYDIV">-->
+<div class="panel" data-role="panel">
+    <div class="panel-header bg-mecOrange fg-black"> 基本信息</div>
+    <div class="panel-content ">
+        <table style="height: 100%;width:100%">
+            <input id="hidmodifyid" type="hidden">
+            <input id="hidtmpstate" type="hidden">
+            <tr>
+                <td style="width:150px">
+                    <label style="width:150px">促销活动编号：</label>
+                </td>
+                <td style="width:100%">
+                    <input id="RULECODE" type="text" data-state="info" readonly="readonly"
+                           placeholder="" style="width:430px;height:30px;margin-top: 3px;margin-left: 0px"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px">
+                    <label style="width:150px">促销活动内容：</label>
+                </td>
+                <td style="width:100%">
+                    <input id="RULECONTENT" type="text" data-state="info" readonly="readonly"
+                           placeholder=""
+                           style="width:430px;height:30px;margin-top: 3px;margin-left: 0px"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px">
+                    <label style="width:150px">促销起止时间：</label>
+                </td>
+                <td style="width:100%">
+                    <div class="input-control text" data-format="yyyy-mm-dd"
+                         data-week-start="1" style="width:200px;height:30px;margin-top: 3px;" >
+                        <input id="DATE-EFFECTIVE" type="text" readonly="readonly">
+                    </div>
+                    <label class="inline-block"
+                           style="width: 20px"> --- </label>
+                    <div class="input-control text" data-format="yyyy-mm-dd"
+                         data-week-start="1" style="width:200px;height:30px;margin-top: 3px;">
+                        <input id="DATE-EXPIRES" type="text" readonly="readonly">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px">
+                    <label style="width:150px">规则适用门店：</label>
+                </td>
+                <td style="width:100%">
+                    <!--//门店可选-->
+                    <!--<select id="DEPTCODE" type="text" data-state="info"-->
+                    <!--placeholder="" style="height:30px;width:200px;margin-top: 3px">-->
+                    <!--<option></option>-->
+                    <!--<option value="10200">线上店</option>-->
+                    <!--<option value="10201">徐汇店</option>-->
+                    <!--<option value="10202">虹桥店</option>-->
+                    <!--</select>-->
+                    <!--//门店不可选,根据登录用户默认-->
+                    <input id="DEPTNAME" type="text" data-state="info" value="0" readonly="readonly"
+                           placeholder="" style="width:200px;height:30px;margin-top: 3px;margin-left: 0px"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px">
+                    <label style="width:150px">规则优先级别：</label>
+                </td>
+                <td style="width:100%">
+                    <select id="SALIENCE" type="text" data-state="info" disabled="disabled"
+                            placeholder="" style="height:30px;width:200px;margin-top: 3px">
+                        <option value="1">先打折后满减</option>
+                        <option value="0">先满减后打折</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px">
+                    <label style="width:150px">规则活动状态：</label>
+                </td>
+                <td style="width:100%">
+                    <select id="STATE" type="text" data-state="info" disabled="disabled"
+                            placeholder="" style="height:30px;width:200px;margin-top: 3px">
+                        <option value="1">启用</option>
+                        <option value="0">禁用</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<br>
+
+<div class="panel" data-role="panel">
+    <div class="panel-header bg-mecOrange fg-black"> 满减规则</div>
+    <div class="panel-content ">
+        <table id="SHOWREDUCETABLE" style="width: 100%" border="1">
+            <tr>
+                <th>促销标志</th>
+                <th>促销类型</th>
+                <th>累计方式</th>
+                <th>替换方式</th>
+                <th>折扣方式</th>
+            </tr>
+        </table>
+    </div>
+</div>
+<br>
+<div class="panel" data-role="panel">
+    <div class="panel-header bg-mecOrange fg-black"> 赠券规则</div>
+    <div class="panel-content ">
+        <table id="COUPONCONVERTTABLE" style="width: 200px">
+            <input type="hidden" id="hidCouponConvertNum" name="hidCouponConvertNum" value="0"/>
+            <tr>
+                <td style="width:70px">
+                    <label style="width:70px">凭条累计</label>
+                </td>
+                <td style="width: 100%">
+                    <select id="COUPONPOSACCU" type="text" data-state="info" disabled="disabled"
+                            style="height:30px;width:80px;margin-top: 3px">
+                        <option value="1">累计</option>
+                        <option value="0">不累计</option>
+                    </select>
+                </td>
+                <td style="width:70px">
+                    <label style="width:70px; margin-left: 20px">会员要求</label>
+                </td>
+                <td style="width: 100%">
+                    <select id="COUPONVIPGRADE" type="text" data-state="info" disabled="disabled"
+                            style="height:30px;width:80px;margin-top: 3px">
+                        <option value="0">无要求</option>
+                        <option value="1">普卡会员</option>
+                        <option value="2">金卡会员</option>
+                    </select>
+                </td>
+                <td style="width: 70px">
+                    <label style="width: 70px; margin-left: 20px">VIP多送</label>
+                </td>
+                <td style="width: 100%">
+                    <input id="COUPONVIPMORE" type="text" value="0" readonly="readonly"
+                           style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                </td>
+                <td style="width: 90px">
+                    <label style="width: 90px; margin-left: 20px">允许误差(元)</label>
+                </td>
+                <td style="width: 100%">
+                    <input id="COUPONERROR" type="text" value="0" readonly="readonly"
+                           style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <table id="SHOWCOUPONTABLE" style="width: 100%" border="1">
+            <tr>
+                <th>促销标志</th>
+                <th>促销类型</th>
+                <th>累计方式</th>
+                <th>替换方式</th>
+                <th>赠券方式</th>
+            </tr>
+        </table>
+    </div>
+</div>
+<br>
+<div class="panel" data-role="panel">
+    <div class="panel-header bg-mecOrange fg-black"> 赠礼规则</div>
+    <div class="panel-content ">
+        <table id="GIFTCONVERTTABLE" style="width: 200px">
+            <input type="hidden" id="hidGiftConvertNum" name="hidGiftConvertNum" value="0"/>
+            <tr>
+                <td style="width:70px">
+                    <label style="width:70px">凭条累计</label>
+                </td>
+                <td style="width: 100%">
+                    <select id="GIFTPOSACCU" type="text" data-state="info" disabled="disabled"
+                            style="height:30px;width:80px;margin-top: 3px">
+                        <option value="1">累计</option>
+                        <option value="0">不累计</option>
+                    </select>
+                </td>
+                <td style="width:70px">
+                    <label style="width:70px; margin-left: 20px">会员要求</label>
+                </td>
+                <td style="width: 100%">
+                    <select id="GIFTVIPGRADE" type="text" data-state="info" disabled="disabled"
+                            style="height:30px;width:80px;margin-top: 3px">
+                        <option value="0">无要求</option>
+                        <option value="1">普卡会员</option>
+                        <option value="2">金卡会员</option>
+                    </select>
+                </td>
+                <td style="width: 70px">
+                    <label style="width: 70px; margin-left: 20px">VIP多送</label>
+                </td>
+                <td style="width: 100%">
+                    <input id="GIFTVIPMORE" type="text" value="0" readonly="readonly"
+                           style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                </td>
+                <td style="width: 90px">
+                    <label style="width: 90px; margin-left: 20px">允许误差(元)</label>
+                </td>
+                <td style="width: 100%">
+                    <input id="GIFTERROR" type="text" value="0" readonly="readonly"
+                           style="height: 30px; width: 80px;margin-top: 3px;text-align: right"/>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <table id="SHOWGIFTTABLE" style="width: 100%" border="1">
+            <tr>
+                <th>促销标志</th>
+                <th>促销类型</th>
+                <th>累计方式</th>
+                <th>替换方式</th>
+                <th>赠礼方式</th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+</div>
+
+
+</div>
+</div>
+</div>
+</body>

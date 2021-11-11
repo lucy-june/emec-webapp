@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="product" content="Metro UI CSS Framework">
+
+
+<link href="../css/metro-bootstrap.css" rel="stylesheet">
+<link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+<link href="../css/iconFont.css" rel="stylesheet">
+<link href="../css/docs.css" rel="stylesheet">
+<link href="../js/prettify/prettify.css" rel="stylesheet">
+<!--<link href="../css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">-->
+<script src="../js/load-metro.js"></script>
+<!--<script src="../js/jquery/jquery.min.js"></script>-->
+
+<link rel="stylesheet" type="text/css" media="screen"
+      href="../js/jquery.jqGrid-4.6.0/css/themes/redmond/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css"/>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+
+<script src="../js/jquery/jquery.widget.min.js"></script>
+<script src="../js/jquery/jquery.mousewheel.js"></script>
+<script src="../js/prettify/prettify.js"></script>
+<script src="../js/holder/holder.js"></script>
+<script src="../js/docs.js"></script>
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+
+<script src="../js/metro.js"></script>
+<script src="../js/github.js"></script>
+
+<script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+
+
+<script src="../js/metro/metro-scroll.js"></script>
+<script src="../js/district/selectdistrict.js"></script>
+
+<script>
+
+    Date.prototype.Format = function (fmt) { //author: meizz
+        var o = {
+            "M+": this.getMonth() + 1,                 //月份
+            "d+": this.getDate(),                    //日
+            "h+": this.getHours(),                   //小时
+            "m+": this.getMinutes(),                 //分
+            "s+": this.getSeconds(),                 //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds()             //毫秒
+        };
+        if (/(y+)/.test(fmt))
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+    $(document).ready(function () {
+        //assistantList获取
+        var assMap={};
+
+//        alert(JSON.stringify(assMap));
+
+        jQuery("#packageTable").jqGrid({
+            url:"/logistics/searchTotalPackage?qry=",
+            datatype: "json",
+            height: 420,
+            width: window.screen.availWidth > 1140 ? 1020 : 820,
+            autowidth: false,
+            shrinkToFit: false,
+            colNames: [
+                "",
+                "包裹编码",
+                "包裹状态",
+                "包裹位置",
+                "最近处理人员",
+                "订单编码",
+                "所属柜台",
+                "所属门店",
+                "下单时间",
+                "支付方式",
+                "自提或配送",
+                "提货或发货门店"
+            ],
+            colModel: [
+                {name: 'PACKAGECODE', index: 'PACKAGECODE',align:'center', width:80 ,sortable: false, formatter: conFormat1, frozen: true},
+                {name: 'PACKAGECODE', index: 'PACKAGECODE',width: 220, frozen: true},
+                {name: 'PACKAGESTATE', index: 'PACKAGESTATE',width: 80, frozen: true,formatter: 'select', edittype: "select", editoptions: {value: "0:待备货;1:已备货;2:集货中;3:已集齐;4:待调货;5:调货途中;7:已集齐;99:打包处理完"}},
+                {name: 'POSITIONCODE', index: 'POSITIONCODE',width: 60, frozen: true},
+                {name: 'LASTOPERATEPERSON', index: 'LASTOPERATEPERSON',width: 80, frozen: true},
+                {name: 'ORDERCODE', index: 'ORDERCODE'},
+                {name: 'COUNTERCODE', index: 'COUNTERCODE'},
+                {name: 'DEPTCODE', index: 'DEPTCODE',formatter: 'select', edittype: "select", editoptions: {value: "10201:徐汇店;10202:虹桥店"}},
+                {name: 'PLACEORDERTIME', index: 'PLACEORDERTIME',formatter:dateFormat},
+                {name: 'PAYMENTMODE', index: 'PAYMENTMODE',formatter: 'select', edittype: "select", editoptions: {value: "0:现付;1:网付;2:到付"}},
+                {name: 'DELIVERYMODE', index: 'DELIVERYMODE',formatter: deliveryFormat},
+                {name: 'DELIVERYDEPTCODE', index: 'DELIVERYDEPTCODE',formatter: 'select', edittype: "select", editoptions: {value: "10201:徐汇店;10202:虹桥店"}}
+            ],
+            rowNum: 30,
+            rowList: [10, 30, 50],
+            pager: '#packageDiv',
+            viewrecords: true,
+            sortname: 'createdAt',
+            sortorder: "desc",
+            caption: "",
+            fitColumns: true,
+            editurl: 'clientArray',
+            onSelectRow: function () {
+
+            },
+            onSelectAll: function () {
+
+            },
+            loadComplete: function () {
+
+            },
+            gridComplete: function () {
+
+            }
+        });
+        jQuery("#packageTable").jqGrid('navGrid', "#packageDiv", {search: false, edit: false, add: false, del: false})
+        jQuery("#packageTable").jqGrid('setFrozenColumns');
+
+
+
+        function assFormat(cellvalue, options, rowObject) {
+            var name=assMap[cellvalue];
+            if(name) return name;
+            else if(cellvalue) return cellvalue;
+            else return "";
+        }
+
+        function stateFormat(cellvalue, options, rowObject){
+//            "0:未支付;4:已支付;5:已支付;6:已支付;7:已支付;8:交易成功;9:交易关闭;10:交易关闭;11:交易关闭;12:交易关闭;13:交易关闭"
+            var orderstate=rowObject.ORDERSTATE;
+            var confirmstate=rowObject.CONFIRMSTATE;
+            var deliverymode=rowObject.DELIVERYMODE;
+            var paymentmode=rowObject.PAYMENTMODE;
+
+            if(orderstate==1 && paymentmode!=2){
+                return "未支付";
+            }
+            else if((orderstate==2 || (orderstate==1 && paymentmode==2)) && confirmstate==0){
+                return "待确认";
+            }
+            else if((orderstate==2 || (orderstate==1 && paymentmode==2)) && confirmstate==1){
+                return "待别柜确认";
+            }
+            else if(orderstate==3||orderstate==5||orderstate==6||orderstate==7){
+                return "已确认"
+            }
+            else if(orderstate==8){
+                return "交易成功"
+            }
+            else{
+                return "交易关闭"
+            }
+        }
+
+        function dateFormat(cellvalue, options, rowObject) {
+            if (!cellvalue) return '';
+            return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+        }
+
+        function numFormat(cellvalue, options, rowObject) {
+            //            alert(JSON.stringify(rowObject));
+            var id=rowObject.id;
+            var str = '<div id="spinnerDiv_'+id+'" onclick="changeNum(this)">'+
+                    '<input class="myspinner" id="spinner_'+id+'" name="value1" value="'+cellvalue+'" min=1 style="width:50px" onkeyup="changeNum(this)" >'+
+                    '</div>';
+
+            return str;
+        }
+
+        function deliveryFormat(cellvalue, options, rowObject) {
+            if(cellvalue==0) return "自提";
+            var ordercode=rowObject.ORDERCODE;
+            var str="配送"+
+                    "<i class='icon-location-3 on-right on-left' " +
+                    "style='cursor:hand; color: green;'  " +
+                    "onmouseout='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand;color: green;&quot;)' " +
+                    "onmouseover='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand; color: red; &quot;)' " +
+                    "id='delivery_" + ordercode + "' onclick='clickDelivery(this)'></i>";
+            return str;
+        }
+
+        function delFormat(cellvalue, options, rowObject) {
+//            alert(JSON.stringify(rowObject));
+            var str = "<i class='icon-cancel-2 on-right on-left' " +
+                    "style='cursor:hand;background: darkRed; color: white; padding: 4px; border-radius: 50%;'  " +
+                    "onmouseout='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand;background: darkRed; color: white; padding: 4px; border-radius: 50%;&quot;)' " +
+                    "onmouseover='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand;background: Red; color: white; padding: 4px; border-radius: 50%;&quot;)' " +
+                    "id='del_" + cellvalue + "' onclick='clickDel(this)'></i>";
+
+            return str;
+        }
+
+        function conFormat1(cellvalue, options, rowObject) {
+//            alert(JSON.stringify(rowObject));
+            var str = '<button id="content_'+cellvalue+'" class="bg-lightBlue fg-white" style="width:45px;height:13px;margin-top:2px;margin-bottom:2px" onclick="showContent1(this)">查看明细</button>';
+
+            return str;
+        }
+
+        function dataFormat(cellvalue, options, rowObject) {
+            if (!cellvalue) return '';
+            return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+        }
+
+        function delFormat(cellvalue, options, rowObject) {
+            var str = "<input id='del_" + cellvalue + "' type='button'>删除<input/>";
+            return str;
+        }
+
+        $("#search1").click(function () {
+            var qry = $("#qry1").val().trim();//去除首尾空格
+            $("#packageTable").jqGrid('setGridParam', { url: '/logistics/searchTotalPackage?qry=' + qry}).trigger('reloadGrid');
+        })
+
+    });
+
+    var showContent1=function(element){
+        var packagecode=element.id.replace("content_","");
+//        alert(packagecode);
+        $.ajax({
+            'url': '/logistics/getDetailLevel',
+            'type': 'post',
+            'data': {where:{PACKAGECODE:packagecode}},
+            'datatype': 'json',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("获取备货信息失败");
+                return;
+            },
+            'success': function (msg) {
+                if(msg.status==false){
+                    alert("获取备货信息失败");
+                    return;
+                }
+                else{
+//                            alert(JSON.stringify(msg.data));
+                    var contents=msg.data;
+                    $.Dialog({
+                        shadow: true,
+                        overlay: true,
+                        title: '',
+                        draggable: true,
+                        width: 900,
+                        height: 220,
+                        padding: 10,
+                        onShow: function (_dialog) {
+                            var content = '<div style="width:100%">' +
+                                    '<table style="width:100%;margin-bottom: 7px">' +
+                                    '<tr style="width:100%">' +
+                                    '<td>' +
+                                    ' <table id="contentTable"></table>' +
+                                    '</td>' +
+                                    '</tr>' +
+                                    ' </table>' +
+                                    '</div>';
+
+                            $.Dialog.title("订单详情");
+                            $.Dialog.content(content);
+                            $.Metro.initInputs();
+
+                            jQuery("#contentTable").jqGrid({
+                                datatype: "local",
+                                height: 150,
+                                width: 900,
+                                autowidth: true,
+                                shrinkToFit: true,
+                                colNames: [
+                                    "商品编码",
+                                    "SKC编码",
+                                    "名称",
+                                    "品牌",
+                                    "颜色",
+                                    "尺码",
+//                                "单价",
+                                    "数量"
+                                ],
+                                colModel: [
+                                    {name: 'ITEMCODE', index: 'ITEMCODE'},
+                                    {name: 'SKCCODE', index: 'SKCCODE'},
+                                    {name: 'ITEMNAME', index: 'ITEMNAME'},
+                                    {name: 'BRANDNAME', index: 'BRANDNAME'},
+                                    {name: 'COLOR', index: 'COLOR'},
+                                    {name: 'SIZE', index: 'SIZE'},
+//                                    {name: 'PRICE', index: 'PRICE', sortable: false},
+//                                {name: 'STORECHECKEDPRICE', index: 'STORECHECKEDPRICE',align:'right',formatter:'number'},
+                                    {name: 'NUM', index: 'NUM'}
+                                ],
+                                rowNum: 10000,
+                                rowList: [10000],
+                                pager: '',
+                                viewrecords: true,
+                                sortname: 'ITEMCODE',
+                                sortorder: "asc",
+                                caption: "",
+                                onSelectRow: function () {
+
+                                }
+                            });
+                            $("#contentTable").jqGrid('setGridParam', {data: contents}).trigger('reloadGrid');
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    var showContent2=function(element){
+        var ordercode=element.id.replace("content_","");
+//        alert(ordercode);
+        $.ajax({
+            'url': '/orders/getOnlineContentByOrder',
+            'type': 'get',
+            'data': {ONLINEORDERCODE:ordercode},
+            'datatype': 'json',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("获取订单明细失败");
+                return;
+            },
+            'success': function (msg) {
+                if(msg.status==false){
+                    alert("获取订单明细失败");
+                    return;
+                }
+                else{
+//                            alert(JSON.stringify(msg.data));
+                    var contents=msg.data;
+                    $.Dialog({
+                        shadow: true,
+                        overlay: true,
+                        title: '',
+                        draggable: true,
+                        width: 900,
+                        height: 220,
+                        padding: 10,
+                        onShow: function (_dialog) {
+                            var content = '<div style="width:100%">' +
+                                    '<table style="width:100%;margin-bottom: 7px">' +
+                                    '<tr style="width:100%">' +
+                                    '<td>' +
+                                    ' <table id="contentTable"></table>' +
+                                    '</td>' +
+                                    '</tr>' +
+                                    ' </table>' +
+                                    '</div>';
+
+                            $.Dialog.title("订单详情");
+                            $.Dialog.content(content);
+                            $.Metro.initInputs();
+
+                            jQuery("#contentTable").jqGrid({
+                                datatype: "local",
+                                height: 150,
+                                width: 900,
+                                autowidth: true,
+                                shrinkToFit: true,
+                                colNames: [
+                                    "商品编码",
+                                    "SKC编码",
+                                    "名称",
+                                    "品牌",
+                                    "颜色",
+                                    "尺码",
+                                    "单价",
+                                    "数量"
+                                ],
+                                colModel: [
+                                    {name: 'ITEMCODE', index: 'ITEMCODE'},
+                                    {name: 'SKCCODE', index: 'SKCCODE'},
+                                    {name: 'ITEMNAME', index: 'ITEMNAME'},
+                                    {name: 'BRANDNAME', index: 'BRANDNAME'},
+                                    {name: 'COLOR', index: 'COLOR'},
+                                    {name: 'SIZE', index: 'SIZE'},
+//                                    {name: 'PRICE', index: 'PRICE', sortable: false},
+                                    {name: 'STORECHECKEDPRICE', index: 'STORECHECKEDPRICE',align:'right',formatter:'number'},
+                                    {name: 'NUM', index: 'NUM'}
+                                ],
+                                rowNum: 10000,
+                                rowList: [10000],
+                                pager: '',
+                                viewrecords: true,
+                                sortname: 'ITEMCODE',
+                                sortorder: "asc",
+                                caption: "",
+                                onSelectRow: function () {
+
+                                }
+                            });
+                            $("#contentTable").jqGrid('setGridParam', {data: contents}).trigger('reloadGrid');
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    var clickDelivery=function(element){
+        var ordercode=element.id.replace("delivery_","");
+        var options={};
+        if(ordercode && ordercode.charAt(0)=='1'){
+            options.ONLINEORDERCODE=ordercode;
+        }
+        else{
+            options.OFFLINEORDERCODE=ordercode;
+        }
+//        alert(ordercode);
+        $.ajax({
+            'url': '/orders/getSiteInfoByOrder',
+            'type': 'get',
+            'data': options,
+            'datatype': 'json',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("获取配送地址信息失败!");
+                return;
+            },
+            'success': function (msg) {
+                if(msg.status==false){
+                    alert("获取配送地址信息失败!");
+                    return;
+                }
+                else{
+//                    alert(JSON.stringify(msg.data));
+                    var siteinfo =msg.data;
+                    if(!siteinfo||Object.keys(siteinfo).length==0){
+                        alert("没有找到配送地址信息!");
+                        return;
+                    }
+                    $.Dialog({
+                        shadow: true,
+                        overlay: true,
+                        title: '',
+                        draggable: true,
+                        width: 600,
+                        height: 200,
+                        padding: 10,
+                        onShow: function (_dialog) {
+                            var content =
+                                    '<table width="100%" > '+
+                                    '<tr style="width:100%"> '+
+                                    '<td style="width:20%;height:42px"> '+
+                                    '<label class="col-sm-2 control-label" style="width:150px"> 收货人: </label>'+
+                                    '<input id="site_person_'+ordercode+'" type="text" data-state="info" '+
+                                    '   placeholder="收货人*" style="height:30px;width:90%" readonly/> '+
+                                    '</td> '+
+                                    '<td style="width:20%;height:42px"> '+
+                                    '<label class="col-sm-2 control-label" style="width:150px"> 收货人手机: </label>'+
+                                    '<input id="site_telephone_'+ordercode+'" type="text" data-state="info" '+
+                                    '   placeholder="联系方式*" style="height:30px;width:90%" readonly/> '+
+                                    '</td> '+
+                                    ' '+
+                                    '<td style="width:20%;height:42px"> '+
+                                    '<label class="col-sm-2 control-label" style="width:150px"> 省: </label>'+
+                                    '<input id="selProvince_'+ordercode+'" type="text" data-state="info" '+
+                                    '   placeholder="省" style="height:30px;width:90%" readonly/> '+
+                                    '</td> '+
+                                    '<td style="width:20%;height:42px"> '+
+                                    '<label class="col-sm-2 control-label" style="width:150px"> 市: </label>'+
+                                    '<input id="selCity_'+ordercode+'" type="text" data-state="info" '+
+                                    '   placeholder="市" style="height:30px;width:90%" readonly/> '+
+                                    '</td> '+
+                                    '<td style="width:20%;height:42px"> '+
+                                    '<label class="col-sm-2 control-label" style="width:150px"> 区: </label>'+
+                                    '<input id="selArea_'+ordercode+'" type="text" data-state="info" '+
+                                    '   placeholder="区" style="height:30px;width:90%" readonly/> '+
+                                    '</td> '+
+                                    '</tr> '+
+                                    ' '+
+                                    '<tr style="width:100%"> '+
+                                    '<td colspan="5"> '+
+                                    '<label class="col-sm-2 control-label" style="width:200px"> 详细地址: </label>'+
+                                    '<input id="site_detail_'+ordercode+'" type="text" data-state="info" placeholder="详细地址*" '+
+                                    '   style="height:30px;width:98%" readonly/> '+
+                                    '</td> '+
+                                    '</tr> '+
+                                    '</table>';
+
+                            $.Dialog.title("配送地址");
+                            $.Dialog.content(content);
+                            $.Metro.initInputs();
+
+                            $("#site_person_"+ordercode).val(siteinfo.PERSON);
+                            $("#site_telephone_"+ordercode).val(siteinfo.TELEPHONE);
+                            $("#selProvince_"+ordercode).val(siteinfo.PROVINCE);
+                            $("#selCity_"+ordercode).val(siteinfo.CITY);
+                            $("#selArea_"+ordercode).val(siteinfo.DISTRICT);
+                            $("#site_detail_"+ordercode).val(siteinfo.DETAIL);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
+</script>
+<title></title>
+<style type="text/css" class="init">
+    .ui-jqgrid,
+    .ui-jqgrid * {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        -ms-box-sizing: content-box;
+        -o-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+
+</head>
+<body class="metro">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp ">
+            <!--<div>-->
+                <!--<input id="qry1" type="text" data-state="info" placeholder="" style="height:28px;width:300px"/>-->
+                <!--<input type="button" id="search1" value="搜索"/>-->
+            <!--</div>-->
+            <div class="input-control text" style="width: 300px;">
+                <input id="qry1" type="text" data-state="info"
+                       placeholder="关键字" />
+
+                <button class="btn-search" id="search1" value="搜索"/>
+            </div>
+            <br>
+
+            <div style="width:100%">
+                <table style="width:100%">
+                    <tr style="width:100%">
+                        <td>
+                            <table id="packageTable"></table>
+                            <div id="packageDiv"></div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
+

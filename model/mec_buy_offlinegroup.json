@@ -1,0 +1,132 @@
+{
+  "OFFLINEGROUPCODE": {
+    "type": "char(20)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "PAYMENTMODE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-现场支付，1-网上支付，3-到付",
+    "defaultValue": "0"
+  },
+  "STORECODE": {
+    "type": "char(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "门店号",
+    "defaultValue": null
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "FINALPRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "FINALRULESTRING": {
+    "type": "varchar(1024)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "TRANSID": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "CHRCODE": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "VIPCARDNO": {
+    "type": "varchar(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "贵宾卡卡号",
+    "defaultValue": null
+  },
+  "RECEIVABLEAMT": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "应收金额",
+    "defaultValue": null
+  },
+  "PAYLOCAL": {
+    "type": "int(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "0-pos机付款 1-app付款",
+    "defaultValue": null
+  },
+  "POSDEALNUM": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "pos机交易序列号",
+    "defaultValue": null
+  },
+  "POSCODE": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "pos机号码",
+    "defaultValue": null
+  },
+  "POSTRANSCODE": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "CASHIER": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "收银员",
+    "defaultValue": null
+  },
+  "PAYMENTSTATE": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-未支付 1-已经支付",
+    "defaultValue": "0"
+  },
+  "PAYTIME": {
+    "type": "date",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "订单支付时间",
+    "defaultValue": null
+  },
+  "IFRETURN": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "是否是退货单组，0-普通单 1-退货单",
+    "defaultValue": "0"
+  }
+}

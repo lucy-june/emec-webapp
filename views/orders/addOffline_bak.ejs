@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="product" content="Metro UI CSS Framework">
+
+
+<link href="../css/metro-bootstrap.css" rel="stylesheet">
+<link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+<link href="../css/iconFont.css" rel="stylesheet">
+<link href="../css/docs.css" rel="stylesheet">
+<link href="../js/prettify/prettify.css" rel="stylesheet">
+<!--<link href="../css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">-->
+<script src="../js/load-metro.js"></script>
+<!--<script src="../js/jquery/jquery.min.js"></script>-->
+<!--<script src="../js/ukey.js"></script>-->
+
+<link rel="stylesheet" type="text/css" media="screen"
+      href="../js/jquery.jqGrid-4.6.0/css/themes/redmond/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css"/>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+
+<script src="../js/jquery/jquery.widget.min.js"></script>
+<script src="../js/jquery/jquery.mousewheel.js"></script>
+<script src="../js/prettify/prettify.js"></script>
+<script src="../js/holder/holder.js"></script>
+<script src="../js/docs.js"></script>
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+
+<script src="../js/metro.js"></script>
+<script src="../js/github.js"></script>
+
+<script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+
+
+<script src="../js/metro/metro-scroll.js"></script>
+<script src="../js/district/selectdistrict.js"></script>
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+<link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
+<!--<script src="../js/ukey.js"></script>-->
+<script>
+    Date.prototype.Format = function (fmt) { //author: meizz
+        var o = {
+            "M+": this.getMonth() + 1,                 //月份
+            "d+": this.getDate(),                    //日
+            "h+": this.getHours(),                   //小时
+            "m+": this.getMinutes(),                 //分
+            "s+": this.getSeconds(),                 //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds()             //毫秒
+        };
+        if (/(y+)/.test(fmt))
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+    var isDeliveryFunc=function(){
+        var isdelivery=document.getElementById("isdelivery");
+        if(isdelivery.checked==false){
+            $("#logisticInfo").attr("style","display:none");
+        }
+        else{
+            $("#logisticInfo").attr("style","display:block");
+        }
+
+        window.parent.SetWinHeight();
+    }
+
+    var buys=[];
+    var cur=0;
+    var myDistrict = new district();
+
+    $(document).ready(function () {
+        //assistantList获取
+        var assMap={};
+        <% assistantList.forEach(function(assistant){ %>
+            var assid= '<%= assistant.SALESMANCODE %>';
+            var name= '<%= assistant.SALESMANNAME %>';
+            assMap[assid]=name;
+        <% }); %>
+//        alert(JSON.stringify(assMap));
+
+        //选择地址下拉框功能
+        myDistrict.init("#selProvince", "#selCity", "#selArea");   //绑定3个下拉框
+        myDistrict.bind("上海市", "市辖区", "");
+
+        jQuery("#buyTable").jqGrid({
+            datatype: "local",
+            height: 260,
+            width: window.screen.availWidth > 1140 ? 1020 : 820,
+            autowidth: true,
+            shrinkToFit: true,
+            colNames: [
+                "商品编码",
+                "SKC编码",
+                "促销标志",
+                "名称",
+                "品牌",
+                "颜色",
+                "尺码",
+                "单价",
+                "数量",
+                "手工扣额",
+                ""
+            ],
+            colModel: [
+                {name: 'ITEMCODE', index: 'ITEMCODE', sortable: false},
+                {name: 'SKCCODE', index: 'SKCCODE', sortable: false},
+                {name: 'PROMOTIONMARK', index: 'PROMOTIONMARK', sortable: false},
+                {name: 'ITEMNAME', index: 'ITEMNAME', sortable: false},
+                {name: 'BRANDNAME', index: 'BRANDNAME', sortable: false},
+                {name: 'COLOR', index: 'COLOR', sortable: false},
+                {name: 'SIZE', index: 'SIZE', sortable: false},
+                {name: 'STORETEMPPRICE', index: 'STORETEMPPRICE', width:50, sortable: false},
+                {name: 'NUM', index: 'NUM', sortable: false, width:80, formatter:numFormat},
+                {name: 'FINALMANUAL', index: 'FINALMANUAL', sortable: false, width:80, formatter:decFormat},
+                {name: 'id', index: 'id', width:50 ,sortable: false, formatter: delFormat}
+            ],
+            rowNum: 10000,
+            rownumbers: true,
+            viewrecords: true,
+            fitColumns: true,
+            onSelectRow: function () {
+
+            },
+            onSelectAll: function () {
+
+            },
+            loadComplete: function () {
+
+            },
+            gridComplete: function () {
+
+            }
+        });
+        jQuery("#buyTable").jqGrid('setFrozenColumns');
+
+        jQuery("#orderTable").jqGrid({
+            url:"/orders/getOfflineOrderPlacedToday",
+            datatype: "json",
+            height: 350,
+            width: window.screen.availWidth > 1140 ? 1000 : 800,
+//            autowidth: true,
+//            shrinkToFit: true,
+            colNames: [
+                "订单编码",
+                "VIP卡号",
+                "实付总价",
+                "自提或配送",
+                "开单营业员",
+                "开单时间",
+                "超时时间",
+                "订单状态",
+                "是否拼单",
+                ""
+            ],
+            colModel: [
+                {name: 'OFFLINEORDERCODE', index: 'OFFLINEORDERCODE'},
+                {name: 'VIPCARDNO', index: 'VIPCARDNO'},
+                {name: 'PAYMENTSTATE', index: 'PAYMENTSTATE',align:'right',formatter: priceFormat},
+                {name: 'DELIVERYMODE', index: 'DELIVERYMODE',formatter: deliveryFormat},
+                {name: 'SALESMANCODE', index: 'SALESMANCODE',formatter:assFormat},
+                {name: 'PLACETIME', index: 'PLACETIME',formatter:dateFormat},
+                {name: 'TIMEOUTTIME', index: 'TIMEOUTTIME',formatter:dateFormat},
+                {name: 'ORDERSTATE', index: 'ORDERSTATE', formatter: 'select', edittype: "select", editoptions: {value: "0:未支付;4:已支付;5:已支付;6:已支付;7:已支付;8:交易成功;9:交易关闭;10:交易关闭;11:交易关闭;12:交易关闭;13:交易关闭;100:退货中;101:退货成功;102:退货关闭"}},
+                {name: 'PAYMENTSTATE', index: 'PAYMENTSTATE', formatter: 'select', edittype: "select", editoptions: {value: "0:否;1:否;2:是"}},
+                {name: 'operationBtn', index: 'operationBtn',align:'center', width:300 ,sortable: false, formatter: conFormat}
+            ],
+            rowNum: 30,
+            rowList: [10, 30, 50],
+            pager: '#orderDiv',
+            viewrecords: true,
+            sortname: 'createdAt',
+            sortorder: "desc",
+            caption: "",
+            fitColumns: true,
+            editurl: 'clientArray',
+            onSelectRow: function () {
+
+            },
+            onSelectAll: function () {
+
+            },
+            loadComplete: function () {
+
+            },
+            gridComplete: function () {
+                var rowdata = $("#orderTable").jqGrid('getRowData');
+                var rowid = $("#orderTable").jqGrid('getDataIDs');
+                for(var i = 0; i < rowdata.length; i++) {
+                    var data = rowdata[i].ORDERSTATE;
+                    var id = rowid[i];
+                    if(data == 0 && data != "") {
+                        //未支付-蓝色
+                        $("#" + id + ":first").find("td").css("background-color", "#97CBFF");
+                        $("#orderTable").find("tr[id = '" + id + "']").find("td").css("background-color", "#97CBFF");
+                    } else if(data > 3 && data < 8) {
+                        //已支付-绿色
+                        $("#" + id + ":first").find("td").css("background-color", "#79FF79");
+                        $("#orderTable").find("tr[id = '" + id + "']").find("td").css("background-color", "#79FF79");
+                    } else if(data == 8) {
+                        //交易完成-白色
+                        $("#" + id + ":first").find("td").css("background-color", "#FFFFFF");
+                        $("#orderTable").find("tr[id = '" + id + "']").find("td").css("background-color", "#FFFFFF");
+                    } else if(data > 8 && data < 14) {
+                        //交易关闭-灰色
+                        $("#" + id + ":first").find("td").css("background-color", "#d0d0d0");
+                        $("#orderTable").find("tr[id = '" + id + "']").find("td").css("background-color", "#d0d0d0");
+                    } else if(data > 99 && data < 103) {
+                        //退货-红色
+                        $("#" + id + ":first").find("td").css("background-color", "#FF5151");
+                        $("#orderTable").find("tr[id = '" + id + "']").find("td").css("background-color", "#FF5151");
+                    }
+                }
+            }
+        });
+        jQuery("#orderTable").jqGrid('navGrid', "#orderDiv", {search: false, edit: false, add: false, del: false})
+        jQuery("#orderTable").jqGrid('setGridParam', {data: []}).trigger('reloadGrid');
+
+        function assFormat(cellvalue, options, rowObject) {
+            var name=assMap[cellvalue];
+            if(name) return cellvalue+"/"+name;
+            else return cellvalue;
+        }
+
+        function dateFormat(cellvalue, options, rowObject) {
+            if (!cellvalue) return '';
+            return new Date(cellvalue).Format("yyyy-MM-dd hh:mm:ss");
+        }
+//    <input onkeypress="return (event.keyCode >=48 && event.keyCode<= 57) ||(this.value.indexOf('.')==-1 && event.keyCode==46) " />
+
+        function decFormat(cellvalue, options, rowObject) {
+                //            alert(JSON.stringify(rowObject));
+             var id=rowObject.id;
+             var str = '<div id="decDiv_'+id+'" >'+
+                        '<input  id="dec_'+id+'"  value="'+cellvalue+'"  onkeypress="return (event.keyCode >=48 && event.keyCode<= 57) ||(this.value.indexOf(&quot;.&quot;)==-1 && event.keyCode==46) "  style="width:70px" onkeyup="changeDec(this)" >'+
+                        '</div>';
+
+             return str;
+        }
+
+        function numFormat(cellvalue, options, rowObject) {
+            //            alert(JSON.stringify(rowObject));
+            var id=rowObject.id;
+            var str = '<div id="spinnerDiv_'+id+'" onclick="changeNum(this)">'+
+                    '<input class="myspinner" id="spinner_'+id+'" name="value1" value="'+cellvalue+'" min=1 style="width:50px" onkeyup="changeNum(this)" >'+
+                    '</div>';
+
+            return str;
+        }
+
+        function priceFormat(cellvalue, options, rowObject) {
+            var round2=function(x) {
+                var f = parseFloat(x);
+                if (isNaN(f)) {
+                    return false;
+                }
+                var f = Math.round(x*100)/100;
+                var s = f.toString();
+                var rs = s.indexOf('.');
+                if (rs < 0) {
+                    rs = s.length;
+                    s += '.';
+                }
+                while (s.length <= rs + 2) {
+                    s += '0';
+                }
+                return s;
+            }
+            if(cellvalue==2) {
+                return round2(rowObject.RECEIVABLEAMT2);
+            }
+            else {
+                return round2(rowObject.RECEIVABLEAMT);
+            }
+        }
+
+        function deliveryFormat(cellvalue, options, rowObject) {
+            if(cellvalue==0) return "自提";
+            var ordercode=rowObject.OFFLINEORDERCODE;
+            var str="配送"+
+                    "<i class='icon-location-3 on-right on-left' " +
+                    "style='cursor:hand; color: green;'  " +
+                    "onmouseout='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand;color: green;&quot;)' " +
+                    "onmouseover='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand; color: red; &quot;)' " +
+                    "id='delivery_" + ordercode + "' onclick='clickDelivery(this)'></i>";
+            return str;
+        }
+
+        function delFormat(cellvalue, options, rowObject) {
+//            alert(JSON.stringify(rowObject));
+            var str = "<i class='icon-cancel-2 on-right on-left' " +
+                    "style='cursor:hand;background: darkRed; color: white; padding: 4px; border-radius: 50%;'  " +
+                    "onmouseout='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand;background: darkRed; color: white; padding: 4px; border-radius: 50%;&quot;)' " +
+                    "onmouseover='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand;background: Red; color: white; padding: 4px; border-radius: 50%;&quot;)' " +
+                    "id='del_" + cellvalue + "' onclick='clickDel(this)'></i>";
+
+            return str;
+        }
+
+        function conFormat(cellvalue, options, rowObject) {
+            var str = '<button id="content_'+rowObject.OFFLINEORDERCODE+'_'+rowObject.ORDERSTATE+'" class="bg-lightBlue fg-white" style="width:45px;height:13px;margin-top:2px;margin-bottom:2px" onclick="showContent(this)">查看明细</button>' +
+                    '&nbsp;&nbsp;<button id="'+options.rowId+'" class="bg-lightGreen fg-white" style="width:45px;height:13px;margin-top:2px;margin-bottom:2px" onclick="prtBtnClick(this)">打印订单</button>';
+            return str;
+        }
+
+        $("#search").click(function () {
+            var qry = $("#qry").val().trim();//去除首尾空格
+            $("#orderTable").jqGrid('setGridParam', { url: '/orders/getOfflineOrderPlacedToday?qry=' + qry}).trigger('reloadGrid');
+        })
+
+        $("#code").keyup(function(){
+            if(event.keyCode!=13) return;
+            checkCode();
+        })
+
+        $("#choose").click(function(){
+            checkCode();
+        });
+
+        $("#choose1").click(function(){
+            checkMerchantCode();
+        });
+
+        $("#cancel").click(function(){
+            clearAll();
+        })
+
+        $("#commit").click(function(){
+            var orderinfo={};
+            //将buys中的信息简化成contentinfo所需要的信息
+            var contentinfo=[];
+            for (var i=0;i<buys.length;i++){
+//                var newcontent={};
+//                newcontent.ITEMCODE=buys[i].ITEMCODE;
+//                if (buys[i].SKCCODE){
+//                    newcontent.SKCCODE=buys[i].SKCCODE;
+//                }
+//                newcontent.NUM=buys[i].NUM;
+//                newcontent.BRANDNAME=buys[i].BRANDNAME
+//                newcontent.ITEMNAME=buys[i].ITEMNAME;
+//                newcontent.PROMOTIONMARK = buys[i].PROMOTIONMARK;
+//                newcontent.UNITPRICE=buys[i].UNITPRICE;
+                contentinfo.push(buys[i]);
+            }
+//            alert(JSON.stringify(contentinfo));
+            var siteinfo={};
+
+            if($("#usercode").val() && $("#usercode").val()!="")
+                orderinfo.USERCODE=$("#usercode").val();
+
+            if($("#vipInfo_VipCode").attr("value")&&$("#vipInfo_VipCode").attr("value")!=""){
+                orderinfo.VIPCODE=$("#vipInfo_VipCode").attr("value");
+
+            }
+
+            orderinfo.TEMPDISTRIBUTIONMARK="0";
+            if ($("#SHIPPRICE").val()) orderinfo.SHIPPRICE=$("#SHIPPRICE").val();
+            if ($("#REALSHIPPRICE").val()) orderinfo.REALSHIPPRICE=$("#REALSHIPPRICE").val();
+            if ($("#PACKING").val()) orderinfo.PACKING=$("#PACKING").val();
+            if ($("#REALPACKING").val()) orderinfo.REALPACKING=$("#REALPACKING").val();
+
+            orderinfo.DELIVERYMODE=document.getElementById("isdelivery").checked?"1":"0";
+            if(orderinfo.DELIVERYMODE=="1"){
+//                PERSON:"王进城",TELEPHONE:"1888888",POSTCODE:"200240",DETAIL:"上海一所大学",PROVINCE:"上海",CITY:"上海",DISTRICT:"闵行区
+                if($("#site_person").val() && $("#site_person").val()!=""){
+                    siteinfo.PERSON=$("#site_person").val();
+                }
+                else{
+                    alert("收货人不能为空!");
+                    return;
+                }
+                if($("#site_telephone").val() && $("#site_telephone").val()!=""){
+                    var reg=new RegExp(/^[1-9][0-9]*$/);
+                    if(reg.test($("#site_telephone").val())){
+                        siteinfo.TELEPHONE=$("#site_telephone").val();
+                    }
+                    else{
+                        alert("请输入正确的收货人手机号码");
+                    }
+                }
+                else{
+                    alert("收货人手机号码不能为空!");
+                    return;
+                }
+                if($("#selProvince").val() && $("#selProvince").val()!=""){
+                    siteinfo.PROVINCE=$("#selProvince").val();
+                }
+                else{
+                    alert("收货人省份不能为空!");
+                    return;
+                }
+                if($("#selCity").val() && $("#selCity").val()!=""){
+                    siteinfo.CITY=$("#selCity").val();
+                }
+                else{
+                    alert("收货人城市不能为空!");
+                    return;
+                }
+                if($("#selArea").val() && $("#selArea").val()!=""){
+                    siteinfo.DISTRICT=$("#selArea").val();
+                }
+                else{
+                    alert("收货人地区不能为空!");
+                    return;
+                }
+                if($("#site_detail").val() && $("#site_detail").val()!=""){
+                    siteinfo.DETAIL=$("#site_detail").val();
+                }
+                else{
+                    alert("收货人详细地址不能为空!");
+                    return;
+                }
+            }
+            if ($("#selAssistant").val() && $("#selAssistant").val() != "") {
+                orderinfo.SALESMANCODE = $("#selAssistant").val();
+                if(contentinfo.length == 0){
+                    alert("请选择商品！");
+                    return;
+                }
+                var r = confirm("确定提交订单？");
+                if (r == true) {
+                    var options={orderinfo: orderinfo, contentinfo: contentinfo, siteinfo: siteinfo};
+                    //alert(JSON.stringify(options));
+//                    var params={data:options,sign:sign($("#rand").val())};
+                    var params={data:options};
+                    $.ajax({
+                        'url': '/orders/placeOfflineOrder',
+                        'type': 'post',
+                        'data': params,
+                        'datatype': 'json',
+                        'timeout': 10000,
+                        'error': function (msg) {
+                            alert("系统错误:" + JSON.stringify(msg));
+                            return;
+                        },
+                        'success': function (msg) {
+                            if (msg.status == false) {
+                                alert("开单失败:" + JSON.stringify(msg.data));
+                                return;
+                            }
+                            else {
+                                alert("开单成功!");
+                                $("#orderTable").trigger('reloadGrid');
+                                var orderObj = msg.data[4][1];
+                                orderObj.PLACETIME = new Date(orderObj.PLACETIME).Format("yyyy-MM-dd hh:mm:ss");
+                                orderObj.TIMEOUTTIME = new Date(orderObj.TIMEOUTTIME).Format("yyyy-MM-dd hh:mm:ss");
+                                var vipCard = msg.data[3];
+                                if(vipCard){
+                                    orderObj.VIPCARDNO = vipCard.cardno;
+                                }
+                                printOrder(orderObj,contentinfo,false);
+                                clearAll();
+                        }
+                     }
+                });
+                }
+            }
+            else {
+                alert("请选择营业员!");
+            }
+        })
+
+        var checkMerchantCode = function(){
+            var code=$("#merchantCode").val();
+            if(!code){
+                alert('请输入供应商商品编码!');
+                return;
+            }
+            $.ajax({
+                'url': '/orders/getInfoByCounterSkc',
+                'type': 'get',
+                'data': {MERCHANTSKCCODE:code},
+                'datatype': 'json',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("系统错误"+JSON.stringify(msg));
+                    return;
+                },
+                'success': function (msg) {
+                    if(msg.status==false){
+                        alert("获取商品信息失败");
+                        return;
+                    }
+                    else{
+                        var buy=msg.data;
+                        addItemToTable(buy, true);
+                    }
+                }
+            });
+        }
+
+        //根据输入的商品编码查找商品
+        var checkCode=function(){
+            var code=$("#code").val();
+            if(!code||(code.length!=7)){
+                alert('请输入7位商品编码!');
+                return;
+            }
+            //通过SKU码查询商品
+
+                $.ajax({
+                    'url': '/orders/getInfoByCounterSku',
+                    'type': 'get',
+                    'data': {ITEMCODE:code},
+                    'datatype': 'json',
+                    'timeout': 10000,
+                    'error': function (msg) {
+                        alert("系统错误"+JSON.stringify(msg));
+                        return;
+                    },
+                    'success': function (msg) {
+                        if(msg.status==false){
+                            alert("获取商品信息失败");
+                            return;
+                        }
+                        else{
+                            //拿到商品信息
+                            var item=msg.data;
+                            SKUInfo = item;
+                            //此商品管理库存，有SKC信息，需要展开进行选择
+                            if(item.ISCONSIDERSTOCK==1){
+                                var skcs=item.SKCS;
+                                var _skcs=[]
+                                //获取有库存的skcs
+                                for(var k=0;k<skcs.length;k++){
+                                    if(skcs[k].AMOUNT>0) _skcs.push(skcs[k]);
+                                }
+                                if(_skcs.length==0){
+                                    alert("该商品无库存!");
+                                    return;
+                                }
+                                //展开弹出对话框选择SKC码
+                                $.Dialog({
+                                    shadow: true,
+                                    overlay: true,
+                                    title: '',
+                                    draggable:true,
+                                    width: 600,
+                                    height: 320,
+                                    padding: 10,
+                                    onShow: function(_dialog){
+                                        var content ='<div style="width:100%">' +
+                                                '<table style="width:100%;margin-bottom: 7px">' +
+                                                '<tr style="width:100%">' +
+                                                '<td>' +
+                                                ' <table id="skcTable"></table>' +
+                                                '</td>' +
+                                                '</tr>' +
+                                                ' </table>' +
+                                                '</div>';
+
+                                        $.Dialog.title("请选择颜色尺码");
+                                        $.Dialog.content(content);
+                                        $.Metro.initInputs();
+
+                                        jQuery("#skcTable").jqGrid({
+                                            datatype: "local",
+                                            height: 250,
+                                            width: 600,
+                                            autowidth: true,
+                                            shrinkToFit: true,
+                                            colNames: [
+                                                "SKC编码",
+                                                "供应商SKC编码",
+                                                "颜色",
+                                                "尺寸",
+                                                "库存"
+                                            ],
+                                            colModel: [
+                                                {name: 'SKCCODE', index: 'SKCCODE'},
+                                                {name: 'MERCHANTSKCCODE', index: 'MERCHANTSKCCODE'},
+                                                {name: 'COLOR', index: 'COLOR'},
+                                                {name: 'SIZE', index: 'SIZE'},
+                                                {name: 'AMOUNT', index: 'AMOUNT'}
+                                            ],
+                                            rowNum: 10000,
+                                            rowList: [10000],
+                                            pager: '#skcDiv',
+                                            viewrecords: true,
+                                            sortname: 'COLOR',
+                                            sortorder: "asc",
+                                            caption: "",
+                                            onSelectRow: function () {
+                                                var i = $("#skcTable").jqGrid('getGridParam', "selrow");
+                                                var obj = $("#skcTable").jqGrid('getRowData', i);
+                                                item.SKCCODE=obj.SKCCODE;
+                                                item.COLOR=obj.COLOR;
+                                                item.SIZE=obj.SIZE;
+                                                delete item.SKCS;
+                                                addItemToTable(item,true);
+                                                $.Dialog.close();
+                                            }
+                                        });
+                                        $("#skcTable").jqGrid('setGridParam', {data: skcs}).trigger('reloadGrid');
+                                    }
+                                });
+                            }
+                            else if(item.ISCONSIDERSTOCK==0){
+                                var isExist=false;
+                                var itemCodeType = item.ITEMCODETYPE;
+                                //大类码商品必须手工填写价格
+                                if(itemCodeType == 1){
+                                     var pr = $.Dialog({
+                                        shadow: true,
+                                        overlay: true,
+                                        title: '',
+                                        draggable:true,
+                                        width: 400,
+                                        height: 150,
+                                        padding: 10,
+                                        onShow: function(_dialog){
+                                            var content = ' <div id="specialItem"> <br>' +
+                                                    item.ITEMNAME +  ' <input id="specialPrice" type="text" data-state="info" placeholder="请输入大类码商品价格"' +
+                                                    'style="height:28px;width:240px;"/>' +
+                                                    ' <button id="specialSubmit" class="button primary" onclick="setSpecialPrice()">确定</button>' +
+                                                    '</div>';
+                                            $.Dialog.title("大类码商品开单");
+                                            $.Dialog.content(content);
+                                            $.Metro.initInputs();
+                                        }
+                                    });
+                                }else{
+                                    addItemToTable(item, false);
+                            }
+                            }
+                            else{
+                                alert("获取商品信息错误");
+                            }
+                        }
+                    }
+                });
+            }
+        $("#iuser").click(function(){
+          alert("***");
+        })
+    });
+
+
+    //查询vip信息
+    var getVIP=function(vip){
+        $.ajax({
+            'url': '/orders/getVIPInfo',
+            'type': 'post',
+            'data': {"querystring": vip},
+            'datatype': 'json',
+            'timeout': 10000,
+            'error': function (msg) {
+//                alert(msg.data);
+                $("#vipInfo").attr("style","display:none");
+                $("#vipInfo_VipCode").attr("value","");
+                refreshTotalPrice();
+                return;
+            },
+            'success': function (msg) {
+//                    alert(msg.data);
+//                    var InfoObj = JSON.parse(msg.data);
+                if(msg.status==false){
+                    $("#vipInfo").attr("style","display:none");
+                    $("#vipInfo_VipCode").attr("value","");
+                    refreshTotalPrice();
+                }
+                else{
+                    var InfoObj=msg.data;
+                    $("#vipInfo").attr("style","display:block");
+                    $("#vipInfo_VipCode").attr("value",InfoObj.vipcode);
+                    if(InfoObj){
+                        document.getElementById("vipInfo_Name").innerHTML="姓名："+InfoObj.vipname;
+//                        document.getElementById("vipInfo_Phone").innerHTML = "手机号：" + InfoObj.mobilephone;
+                        document.getElementById("vipInfo_VipCode").innerHTML= "贵宾号："+ InfoObj.vipcode;
+                        document.getElementById("vipInfo_CardNo").innerHTML="卡号："+InfoObj.cardno;
+                        document.getElementById("vipInfo_CardType").innerHTML="卡类型："+InfoObj.cardtype;
+//                        document.getElementById("vipInfo_DiscountRate").innerHTML="折扣："+InfoObj.vipdiscount;
+                    }
+                    refreshTotalPrice();
+                    return;
+                }
+            }
+        });
+    }
+
+    //设置大类码商品价格
+    var setSpecialPrice = function (){
+        var price = $("#specialPrice").val();
+        if(!price || isNaN(price)){
+            alert("请正确填写价格！");
+        }else{
+            SKUInfo.STORECHECKEDPRICE = $("#specialPrice").val();
+            addItemToTable(SKUInfo, false);
+            $.Dialog.close();
+        }
+    };
+
+    //添加商品到订单
+    var addItemToTable = function (itemInfo, isSKC) {
+        var buy = itemInfo;
+//        alert(JSON.stringify(itemInfo));
+        var isExist = false;
+        //大类码时新增商品发现itemcode一样不增加数目，加入一项新的
+        if (itemInfo.ITEMCODETYPE==1){
+            buy.id = ++cur;
+            buy.NUM = 1;
+            buy.FINALMANUAL=0;
+            buys.push(buy);
+        }
+        else{
+        //不是大类码时商品重复增加数目，不重复新增一项
+            for (var k = 0; k < buys.length; k++) {
+                if (buys[k].ITEMCODE == buy.ITEMCODE) {
+                    if(!isSKC || isSKC && buys[k].SKCCODE == buy.SKCCODE){
+                        buys[k].NUM = buys[k].NUM + 1;
+                        isExist = true;
+                        break;
+                    }
+                }
+            }
+            if (!isExist) {
+                buy.id = ++cur;
+                buy.NUM = 1;
+                buy.FINALMANUAL=0;
+                buys.push(buy);
+            }
+        }
+
+        refreshBuy();
+    };
+
+    //清空订单
+    var clearBuy=function(){
+        cur=0;
+        buys=[];
+        $("#buyTable").clearGridData();
+        $("#buyTable").jqGrid('setGridParam', {data: buys}).trigger('reloadGrid');
+    }
+
+    var clearUser=function(){
+        $("#vipInfo").attr("style","display:none");
+        $("#vipInfo_VipCode").attr("value","");
+        refreshTotalPrice();
+        document.getElementById('usercode').innerHTML='';
+        $("#usercode").val("");
+        $("#usercode").attr("style","width:90%;height:30px;border:1px solid #9b9893;display: none");
+        $("#telephone").val("");
+        $("#telephone").attr("style","height:30px;width:90%");
+    }
+
+    var refreshTotalPrice=function(){
+        var contentinfo=[];
+        for (var i=0;i<buys.length;i++){
+            var newcontent={};
+            newcontent.ITEMCODE=buys[i].ITEMCODE;
+            if (buys[i].SKCCODE){
+                newcontent.SKCCODE=buys[i].SKCCODE;
+            }
+            newcontent.NUM=buys[i].NUM;
+//            newcontent.BRANDNAME=buys[i].BRANDNAME
+//            newcontent.NAME=buys[i].ITEMNAME;;
+            newcontent.ORIGINPRICE=buys[i].STORECHECKEDPRICE;
+            newcontent.FINALMANUAL=buys[i].FINALMANUAL;
+            contentinfo.push(newcontent);
+        }
+
+        var vipcode=$("#vipInfo_VipCode").attr("value");
+
+//        alert(vipcode + " "+JSON.stringify(contentinfo));
+
+        $.ajax({
+            'url': '/orders/getTotalPriceInCounter',
+            'type': 'post',
+            'data': {vipcode:vipcode,entries:contentinfo},
+            'datatype': 'json',
+            'timeout': 30000,
+            'error': function (msg) {
+                alert("系统错误"+JSON.stringify(msg));
+                return;
+            },
+            'success': function (msg) {
+                if(msg.status==false){
+                    alert("获取商品信息失败"+JSON.stringify(msg));
+                    return;
+                }
+                else{
+//                    alert(JSON.stringify(msg.data));
+                    document.getElementById("totalPrice").innerHTML="总价(元):"+msg.data;
+                }
+            }
+        });
+    }
+
+    var clearAll=function(){
+        document.getElementById("totalPrice").innerHTML="总价(元):0";
+        clearBuy();
+        clearUser();
+        $("#site_person").val("");
+        $("#site_telephone").val("");
+        $("#site_detail").val("");
+        $("select").val("");
+        myDistrict.bind("上海市", "市辖区", "");
+        document.getElementById("isdelivery").checked=false;
+        $("#logisticInfo").attr("style","display:none");
+        window.parent.SetWinHeight();
+    }
+
+    //更新订单表
+    var refreshBuy=function(){
+        $("#buyTable").clearGridData();
+        $("#buyTable").jqGrid('setGridParam', {data: buys}).trigger('reloadGrid');
+        $(".myspinner").spinner();
+        refreshTotalPrice();
+    }
+
+    var clickDel=function(element){
+        var r=confirm("请确认是否删除该商品!")
+        if (r==true)
+        {
+            //        alert(element.id);
+            var id=element.id.replace("del_","");
+            for(var k=0;k<buys.length;k++){
+                if(buys[k].id==id){
+                    buys.splice(k,1);
+                    break;
+                }
+            }
+//        alert(JSON.stringify(buys));
+            refreshBuy();
+        }
+    }
+
+    var cancelOrder=function(element){
+//        alert(element.id);
+        var ordercode=element.id.replace("cancelOrder_","");
+        var assid=$("#selAssistant_"+ordercode).val();
+        if(!assid||assid==""){
+            alert("请选择营业员");
+            return;
+        }
+        var options={OFFLINEORDERCODE:ordercode,SALESMANCODE:assid};
+        var params={data:options};
+//        var params={data:options,sign:sign($("#rand").val())};
+//        alert(JSON.stringify(params));
+        $.ajax({
+            'url': '/orders/cancelOfflineOrder',
+            'type': 'post',
+            'data': params,
+            'datatype': 'json',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("系统错误"+JSON.stringify(msg));
+                return;
+            },
+            'success': function (msg) {
+                if(msg.status==false){
+                    alert("取消订单失败!")
+                    return;
+                }
+                else{
+                    alert("取消订单成功!");
+                    $.Dialog.close();
+                    $("#orderTable").trigger('reloadGrid');
+                }
+            }
+        });
+    }
+
+    //填写送货信息
+    var clickDelivery=function(element){
+        var ordercode=element.id.replace("delivery_","");
+        $.ajax({
+            'url': '/orders/getSiteInfoByOrder',
+            'type': 'get',
+            'data': {OFFLINEORDERCODE:ordercode},
+            'datatype': 'json',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("系统错误"+JSON.stringify(msg));
+                return;
+            },
+            'success': function (msg) {
+                if(msg.status==false){
+                    alert("获取配送地址信息失败!");
+                    return;
+                }
+                else{
+//                    alert(JSON.stringify(msg.data));
+                    var siteinfo =msg.data;
+                    if(!siteinfo||Object.keys(siteinfo).length==0){
+                        alert("没有找到配送地址信息!");
+                        return;
+                    }
+                    $.Dialog({
+                        shadow: true,
+                        overlay: true,
+                        title: '',
+                        draggable: true,
+                        width: 600,
+                        height: 200,
+                        padding: 10,
+                        onShow: function (_dialog) {
+                            var content =
+                                    '<table width="100%" > '+
+                                    '<tr style="width:100%"> '+
+                                    '<td style="width:20%;height:42px"> '+
+                                    '<label class="col-sm-2 control-label" style="width:150px"> 收货人: </label>'+
+                                    '<input id="site_person_'+ordercode+'" type="text" data-state="info" '+
+                                    '   placeholder="收货人*" style="height:30px;width:90%" readonly/> '+
+                                    '</td> '+
+                                    '<td style="width:20%;height:42px"> '+
+                                    '<label class="col-sm-2 control-label" style="width:150px"> 收货人手机: </label>'+
+                                    '<input id="site_telephone_'+ordercode+'" type="text" data-state="info" '+
+                                    '   placeholder="联系方式*" style="height:30px;width:90%" readonly/> '+
+                                    '</td> '+
+                                    ' '+
+                                    '<td style="width:20%;height:42px"> '+
+                                            '<label class="col-sm-2 control-label" style="width:150px"> 省: </label>'+
+                                            '<input id="selProvince_'+ordercode+'" type="text" data-state="info" '+
+                                            '   placeholder="省" style="height:30px;width:90%" readonly/> '+
+                                    '</td> '+
+                                    '<td style="width:20%;height:42px"> '+
+                                            '<label class="col-sm-2 control-label" style="width:150px"> 市: </label>'+
+                                            '<input id="selCity_'+ordercode+'" type="text" data-state="info" '+
+                                            '   placeholder="市" style="height:30px;width:90%" readonly/> '+
+                                    '</td> '+
+                                    '<td style="width:20%;height:42px"> '+
+                                            '<label class="col-sm-2 control-label" style="width:150px"> 区: </label>'+
+                                            '<input id="selArea_'+ordercode+'" type="text" data-state="info" '+
+                                            '   placeholder="区" style="height:30px;width:90%" readonly/> '+
+                                    '</td> '+
+                                    '</tr> '+
+                                    ' '+
+                                    '<tr style="width:100%"> '+
+                                    '<td colspan="5"> '+
+                                            '<label class="col-sm-2 control-label" style="width:200px"> 详细地址: </label>'+
+                                    '<input id="site_detail_'+ordercode+'" type="text" data-state="info" placeholder="详细地址*" '+
+                                    '   style="height:30px;width:98%" readonly/> '+
+                                    '</td> '+
+                                    '</tr> '+
+                                    '</table>';
+
+                            $.Dialog.title("配送地址");
+                            $.Dialog.content(content);
+                            $.Metro.initInputs();
+
+                            $("#site_person_"+ordercode).val(siteinfo.PERSON);
+                            $("#site_telephone_"+ordercode).val(siteinfo.TELEPHONE);
+                            $("#selProvince_"+ordercode).val(siteinfo.PROVINCE);
+                            $("#selCity_"+ordercode).val(siteinfo.CITY);
+                            $("#selArea_"+ordercode).val(siteinfo.DISTRICT);
+                            $("#site_detail_"+ordercode).val(siteinfo.DETAIL);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    var changeDec=function(element){
+        var id=element.id.replace("decDiv_","").replace("dec_","");
+        var str=$("#dec_"+id).val();
+
+        for(var k=0;k<buys.length;k++){
+            if(buys[k].id==id){
+                buys[k].FINALMANUAL=Number($("#dec_"+id).val());
+                break;
+            }
+        }
+        refreshTotalPrice();
+    }
+
+    var changeNum=function(element){
+        var id=element.id.replace("spinnerDiv_","").replace("spinner_","");
+        var str=$("#spinner_"+id).val();
+        var reg=new RegExp(/^[1-9][0-9]*$/)
+        if(reg.test(str)){
+            if(str.length>3){
+                $("#spinner_"+id).val(999);
+            }
+        }
+        else{
+            $("#spinner_"+id).val(1);
+        }
+
+        for(var k=0;k<buys.length;k++){
+            if(buys[k].id==id){
+                buys[k].NUM=Number($("#spinner_"+id).val());
+                break;
+            }
+        }
+        refreshTotalPrice();
+    }
+
+    function getOrderDetailAndPrint(orderObj) {
+        var rv=[];
+        $.ajax({
+            'url': '/orders/getOfflineContentByOrder',
+            'type': 'get',
+            'data': {OFFLINEORDERCODE: orderObj.OFFLINEORDERCODE},
+            'datatype': 'json',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("系统错误" + JSON.stringify(msg));
+                return;
+            },
+            'success': function (msg) {
+                if (msg.status == false) {
+                    alert("获取订单明细失败");
+                    return;
+                }
+                else {
+                  printOrder(orderObj,msg.data, true);
+                }
+            }});
+        return rv;
+    }
+
+    //打印按钮触发
+    var prtBtnClick=function(element){
+        var tb=jQuery("#orderTable");
+        var data=tb.getRowData(element.id);
+        var orderObj={};
+        orderObj.OFFLINEORDERCODE=data.OFFLINEORDERCODE;
+        orderObj.VIPCARDNO = data.VIPCARDNO;
+        orderObj.COUNTERCODE='<%=counterCode%>';
+        orderObj.SALESMANCODE=data.SALESMANCODE.split("/")[0];
+        orderObj.PLACETIME = data.PLACETIME;
+        orderObj.TIMEOUTTIME = data.TIMEOUTTIME;
+        var details = getOrderDetailAndPrint(orderObj);
+    }
+
+    //打印排版
+    function getPrintStr(src, printLen,rightAlign){
+        var len = 0;
+        var printStr="";
+        for(var i = 0; i<src.length; i++){
+            var regCN=/[\u4E00-\u9FA5]/g;//中文
+            var ch = src.substr(i,1);
+            var p = 0;
+            if(regCN.test(ch)){
+                p = 2;
+            }else{
+                p = 1;
+            }
+            if((len + p) <= printLen){
+                printStr += ch;
+                len += p;
+            }
+            else
+                break;
+        }
+
+        for(var j = 0; j< (printLen - len); j++){
+            if(rightAlign)
+                printStr = " " + printStr;
+            else
+                printStr += " ";
+        }
+
+        return printStr;
+    }
+
+    //打印付款通知单
+    var printOrder=function(orderInfo, contentinfo, rePrint){
+        var pt = document.getElementById('printer');
+        if(!orderInfo || contentinfo.length == 0){
+            alert("订单信息为空！");
+            return;
+        }
+        if(pt.openCom()){
+            pt.init();
+            pt.setBold(1);
+            pt.setFZ(12);
+            pt.println("      汇金百货");
+            pt.println("   商品付款通知单\n");
+            pt.init();
+            pt.println("******************************************");
+            var orderTitle =  orderInfo.OFFLINEORDERCODE;
+            if(rePrint)
+                orderTitle += "             R";
+            pt.println("订 单 号：" + orderTitle);
+            pt.println("柜    号：" + orderInfo.COUNTERCODE);
+            pt.println("营 业 员：" + orderInfo.SALESMANCODE);
+            if(orderInfo.VIPCARDNO){
+                pt.println("贵 宾 卡：" + orderInfo.VIPCARDNO);
+            }
+            pt.println("------------------------------------------");
+            pt.println("编号     品牌     名称      数量  单价(元)");
+
+            for(var i = 0; i < contentinfo.length; i++ ){
+                var item = contentinfo[i];
+                var brand = getPrintStr(item.BRANDNAME, 8, false);
+                var name = getPrintStr(item.ITEMNAME, 9, false);
+                var num =  getPrintStr(item.NUM.toString(), 4, true);
+
+                var price = item.STORETEMPPRICE.toString();
+                if(!price.contains(".")){
+                    price += ".00";
+                }
+                price = getPrintStr(price, 9, true);
+                pt.println(item.ITEMCODE + item.PROMOTIONMARK +" "+brand+" "+name+" "+num+" "+price);
+            }
+            pt.println("\n开单时间：" + orderInfo.PLACETIME);
+            pt.println("付款时限：" + orderInfo.TIMEOUTTIME);
+            pt.println("------------------------------------------");
+            pt.println("请凭此单据到收银台付款，");
+            pt.println("最终成交价以收银系统计算后为准。");
+            pt.println("               ");
+            pt.tab();
+            pt.tab();
+            pt.printQRCodeBySZ(5, orderInfo.OFFLINEORDERCODE);
+            pt.cutPaper();
+            pt.closeCom();
+        } else {
+            alert("无法打印订单，请检查打印机!");
+        }
+    }
+
+    var showContent=function(element){
+        var str=element.id.replace("content_","");
+        var ordercode=str.substr(0,18);
+        var orderstate=str.replace(ordercode+"_","");
+        $.ajax({
+            'url': '/orders/getOfflineContentByOrder',
+            'type': 'get',
+            'data': {OFFLINEORDERCODE:ordercode},
+            'datatype': 'json',
+            'timeout': 10000,
+            'error': function (msg) {
+                alert("系统错误"+JSON.stringify(msg));
+                return;
+            },
+            'success': function (msg) {
+                if(msg.status==false){
+                    alert("获取订单明细失败");
+                    return;
+                }
+                else{
+//                            alert(JSON.stringify(msg.data));
+                   var contents=msg.data;
+                    $.Dialog({
+                        shadow: true,
+                        overlay: true,
+                        title: '',
+                        draggable: true,
+                        width: 900,
+                        height: 220,
+                        padding: 10,
+                        onShow: function (_dialog) {
+                            var content = '<div style="width:100%">' +
+                                    '<table style="width:100%;margin-bottom: 7px">' +
+                                    '<tr style="width:100%">' +
+                                    '<td>' +
+                                    ' <table id="contentTable"></table>' +
+                                    '</td>' +
+                                    '</tr>' +
+                                    ' </table>' +
+                                    '</div>';
+
+                                    if(orderstate==0){
+                                        content+='<div style="width:100%">' +
+                                                '<select id="selAssistant_'+ordercode+'" style="width:100px;height:25px;margin-bottom: 6px;">' +
+                                                '<option value="">------操作员*------</option>' +
+                                                '<% if (assistantList.length) { %>' +
+                                                '<% assistantList.forEach(function(assistant){ %>' +
+                                                '<option value="<%= assistant.SALESMANCODE %>"> <%= assistant.SALESMANNAME %> </option>' +
+                                                '<% }) %>' +
+                                                '<% } %>' +
+                                                '</select>' +
+                                                '<button id="cancelOrder_'+ordercode+'" class="bg-orange fg-white" style="width: 100px;margin-bottom: 6px;margin-left: 8px" onclick="cancelOrder(this);">拒绝</button>'+
+                                                '</div>';
+                                    }
+
+
+                            $.Dialog.title("订单详情");
+                            $.Dialog.content(content);
+                            $.Metro.initInputs();
+
+                            jQuery("#contentTable").jqGrid({
+                                datatype: "local",
+                                height: 150,
+                                width: 900,
+                                autowidth: true,
+                                shrinkToFit: true,
+                                colNames: [
+                                    "商品编码",
+                                    "SKC编码",
+                                    "名称",
+                                    "品牌",
+                                    "颜色",
+                                    "尺码",
+                                    "单价",
+                                    "数量"
+                                ],
+                                colModel: [
+                                    {name: 'ITEMCODE', index: 'ITEMCODE'},
+                                    {name: 'SKCCODE', index: 'SKCCODE'},
+                                    {name: 'ITEMNAME', index: 'ITEMNAME'},
+                                    {name: 'BRANDNAME', index: 'BRANDNAME'},
+                                    {name: 'COLOR', index: 'COLOR'},
+                                    {name: 'SIZE', index: 'SIZE'},
+//                                    {name: 'PRICE', index: 'PRICE', sortable: false},
+                                    {name: 'STORECHECKEDPRICE', index: 'STORECHECKEDPRICE',align:'right',formatter:'number'},
+                                    {name: 'NUM', index: 'NUM'}
+                                ],
+                                rowNum: 10000,
+                                rowList: [10000],
+                                pager: '',
+                                viewrecords: true,
+                                sortname: 'ITEMCODE',
+                                sortorder: "asc",
+                                caption: "",
+                                onSelectRow: function () {
+
+                                }
+                            });
+                            $("#contentTable").jqGrid('setGridParam', {data: contents}).trigger('reloadGrid');
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    var checkUser=function(){
+        var tel=$("#telephone").val();
+        if(tel.length<11) {
+            $("#vipInfo").attr("style","display:none");
+            $("#vipInfo_VipCode").attr("value","");
+            refreshTotalPrice();
+            return;
+        }
+        var reg=new RegExp(/^[1-9][0-9]{10}$/);
+        if(!reg.test(tel)){
+            alert("请输入正确的11位数手机号码!");
+            return;
+        }
+        else{
+            $.ajax({
+                'url': '/orders/getUsercodeByTelephone',
+                'type': 'get',
+                'data': {TELEPHONE:tel},
+                'datatype': 'json',
+                'timeout': 10000,
+                'error': function (msg) {
+                    return;
+                },
+                'success': function (msg) {
+                    if(msg.status==false){
+                        return;
+                    }
+                    else{
+//                        alert(JSON.stringify(msg.data));
+                        var usercode=msg.data.USERCODE;
+                        $("#telephone").attr("style","height:30px;width:90%;display: none");
+                        $("#usercode").attr("style","width:90%;height:30px;border:1px solid #9b9893");
+                        $("#usercode").val(usercode);
+                        document.getElementById('usercode').innerHTML=usercode+' <i class="icon-cancel bg-white fg-black" onclick="clearUser();"></i>';
+                    }
+                }
+            });
+            $.ajax({
+                'url': '/orders/getVipinfoByTelephone',
+                'type': 'get',
+                'data': {TELEPHONE:tel},
+                'datatype': 'json',
+                'timeout': 10000,
+                'error': function (msg) {
+//                    alert(tel);
+                    getVIP(tel);
+                },
+                'success': function (msg) {
+                    if(msg.status==false){
+                        alert(tel);
+                        getVIP(tel);
+                        return;
+                    }
+                    else{
+//                        alert(JSON.stringify(msg.data));
+                        var InfoObj=msg.data;
+                        $("#vipInfo_VipCode").attr("value",InfoObj.vipcode);
+                        $("#vipInfo").attr("style","display:block");
+//                        alert(JSON.stringify(InfoObj));
+                        if(InfoObj){
+                            document.getElementById("vipInfo_Name").innerHTML="姓名："+InfoObj.vipname;
+//                            document.getElementById("vipInfo_Phone").innerHTML = "手机号：" + InfoObj.mobilephone;
+                            document.getElementById("vipInfo_VipCode").innerHTML= "贵宾号："+ InfoObj.vipcode;
+                            document.getElementById("vipInfo_CardNo").innerHTML="卡号："+InfoObj.cardno;
+                            document.getElementById("vipInfo_CardType").innerHTML="卡类型："+InfoObj.cardtype;
+//                            document.getElementById("vipInfo_DiscountRate").innerHTML="折扣："+InfoObj.vipdiscount;
+                        }
+
+                        refreshTotalPrice();
+
+                    }
+                }
+            });
+
+        }
+    }
+
+    var checkCard=function(){
+        var vip=$("#vip").val();
+        if(vip.length<8) {
+            $("#vipInfo").attr("style","display:none");
+            $("#vipInfo_VipCode").attr("value","");
+            refreshTotalPrice();
+            return;
+        }
+        var reg=new RegExp(/^[0-9]{8}$/);
+        if(!reg.test(vip)){
+            alert("请输入正确的8位贵宾卡号!");
+            return;
+        }
+        else{
+            $("#vipInfo").attr("style","display:none");
+            $("#vipInfo_VipCode").attr("value","");
+            refreshTotalPrice();
+            var vip="";
+            if(!$("#vip").val()){
+
+            }
+            else if($("#vip").val() && $("#vip").val()!=""){
+                var reg=new RegExp(/^[0-9][0-9]*$/);
+                if(reg.test($("#vip").val())){
+                    if ($("#vip").val().length==8){
+                        vip=$("#vip").val();
+                        $("#vipInfo").attr("style","display:block");
+                        getVIP(vip);
+                    }else
+                    {
+                        alert("请输入正确的贵宾卡号");
+                    }
+                }
+                else{
+                    alert("请输入正确的贵宾卡号");
+                }
+            }else{
+                alert("请输入正确的贵宾卡号");
+            }
+        }
+    }
+</script>
+<title></title>
+<style type="text/css" class="init">
+    .ui-jqgrid,
+    .ui-jqgrid * {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        -ms-box-sizing: content-box;
+        -o-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+
+</head>
+<body class="metro" onload="load()">
+
+<!--<div id="spinnerDiv_x" onclick="changeNum(this)">-->
+<!--<input class="myspinner" id="spinner_x" name="value1" value="1" min=1 style="width:36px" onkeyup="changeNum(this)" >-->
+<!--</div>-->
+<!--<script> $(".myspinner").spinner();</script>-->
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp ">
+            <embed id="printer" type="application/x-epsondriver" width=0 height=0>
+            <div class="tab-control" data-role="tab-control">
+                <ul class="tabs">
+                    <li class="active"><a href="#_page_1">开单</a></li>
+                    <li><a href="#_page_2">今日已开订单</a></li>
+                </ul>
+
+                <div class="frames">
+                    <div class="frame" id="_page_1">
+                        <div style="height: 26px">
+                            <input id="code" type="text" data-state="info" placeholder="汇金商品码" style="height:28px;width:240px" onkeydown=""/>
+                            <i id="choose" class="icon-cart-2 on-right on-left"
+                               cursor="hand"
+                               style="cursor:hand;background: #2192ff; color: white; padding: 6px; border-radius: 50%;"
+                               onmouseout='javascript:this.setAttribute("style","cursor:hand;background: #2192ff; color: white; padding: 6px; border-radius: 50%;")'
+                               onmouseover='javascript:this.setAttribute("style","cursor:hand;background: #0d3b67; color: white; padding: 6px; border-radius: 50%;")'></i>
+
+                            <input id="merchantCode" type="text" data-state="info" placeholder="供应商条形码" style="height:28px;width:240px" onkeydown=""/>
+                            <i id="choose1" class="icon-cart-2 on-right on-left"
+                               cursor="hand"
+                               style="cursor:hand;background: #2192ff; color: white; padding: 6px; border-radius: 50%;"
+                               onmouseout='javascript:this.setAttribute("style","cursor:hand;background: #2192ff; color: white; padding: 6px; border-radius: 50%;")'
+                               onmouseover='javascript:this.setAttribute("style","cursor:hand;background: #0d3b67; color: white; padding: 6px; border-radius: 50%;")'></i>
+
+
+                        </div>
+
+                        <!--<div class="element input-element place-left">-->
+                            <!--<form >-->
+                                <!--<div class="input-control text span3">-->
+                                    <!--<input type="text" placeholder="商品编码">-->
+                                    <!--<button class="btn-search"></button>-->
+                                <!--</div>-->
+                            <!--</form>-->
+                        <!--</div>-->
+
+                        <label id="totalPrice" style="width:100%;margin-top: 20px;color:orange;font-weight: bold"> 总价(元):0</label>
+                        <div style="width:100%">
+                            <table style="width:100%">
+                                <tr style="width:100%">
+                                    <td>
+                                        <table id="buyTable"></table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br>
+
+                        <div style="width:100%">
+
+                            <div class="input-control switch" >
+                                <label class="inline-block" > 是否配送
+                                    <input id="isdelivery" type="checkbox" onchange="isDeliveryFunc();">
+                                    <span class="check"></span>
+                                </label>
+                            </div>
+
+                            <table id="logisticInfo" width="100%" style="display: none">
+                                <tr style="width:100%">
+                                    <td style="width:20%;height:42px">
+                                        <input id="site_person" type="text" data-state="info"
+                                               placeholder="收货人*" style="height:30px;width:90%"/>
+                                    </td>
+                                    <td style="width:20%;height:42px">
+                                        <input id="site_telephone" type="text" data-state="info"
+                                               placeholder="联系方式*" style="height:30px;width:90%"/>
+                                    </td>
+
+                                    <td style="width:20%;height:42px">
+                                        <select id="selProvince" style="height:30px;width:90%">
+                                            <option value="">---------省*--------</option>
+                                        </select>
+                                    </td>
+                                    <td style="width:20%;height:42px">
+                                        <select id="selCity" style="height:30px;width:90%">
+                                            <option value="">---------市*--------</option>
+                                        </select>
+                                    </td>
+                                    <td style="width:20%;height:42px">
+                                        <select id="selArea" style="height:30px;width:100%">
+                                            <option value="">---------区*--------</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr style="width:100%">
+                                    <td colspan="5">
+                                        <input id="site_detail" type="text" data-state="info" placeholder="详细地址*"
+                                               style="height:30px;width:100%"/>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table style="width:100%;margin-top: 2px">
+                                <tr style="width:100%">
+                                    <td style="width:16%;height:42px">
+                                        <input id="telephone" type="text" data-state="info" placeholder="用户手机" style="height:30px;width:90%" onkeyup="checkUser();"/>
+                                        <button id="usercode" class="image-button bg-white fg-black image-right" style="width:90%;height:30px;border:1px solid #9b9893;display: none" onclick="clearUser();">
+                                            <i id="iuser" class="icon-cancel bg-white fg-black" onclick="clearUser();"></i>
+                                        </button>
+                                    </td>
+                                    <td style="width:12%;height:42px">
+                                        <input id="vip" type="text" data-state="info" placeholder="贵宾卡号" style="height:30px;width:90%"  onkeyup="checkCard();"/>
+
+                                    </td>
+                                    <td style="width:80%;height:42px">
+                                        <!--<button id="getVIPinfo" class="bg-green fg-white" style="width: 100px;">查询贵宾</button>-->
+                                    </td>
+                                </tr>
+                            </table>
+
+
+                            <table id="vipInfo" width="100%" style="display: none">
+                                <tr style="width:100%">
+                                    <td style="width:12%;height:42px">
+                                        <label id="vipInfo_Name" class="inline-block">
+                                        </label>
+                                    </td>
+                                    <!--<td style="width:20%;height:42px">-->
+                                        <!--<label id="vipInfo_Phone" class="inline-block" >-->
+                                        <!--</label>-->
+                                    <!--</td>-->
+                                    <td style="width:15%;height:42px">
+                                        <label id="vipInfo_VipCode" class="inline-block" value="">
+                                        </label>
+                                    </td>
+                                    <td style="width:15%;height:42px">
+                                        <label id="vipInfo_CardNo" class="inline-block" >
+                                        </label>
+                                    </td>
+                                    <td style="width:15%;height:42px">
+                                        <label id="vipInfo_CardType" class="inline-block" >
+                                        </label>
+                                    </td>
+                                    <!--<td style="width:15%;height:42px">-->
+                                        <!--<label id="vipInfo_DiscountRate" class="inline-block" >-->
+                                        <!--</label>-->
+                                    <!--</td>-->
+
+                                </tr>
+
+                            </table>
+
+
+                            <table style="width:100%;margin-top: 2px">
+                                <tr style="width:100%">
+                                    <td style="width:16%;height:42px">
+                                        <select id="selAssistant" style="width:90%;height:30px">
+                                            <option value="">------操作员*------</option>
+                                            <% if (assistantList.length) { %>
+                                            <% assistantList.forEach(function(assistant){ %>
+                                            <option value="<%= assistant.SALESMANCODE %>"> <%= assistant.SALESMANNAME %> </option>
+                                            <% }) %>
+                                            <% } %>
+                                        </select>
+                                    </td>
+                                    <td style="width:84%;height:42px">
+                                        <button id="commit" class="bg-darkBlue fg-white" style="width:100px">提交</button>
+                                        <button id="cancel" class="bg-green fg-white" style="width: 100px;">取消</button>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <br><br>
+                            <table style="width:100%;margin-top: 2px">
+                                <tr style="width:100%">
+                                    <td style="width:25%;height:42px">
+                                        <input id="SHIPPRICE" type="text" data-state="info"  placeholder="总运费" style="height:30px;width:90%" />
+                                    </td>
+                                    <td style="width:25%;height:42px">
+                                        <input id="REALSHIPPRICE" type="text" data-state="info" placeholder="实付运费" style="height:30px;width:90%" />
+                                    </td>
+                                    <td style="width:25%;height:42px">
+                                        <input id="PACKING" type="text" data-state="info"  placeholder="总包装费" style="height:30px;width:90%" />
+                                    </td>
+                                    <td style="width:25%;height:42px">
+                                        <input id="REALPACKING" type="text" data-state="info"  placeholder="实付包装费" style="height:30px;width:90%" />
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </div>
+
+                    <div class="frame" id="_page_2">
+                        <div class="input-control text" style="width: 300px;">
+                            <input id="qry" type="text" data-state="info"
+                                   placeholder="关键字" />
+                            <button class="btn-search" id="search" value="搜索"/>
+                        </div>
+                        <br>
+                        <div style="width:100%">
+                            <table style="width:100%">
+                                <tr style="width:100%">
+                                    <td>
+                                        <table id="orderTable"></table>
+                                        <div id="orderDiv"></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<object id="plugin0" type="application/x-huijinsecurityplugin" width="0" height="0">
+    <param name="onload" value="pluginLoaded" />
+</object>
+<input id="rand" name="rand" type="hidden" value="<%= rand %>">
+
+</body>
+</html>
+

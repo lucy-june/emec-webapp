@@ -1,0 +1,77 @@
+{
+  "DEPTCODE": {
+    "type": "varchar(8)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "DEPTNAME": {
+    "type": "varchar(30)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "DEPTSHORTNAME": {
+    "type": "varchar(16)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "ADDRESSCODE": {
+    "type": "char(3)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "TELEPHONE": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "FAX": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "MAILBOX": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "MANAGER": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "CONTACT": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "DEPTTYPE": {
+    "type": "char(2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "SUPERIORDEPTCODE": {
+    "type": "varchar(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  }
+}

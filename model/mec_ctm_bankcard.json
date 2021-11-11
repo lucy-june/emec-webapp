@@ -1,0 +1,53 @@
+{
+  "BANKCARDID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "USERCODE": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "BANKCARDNUMBER": {
+    "type": "varchar(64)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "BANKCARDOWNER": {
+    "type": "varchar(32)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "BANKCARDTYPE": {
+    "type": "varchar(16)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "BANKNAME": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "创建时间"
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "更新时间"
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "COUNTERCODE": {
+    "type": "char(6)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "COUNTERNAME": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "AGENTCODE": {
+    "type": "char(3)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "MERCHANTCODE": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "COUNTERLOCATIONCODE": {
+    "type": "char(7)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "COUNTERSTATE": {
+    "type": "char(2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "STAFFCODE": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "BUSINESSTYPE": {
+    "type": "char(1)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "STORECODE": {
+    "type": "varchar(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "COUNTERTYPE": {
+    "type": "float(1,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "INPUTPERSON": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "INPUTDATE": {
+    "type": "date",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "CHECKPERSON": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "CHECKDATE": {
+    "type": "date",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "SURROGATEMODE": {
+    "type": "char(1)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "BANKNAME": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "BANKACCOUNTNO": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "BANKNO": {
+    "type": "varchar(30)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "GATHERINGADDRESS": {
+    "type": "varchar(60)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "RECKONAGENTCODE": {
+    "type": "char(3)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "RECKONLOCATIONCODE": {
+    "type": "char(7)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "GRADE": {
+    "type": "varchar(3)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "C2"
+  },
+  "ISONLINE": {
+    "type": "char(1)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "是否线上柜：0-否；1-是",
+    "defaultValue": null
+  },
+  "ONLINECOUNTER": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "如果是线下柜对应的线上柜",
+    "defaultValue": null
+  },
+  "CONTRACTSTATE": {
+    "type": "char(1)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "柜合同状态：0-无合同；1-新建合同未生效；2-合同生效；3-合同终止",
+    "defaultValue": "0"
+  }
+}

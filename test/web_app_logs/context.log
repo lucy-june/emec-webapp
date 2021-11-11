@@ -1,0 +1,11 @@
+[2015-04-27 17:07:58.526] [ERROR] web/superService - modifyBusinessSetting [mec_sys_businesssettingDAO.update]: [{"code":"ER_BAD_FIELD_ERROR","errno":1054,"sqlState":"42S22","index":0,"sql":"UPDATE `mec_sys_businesssetting` SET `updatedAt`='2015-04-27 09:07:58' WHERE `KEY`='paymentExpireTime'"}]
+[2015-04-27 17:07:58.530] [INFO] console - [ { [Error: ER_BAD_FIELD_ERROR: Unknown column 'updatedAt' in 'field list']
+    code: 'ER_BAD_FIELD_ERROR',
+    errno: 1054,
+    sqlState: '42S22',
+    index: 0,
+    sql: 'UPDATE `mec_sys_businesssetting` SET `updatedAt`=\'2015-04-27 09:07:58\' WHERE `KEY`=\'paymentExpireTime\'' } ]
+[2015-04-27 17:07:58.535] [INFO] console - null
+[2015-04-27 17:17:13.235] [TRACE] web/superService - modifyBusinessSetting [mec_sys_businesssettingDAO.update]: 1
+[2015-04-27 17:17:13.238] [INFO] console - null
+[2015-04-27 17:17:13.240] [INFO] console - 1

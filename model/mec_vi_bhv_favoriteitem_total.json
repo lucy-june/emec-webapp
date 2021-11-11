@@ -1,0 +1,49 @@
+{
+  "USERCODE": {
+    "type": "char(32)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "ITEMCODE": {
+    "type": "char(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "ITEMNAME": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "商品全称",
+    "defaultValue": null
+  },
+  "PRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "核定售价",
+    "defaultValue": "0.00"
+  },
+  "BRANDNAME": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "IMGURL": {
+    "type": "varchar(256)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "图片链接\r\n            ",
+    "defaultValue": null
+  },
+  "CREATETIME": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "2000-01-01 00:00:00"
+  }
+}

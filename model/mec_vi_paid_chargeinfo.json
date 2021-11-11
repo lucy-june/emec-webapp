@@ -1,0 +1,34 @@
+{
+  "orderorgroupcode": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "ordercode": {
+    "type": "char(18)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "listid": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "chargecode": {
+    "type": "char(2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "amt": {
+    "type": "double",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "费用金额（减免费用为负数；顾客应付费用为正数）"
+  }
+}

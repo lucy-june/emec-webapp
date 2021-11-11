@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--<base href=? target="_blank"/> _blank表示每次打开该页面都开一个新的tab-->
+
+    <meta charset="utf-8">
+    <meta id="role" name="role" content="<%= role %>"/>
+    <meta id="contractstate" name="contractstate" content="<%= contractstate %>"/>
+    <meta id="recordstate" name="recordstate" content="<%= recordstate %>"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+    <meta name="description" content="Simple responsive css framework">
+    <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+    <link href="css/metro-bootstrap.css" rel="stylesheet">
+    <link href="css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/iconFont.css" rel="stylesheet">
+    <link href="css/docs.css" rel="stylesheet">
+    <link href="js/prettify/prettify.css" rel="stylesheet">
+    <script src="js/jquery/jquery.min.js"></script>
+    <script src="js/jquery/jquery.widget.min.js"></script>
+    <script src="js/jquery/jquery.mousewheel.js"></script>
+    <script src="js/prettify/prettify.js"></script>
+    <script src="js/holder/holder.js"></script>
+    <script src="js/load-metro.js"></script>
+    <script src="js/docs.js"></script>
+    <script src="js/ukeymain.js"></script>
+
+    <script src="js/metro/metro-scroll.js"></script>
+
+    <script type="text/javascript">
+
+        function SetWinHeight()
+        {
+            var ifm= document.getElementById("iframe");
+            var subWeb = document.frames ? document.frames["iframe"].document : ifm.contentDocument;
+            if(ifm != null && subWeb != null) {
+                ifm.height = subWeb.body.scrollHeight;
+            }
+        }
+
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            $("#queryCounterLink").click(function () {
+                updateNav(["本柜商品查询","高级查询"]);
+                $("#iframe").attr("src", "items/queryCounter");
+            });
+            $("#addOfflineOrderLink").click(function () {
+                updateNav(["订单管理","柜台开单"]);
+                $("#iframe").attr("src", "orders/addOffline");
+            });
+
+            $("#acceptOnlineOrderLink").click(function () {
+                updateNav(["订单管理","线上接单"]);
+                $("#iframe").attr("src", "orders/acceptOnline");
+            });
+            $("#totalOrder").click(function () {
+                updateNav(["订单管理","全部订单"]);
+                $("#iframe").attr("src", "orders/counterOrders");
+            });
+            $("#pickCounter").click(function () {
+                updateNav(["提货与备货","柜台提货"]);
+                $("#iframe").attr("src", "logistics/pickCounter");
+            });
+            $("#pickDept").click(function () {
+                updateNav(["顾客提货","门店自提"]);
+                $("#iframe").attr("src", "logistics/pickDept");
+            });
+
+            $("#modifyPwdLink").click(function () {
+                updateNav(["账户","修改密码"]);
+                $("#iframe").attr("src", "pwd/modifyPwd");
+            });
+            $("#infoLink").click(function () {
+                updateNav(["账户","账户信息"]);
+                $("#iframe").attr("src", "account/displayInfo");
+            });
+
+            $("#increaseStockLink").click(function () {
+                updateNav(["库存管理","进货"]);
+                $("#iframe").attr("src", "items/increaseStock");
+            });
+            $("#decreaseStockLink").click(function () {
+                updateNav(["库存管理","退货"]);
+                $("#iframe").attr("src", "items/decreaseStock");
+            });
+            $("#importStockLink").click(function () {
+                updateNav(["库存管理","导入库存"]);
+                $("#iframe").attr("src", "items/importStock");
+            });
+            $("#negativeStockLink").click(function () {
+                updateNav(["库存管理","负库存设置"]);
+                $("#iframe").attr("src", "items/negativeStock");
+            });
+            $("#prepareLink").click(function () {
+                updateNav(["提货与备货","备货"]);
+                $("#iframe").attr("src", "logistics/prepare");
+            });
+
+
+            var updateNav=function(arr){
+                $("#nav").empty();
+                if(arr&&arr.length!=0){
+                    var str="";
+                    for(var k=0;k<arr.length;k++){
+                        str+='<li><a href="#" class="fg-orange">'+arr[k]+'</a></li>';
+                    }
+                    str='<nav class="breadcrumbs" style="margin-top: 10px">'
+                    +'<ul >'
+                    +'<li><a href="#"><i class="icon-home fg-orange"></i></a></li>'
+                    +str
+                    +'</ul>'
+                    +'</nav>';
+                    $("#nav").append(str);
+                }
+            }
+
+
+        });
+    </script>
+
+    <title><%= title %></title>
+    </title>
+</head>
+<body class="metro">
+
+
+
+    <header class="bg-dark">
+        <nav class="navigation-bar bg-mecBlue ">
+        <div class="navigation-bar-content container" style="height: 52px;margin-bottom: 5px;">
+
+            <div id="xjh"  class="element"><span style="font-size: 24px;font-family:Arial"><b>eMEC</b></span></div>
+            <span class="element-divider" style="margin-top:3px;"></span>
+            <a class="element1 pull-menu "></a>
+            <%if(recordstate == 1){ %>
+            <ul class="element-menu">
+                <li id="li3" ><a class="dropdown-toggle" href="#"><span class="icon-search"/> 商品查询 </a>
+                    <ul class="dropdown-menu" data-role="dropdown">
+                        <li><a id="queryCounterLink">模糊查询</a></li>
+                    </ul>
+                </li>
+                <%if(contractstate == 2){ %>
+                <li id="li03" ><a class="dropdown-toggle" href="#"><span class="icon-cabinet"/> 库存管理 </a>
+                    <ul class="dropdown-menu" data-role="dropdown">
+                        <li><a id="increaseStockLink">进货</a></li>
+                        <li><a id="decreaseStockLink">退货</a></li>
+                        <li><a id="importStockLink">导入库存</a></li>
+                        <li><a id="negativeStockLink">负库存设置</a></li>
+                    </ul>
+                </li>
+
+                <li id="li4" ><a class="dropdown-toggle" href="#"><span class="icon-copy"/> 订单管理 </a>
+                    <ul class="dropdown-menu" data-role="dropdown">
+                        <li><a id="addOfflineOrderLink">柜台开单</a></li>
+                        <!--<li><a id="acceptOnlineOrderLink">网上接单</a></li>-->
+                        <li><a id="totalOrder">全部订单</a></li>
+                    </ul>
+                </li>
+
+                <li id="li04" ><a class="dropdown-toggle" href="#"><span class="icon-basket"/> 发货与备货 </a>
+                    <ul class="dropdown-menu" data-role="dropdown">
+                        <li><a id="pickCounter">柜台发货</a></li>
+                        <!--<li><a id="prepareLink">物流备货</a></li>-->
+                    </ul>
+                </li>
+                <%}%>
+                    </ul>
+            <%}%>
+
+            <div class="element-menu place-right" style="margin-right: 10px">
+                <li><a class="dropdown-toggle" href="#"> <span class="icon-cog"></span> <%= usercode %></a>
+                    <ul class="dropdown-menu place-right" data-role="dropdown">
+                        <li><a id="infoLink">用户信息</a></li>
+                        <li><a id="modifyPwdLink">修改密码</a></li>
+                        <li><a href="/download/HJEpsonDriver.msi">下载打印机插件</a></li>
+                        <li><a href="/download/HuijinSecurityPlugin.msi">下载U盾插件</a></li>
+                        <li><a id="logoutLink" href="/logout">退 出</a></li>
+                    </ul>
+                </li>
+            </div>
+        </div>
+    </nav>
+</header>
+        <div class="container">
+    <div id="nav" class="mini">
+
+
+    </div>
+
+
+
+
+        <iframe width="100%" height="660px"   id="iframe" name="iframe" frameborder="0"
+                scrolling="no"  onload="SetWinHeight()" onchange="SetWinHeight()"
+                <%if(recordstate!=2){ %>src="orders/addOffline" <%}%>
+                <%if(recordstate==2){ %>src="pwd/modifyPwd" <%}%>
+        >
+            <%if(istmp){ %>
+            <div style="padding:10px;width: 30%;background-color:#FFBFBF;border: 1px solid #cc0000;text-align:center;color:#7F0000;">
+                现在正在使用临时key进行操作
+            </div>
+            <%}%>
+        </iframe>
+
+        </div>
+
+<object id="plugin1" type="application/x-huijinsecurityplugin" width="0" height="0">
+    <!--<param name="onload" value="pluginLoaded" />-->
+</object>
+
+</body>
+</html>

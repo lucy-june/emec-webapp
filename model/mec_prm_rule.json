@@ -1,0 +1,71 @@
+{
+  "RULEID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "RULENAME": {
+    "type": "varchar(128)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "RULEDESCRIPTION": {
+    "type": "varchar(1024)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "RULESCRIPT": {
+    "type": "varchar(2048)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "DATE-EFFECTIVE": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "DATE-EXPIRES": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "SALIENCE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "DEPTCODE": {
+    "type": "varchar(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "规则适用门店，可以为抽象的网上门店，null为全部门店",
+    "defaultValue": null
+  },
+  "RECORDSTATE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-作废 1-有效",
+    "defaultValue": "1"
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  }
+}

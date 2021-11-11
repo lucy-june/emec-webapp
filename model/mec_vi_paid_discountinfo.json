@@ -1,0 +1,55 @@
+{
+  "orderorgroupcode": {
+    "type": "varchar(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "ordercode": {
+    "type": "char(18)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "itemlistid": {
+    "type": "varchar(3)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": ""
+  },
+  "listid": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "discountreason": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "discountamt": {
+    "type": "decimal(12,2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "vipcardtype": {
+    "type": "char(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "discounttype": {
+    "type": "int(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "1-折让；2-折扣；3-增礼；4-手工折扣；5-供应商活动",
+    "defaultValue": null
+  }
+}

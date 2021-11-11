@@ -1,0 +1,70 @@
+{
+    "dev":{
+        "regist":{
+            "hostname": "116.228.21.162",
+            "port": 8603,
+            "method":"post",
+            "path":"/merFrontMgr/orderBusinessServlet"
+        },
+        "query":{
+            "hostname": "116.228.21.162",
+            "port": 8603,
+            "method":"post",
+            "path":"/merFrontMgr/orderQuerySerlet"
+        },
+        "notify":"http://202.120.40.97:2002/app/umspay/notifyPay/",
+        "merid":"898000093990002",
+        "mertermid":"99999999"
+    },
+    "test":{
+        "regist":{
+            "hostname": "116.228.21.162",
+            "port": 8603,
+            "method":"post",
+            "path":"/merFrontMgr/orderBusinessServlet"
+        },
+        "query":{
+            "hostname": "116.228.21.162",
+            "port": 8603,
+            "method":"post",
+            "path":"/merFrontMgr/orderQuerySerlet"
+        },
+        "notify":"http://202.120.40.140:2002/app/umspay/notifyPay/",
+        "merid":"898000093990002",
+        "mertermid":"99999999"
+    },
+    "qa":{
+        "regist":{
+            "hostname": "116.228.21.162",
+            "port": 8603,
+            "method":"post",
+            "path":"/merFrontMgr/orderBusinessServlet"
+        },
+        "query":{
+            "hostname": "116.228.21.162",
+            "port": 8603,
+            "method":"post",
+            "path":"/merFrontMgr/orderQuerySerlet"
+        },
+        "notify":"http://10.68.0.2:2002/app/umspay/notifyPay/",
+        "merid":"898000093990002",
+        "mertermid":"99999999"
+    },
+    "prod":{
+        "regist":{
+            "hostname": "116.228.21.162",
+            "port": 8603,
+            "method":"post",
+            "path":"/merFrontMgr/orderBusinessServlet"
+        },
+        "query":{
+            "hostname": "116.228.21.162",
+            "port": 8603,
+            "method":"post",
+            "path":"/merFrontMgr/orderQuerySerlet"
+        },
+        "notify":"http://202.120.40.140:2002/app/umspay/notifyPay/",
+        "merid":"898000093990002",
+        "mertermid":"99999999"
+    }
+}

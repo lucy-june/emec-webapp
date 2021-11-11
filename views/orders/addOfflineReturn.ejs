@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="product" content="Metro UI CSS Framework">
+
+
+<link href="../css/metro-bootstrap.css" rel="stylesheet">
+<link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+<!--<link href="../css/iconFont.css" rel="stylesheet">-->
+<!--<link href="../css/docs.css" rel="stylesheet">-->
+<!--<link href="../js/prettify/prettify.css" rel="stylesheet">-->
+<!--&lt;!&ndash;<link href="../css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">&ndash;&gt;-->
+<!--<script src="../js/load-metro.js"></script>-->
+<!--<script src="../js/jquery/jquery.min.js"></script>-->
+<!--<script src="../js/ukey.js"></script>-->
+
+<link rel="stylesheet" type="text/css" media="screen"
+      href="../js/jquery.jqGrid-4.6.0/css/themes/ui-lightness/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css"/>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+
+<script src="../js/jquery/jquery.widget.min.js"></script>
+<!--<script src="../js/jquery/jquery.mousewheel.js"></script>-->
+<!--<script src="../js/prettify/prettify.js"></script>-->
+<!--<script src="../js/holder/holder.js"></script>-->
+<!--<script src="../js/docs.js"></script>-->
+
+<!--<script src="../js/metro/metro-scroll.js"></script>-->
+
+<!--<script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>-->
+
+<script src="../js/metro.js"></script>
+<!--<script src="../js/github.js"></script>-->
+
+<!--<script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>-->
+
+
+<!--<script src="../js/metro/metro-scroll.js"></script>-->
+<!--<script src="../js/district/selectdistrict.js"></script>-->
+
+<!--<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">-->
+<!--<script src="http://code.jquery.com/jquery-1.10.2.js"></script>-->
+<!--<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>-->
+<!--<link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">-->
+<!--<script src="../js/ukey.js"></script>-->
+<script>
+Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+        "M+": this.getMonth() + 1,                 //月份
+        "d+": this.getDate(),                    //日
+        "h+": this.getHours(),                   //小时
+        "m+": this.getMinutes(),                 //分
+        "s+": this.getSeconds(),                 //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds()             //毫秒
+    };
+    if (/(y+)/.test(fmt))
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt))
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+
+var pays = [];
+var buys = [];
+
+$(document).ready(function () {
+
+    jQuery("#payTablebyPos").jqGrid({
+        datatype: "local",
+        height: 100,
+        width:  document.body.clientWidth * 0.96,
+        autowidth: false,
+        shrinkToFit: true,
+        colNames: [
+//            "组号",
+//            "订单号",
+            "支付类型",
+            "支付数额"
+        ],
+        colModel: [
+//            {name: 'GROUPCODE', index: 'GROUPCODE', width: 150, sortable: false},
+//            {name: 'ORDERCODE', index: 'ORDERCODE', width: 150, sortable: false},
+            {name: 'PAYMODENAME', index: 'PAYMODENAME', width: 150, sortable: false},
+            {name: 'AMT', index: 'AMT', width: 130, sortable: false}
+        ],
+        rowNum: 10000,
+        caption:"支付明细表",
+        rownumbers: true,
+        viewrecords: true,
+        fitColumns: true,
+        onSelectRow: function () {
+
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function () {
+
+        },
+        gridComplete: function () {
+
+        }
+    });
+    jQuery("#payTablebyPos").jqGrid('setFrozenColumns');
+
+
+    jQuery("#orderTablebyPos").jqGrid({
+        datatype: "local",
+        height:  window.screen.availHeight * 0.22,
+        width:  document.body.clientWidth * 0.96,
+        autowidth: false,
+        shrinkToFit: false,
+        colNames: [
+            "退货件数",
+            "退货单价",
+            "订单号",
+            "柜台号",
+            "支付时间",
+            "品牌名",
+            "商品编码",
+            "商品名",
+            "商品购买数目",
+            "原始单价",
+            "原始金额",
+            "销售金额"
+        ],
+        colModel: [
+            {name: 'RETURNNUM', index: 'RETURNNUM', sortable: false, width: 60, formatter: numFormat},
+            {name: 'RETURNAMT', index: 'RETURNAMT', sortable: false, width: 80, formatter: amtFormat},
+            {name: 'ORDERCODE', index: 'ORDERCODE', width: 140, sortable: false},
+            {name: 'COUNTERCODE', index: 'COUNTERCODE', width: 80, sortable: false},
+            {name: 'PAYTIME', index: 'PAYTIME', sortable: false, width: 80, formatter: dateFormat},
+            {name: 'BRANDNAME', index: 'BRANDNAME', width: 80, sortable: false},
+            {name: 'ITEMCODE', index: 'ITEMCODE', width: 80, sortable: false},
+            {name: 'ITEMNAME', index: 'ITEMNAME', width: 80, sortable: false},
+            {name: 'NUM', index: 'NUM', width: 80, sortable: false},
+            {name: 'UNITPRICE', index: 'UNITPRICE', width: 80, sortable: false},
+            {name: 'ORIGINAMT', index: 'ORIGINAMT', width: 80, sortable: false},
+            {name: 'RETAILAMT', index: 'RETAILAMT', width: 80, sortable: false}
+        ],
+        rowNum: 10000,
+        rownumbers: true,
+        viewrecords: true,
+        caption:"商品列表",
+        fitColumns: true,
+        onSelectRow: function () {
+
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function () {
+
+        },
+        gridComplete: function () {
+
+        }
+    });
+    jQuery("#orderTablebyPos").jqGrid('setFrozenColumns');
+
+    jQuery("#orderTable").jqGrid({
+        url: "/orders/getOfflineReturnOrderPlacedToday",
+        datatype: "json",
+        height:  window.screen.availHeight * 0.4,
+        width:  document.body.clientWidth * 0.96,
+
+            shrinkToFit: true,
+        colNames: [
+            "",
+            "退单编码",
+            "退单状态",
+//            "柜台号",
+            "退货金额",
+            "归还现金券",
+            "开单时间",
+            "退单超时时间",
+            "原始POS条号",
+//            "所退货的原始订单号码",
+            "退货员"
+
+        ],
+        colModel: [
+            {name: 'operationBtn', index: 'operationBtn', align: 'center', width: 280, sortable: false, formatter: conFormat},
+            {name: 'OFFLINEORDERCODE', index: 'OFFLINEORDERCODE'},
+            {name: 'ORDERSTATE', index: 'ORDERSTATE', formatter: 'select', edittype: "select", editoptions: {value: "0:未支付;4:已支付;5:已支付;6:已支付;7:已支付;8:交易成功;9:交易关闭;10:交易关闭;11:交易关闭;12:交易关闭;13:交易关闭;100:退货中;101:退货成功;102:退货关闭"}},
+//            {name: 'COUNTERCODE', index: 'COUNTERCODE'},
+            {name: 'RECEIVABLEAMT', index: 'RECEIVABLEAMT'},
+            {name: 'RETBACKCOUPON', index: 'RETBACKCOUPON'},
+            {name: 'PLACETIME', index: 'PLACETIME', formatter: dateFormat},
+            {name: 'TIMEOUTTIME', index: 'TIMEOUTTIME', formatter: dateFormat},
+//            {name: 'ORIGINORDERCODE', index: 'ORIGINORDERCODE'},
+            {name: 'RETORIPOSTRANSCODE', index: 'RETORIPOSTRANSCODE'},
+            {name: 'RETUSERCODE', index: 'RETUSERCODE'}
+
+        ],
+        rowNum: 30,
+        rowList: [10, 30, 50],
+        pager: '#orderDiv',
+        viewrecords: true,
+        sortname: 'createdAt',
+        sortorder: "desc",
+        caption: "退单列表",
+        fitColumns: true,
+        editurl: 'clientArray',
+        onSelectRow: function () {
+
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function () {
+
+        },
+        gridComplete: function () {
+            var rowdata = $("#orderTable").jqGrid('getRowData');
+            var rowid = $("#orderTable").jqGrid('getDataIDs');
+            for (var i = 0; i < rowdata.length; i++) {
+                var data = rowdata[i].ORDERSTATE;
+                var id = rowid[i];
+                if (data == 100 && data != "") {
+                    //退货中-蓝色
+//                    $("#" + id + ":last").find("td").css("background-color", "#97CBFF");
+                    $("#orderTable").find("tr[id = '" + id + "']").find("td:eq(2)").css("background-color", "#97CBFF");
+                } else if (data == 101) {
+                    //退货完成-白色
+//                    $("#" + id + ":last").find("td").css("background-color", "#FFFFFF");
+                    $("#orderTable").find("tr[id = '" + id + "']").find("td:eq(2)").css("background-color", "#FFFFFF");
+                } else if (data == 102) {
+                    //退货失败-红色
+//                    $("#" + id + ":last").find("td").css("background-color", "#FF5151");
+                    $("#orderTable").find("tr[id = '" + id + "']").find("td:eq(2)").css("background-color", "#FF5151");
+                }
+            }
+        }
+    });
+    jQuery("#orderTable").jqGrid('navGrid', "#orderDiv", {search: false, edit: false, add: false, del: false})
+    jQuery("#orderTable").jqGrid('setGridParam', {data: []}).trigger('reloadGrid');
+
+    function dateFormat(cellvalue, options, rowObject) {
+        if (!cellvalue) return '';
+        return new Date(cellvalue).Format("yyyy-MM-dd hh:mm:ss");
+    }
+
+    function numFormat(cellvalue, options, rowObject) {
+//                    alert(JSON.stringify(rowObject));
+        var id = rowObject.id;
+        var str = '<div id="returnNumInputDiv_' + options.rowId + '" onclick="changeNum(this,'+rowObject.NUM+')">' +
+                '<input class="myspinner" id="returnNumInput_' + options.rowId + '"  value="0" min=0 max='+rowObject.NUM+'   style="width:50px" onkeypress="return (event.keyCode || event.which)==8 ||  (( (this.value.indexOf(&quot;.&quot;)==-1||(this.value.indexOf(&quot;.&quot;)!=-1 && this.value.length-this.value.indexOf(&quot;.&quot;)<2))  &&  ((event.keyCode || event.which) >=48 && (event.keyCode || event.which)<= 57) ||(this.value.indexOf(&quot;.&quot;)==-1 && (event.keyCode || event.which)==46))) "  onkeyup="changeNum(this,'+rowObject.NUM+');" >' +
+                '</div>';
+
+        return str;
+    }
+
+    function amtFormat(cellvalue, options, rowObject) {
+//                    alert(JSON.stringify(rowObject));
+        var id = rowObject.id;
+        var str = '<div id="returnAmtInputDiv_' + options.rowId + '" onclick="refreshTotalPrice()">' +
+                '<input id="returnAmtInput_' + options.rowId + '" type="text" data-state="info"  style="width:70px" onkeypress="return (event.keyCode || event.which)==8 || (( (this.value.indexOf(&quot;.&quot;)==-1||(this.value.indexOf(&quot;.&quot;)!=-1 && this.value.length-this.value.indexOf(&quot;.&quot;)<2))  &&  ((event.keyCode || event.which) >=48 && (event.keyCode || event.which)<= 57) ||(this.value.indexOf(&quot;.&quot;)==-1 && (event.keyCode || event.which)==46))) "  onkeyup="refreshTotalPrice();" >' +
+                '</div>';
+
+        return str;
+    }
+
+    function conFormat(cellvalue, options, rowObject) {
+        var str = '<button id="content_' + rowObject.OFFLINEORDERCODE + '_' + rowObject.ORDERSTATE + '" class="bg-mecBlue fg-white" style="width:45px;height:13px;margin-top:2px;margin-bottom:2px" onclick="showContent(this)">查看明细</button>' +
+                '&nbsp;&nbsp;<button id="' + options.rowId + '" class="bg-mecOrange fg-white" style="width:45px;height:13px;margin-top:2px;margin-bottom:2px" onclick="prtBtnClick(this)">打印订单</button>';
+        return str;
+    }
+
+    $("#search").click(function () {
+        var qry = $("#qry").val().trim();//去除首尾空格
+        $("#orderTable").jqGrid('setGridParam', { url: '/orders/getOfflineReturnOrderPlacedToday?qry=' + qry}).trigger('reloadGrid');
+    })
+
+    $("#queryPos").click(function () {
+        QueryPos();
+    })
+
+
+//更新订单表
+//    var refreshBuy = function () {
+//        $("#orderTablebyPos").clearGridData();
+//        $("#orderTablebyPos").jqGrid('setGridParam', {data: buys}).trigger('reloadGrid');
+//        $("#payTablebyPos").clearGridData();
+//        $("#payTablebyPos").jqGrid('setGridParam', {data: pays}).trigger('reloadGrid');
+//        $(".myspinner").spinner();
+//        var sum=0;
+//        for(var k=0;k<pays.length;k++){
+//            sum+=pays[k].AMT;
+//        }
+//        document.getElementById("totalOriPrice").innerHTML = "总支付金额(元):" + floor2(sum);
+//        refreshTotalPrice();
+//    }
+
+//    var refreshTotalPrice = function () {
+//
+//        //将填写了returnnum和returnamt的contentinfo选出来
+//        var returncontent = [];
+//        for (var i = 1; i <= buys.length; i++) {
+////            alert($("#returnNumInput_"+i).val());
+////            alert($("#returnAmtInput_"+ i).val());
+//            if ($("#returnNumInput_" + i).val() && $("#returnNumInput_" + i).val() != "" && $("#returnAmtInput_" + i).val() && $("#returnAmtInput_" + i).val() != "") {
+//                var reg = new RegExp(/^[0-9]+\.*[0-9]*$/);
+//                if (reg.test($("#returnNumInput_" + i).val()) && reg.test($("#returnAmtInput_" + i).val())) {
+//                    if(Number($("#returnNumInput_" + i).val())==0||Number($("#returnAmtInput_" + i).val())==0) continue;
+//                    if ($("#returnNumInput_" + i).val() <= buys[i - 1].NUM) {
+//                        var thecontent = buys[i - 1];
+//                        thecontent.RETURNNUM = Number($("#returnNumInput_" + i).val());
+//                        thecontent.RETURNAMT = Number($("#returnAmtInput_" + i).val());
+//                        returncontent.push(thecontent);
+//                    } else {
+//                        alert("退货件数不能大于原始件数!");
+//                        return;
+//                    }
+//                } else {
+//                    alert("请在退货件数和退货金额中输入非负数!");
+//                    return;
+//                }
+//            }
+//        }
+//        var total = 0;
+//        for (var i = 0; i < returncontent.length; i++) {
+//            total += Number(returncontent[i].RETURNAMT);
+//        }
+//        document.getElementById("totalPrice").innerHTML = "总退货金额(元):" + total;
+//    }
+
+    var clearAll = function () {
+//        document.getElementById("totalPrice").innerHTML="总退货金额(元):0";
+//        document.getElementById("totalcashpay").innerHTML="现金支付总额(元):0";
+//        document.getElementById("totalcreditpay").innerHTML="银行卡支付总额(元):0";
+//        document.getElementById("totalcashcouponpay").innerHTML="现金券支付总额(元):0";
+//        document.getElementById("totalgoodscouponpay").innerHTML="商品券支付总额(元):0";
+//        document.getElementById("totalecardpay").innerHTML="电子卡支付总额(元):0";
+//        document.getElementById("totalotherpay").innerHTML="其他支付总额(元):0";
+//        document.getElementById("totalpremiumpay").innerHTML="溢价总额(元):0";
+        buys = [];
+        pays = [];
+        $("#orderTablebyPos").clearGridData();
+        $("#orderTablebyPos").trigger('reloadGrid');
+        $("#payTablebyPos").clearGridData();
+        $("#payTablebyPos").trigger('reloadGrid');
+        document.getElementById("totalOriPrice").innerHTML = "总支付金额(元):0";
+        document.getElementById("totalPriceSpan").innerHTML = "￥0.00";
+        $("#code").val("");
+        $("#ticket").val("");
+    }
+
+    $("#cancel").click(function () {
+        clearAll();
+    })
+
+    $("#commit").click(function () {
+        //将填写了returnnum和returnamt的contentinfo选出来
+        var returncontent = [];
+        for (var i = 1; i <= buys.length; i++) {
+//            alert($("#returnNumInput_"+i).val());
+//            alert($("#returnAmtInput_"+ i).val());
+            if ($("#returnNumInput_" + i).val() && $("#returnAmtInput_" + i).val() ) {
+                var reg = new RegExp(/^[0-9]+\.*[0-9]*$/);
+                if (reg.test($("#returnNumInput_" + i).val()) && reg.test($("#returnAmtInput_" + i).val())) {
+                    if(Number($("#returnNumInput_" + i).val())==0||Number($("#returnAmtInput_" + i).val())==0) continue;
+                    if ($("#returnNumInput_" + i).val() <= buys[i - 1].NUM) {
+                        var thecontent = buys[i - 1];
+                        thecontent.RETURNNUM = Number($("#returnNumInput_" + i).val());
+                        thecontent.UNITPRICE = Number($("#returnAmtInput_" + i).val());
+                        thecontent.RETURNAMT = thecontent.RETURNNUM * thecontent.UNITPRICE;
+                        if(thecontent.RETURNAMT>thecontent.RETAILAMT){
+                            alert("单条商品的退货额大于原始金额！");
+                            return;
+                        }
+                        returncontent.push(thecontent);
+                    } else {
+                        alert("退货件数不能大于原始件数!");
+                        return;
+                    }
+                } else {
+                    alert("请在退货件数和退货金额中输入非负整数!");
+                    return;
+                }
+            }
+        }
+
+        if(returncontent.length==0){
+            alert("请填写要退货的商品数目和金额！");
+            return;
+        }
+//        alert(JSON.stringify(returncontent));
+
+        //从returncontent中找出不同的订单号放入returnorderinfo中
+//        var returnorderinfo=[];
+//        for (var i=0;i<returncontent.length;i++){
+//            var theOrderCode=returncontent[i].ORDERCODE;
+//            var found=false;
+//            for (var j=0;j<returnorderinfo.length;j++){
+//                if (returnorderinfo[j].ORIGINORDERCODE==theOrderCode){
+//                    found=true;
+//                    break;
+//                }
+//            }
+//            if (found==false){
+//                var theReturnOrder={};
+//
+//                theReturnOrder.USERCODE=returncontent[i].USERCODE;
+//                theReturnOrder.COUNTERCODE=returncontent[i].COUNTERCODE;
+//                theReturnOrder.STORECODE=returncontent[i].STORECODE;
+//                var receivableAmt=0;
+//                for (var k=0;k<returncontent.length;k++){
+//                    if (returncontent[k].ORDERCODE==theOrderCode){
+//                        receivableAmt+=Number(returncontent[k].RETURNAMT);
+//                    }
+//                }
+//                theReturnOrder.RECEIVABLEAMT=receivableAmt;
+//                theReturnOrder.IFRETURN=1;
+//                theReturnOrder.ORDERSTATE=100;
+//                theReturnOrder.ORIGINORDERCODE=returncontent[i].ORDERCODE;
+////                alert(JSON.stringify(theReturnOrder));
+//                returnorderinfo.push(theReturnOrder);
+//            }
+//        }
+//        alert(JSON.stringify(returnorderinfo));
+
+        var thereturnorder = {};
+
+        thereturnorder.VIPCARDNO= buys[0].VIPCARDNO;
+        thereturnorder.USERCODE = '';
+        thereturnorder.COUNTERCODE = '';
+        thereturnorder.RETORIPOSTRANSCODE=$("#code").val().trim();
+        thereturnorder.STORECODE = returncontent[0].STORECODE;
+        var receivableAmt = 0;
+        for (var k = 0; k < returncontent.length; k++) {
+            receivableAmt += Number(returncontent[k].RETURNAMT);
+        }
+        thereturnorder.RECEIVABLEAMT = receivableAmt;
+        thereturnorder.IFRETURN = 1;
+        thereturnorder.ORDERSTATE = 100;
+        thereturnorder.RETBACKCOUPON = Number($("#ticket").val());
+
+        var r = confirm("确定提交该退货订单？");
+        if (r == true) {
+            var options = {orderinfo: thereturnorder, contentinfoArray: returncontent};
+//            alert(JSON.stringify(options));
+            var params = {data: options};//,sign:sign($("#rand").val())
+            $.ajax({
+                'url': '/orders/placeOfflineReturnOrderByPos',
+                'type': 'post',
+                'data': params,
+                'datatype': 'json',
+                'timeout': 3000,
+                'error': function (msg) {
+                    alert("提交退货单失败" + JSON.stringify(msg));
+                    return;
+                },
+                'success': function (msg) {
+                    if (msg.status == false) {
+                        alert("提交退货单失败" + JSON.stringify(msg.data));
+                        return;
+                    }
+                    else {
+                        alert("提交退货单成功!");
+                        $("#orderTable").trigger('reloadGrid');
+                        var orderObj = msg.data[1][0];
+                        orderObj.PLACETIME = new Date(orderObj.PLACETIME).Format("yyyy-MM-dd hh:mm:ss");
+                        orderObj.TIMEOUTTIME = new Date(orderObj.TIMEOUTTIME).Format("yyyy-MM-dd hh:mm:ss");
+                        printOrder(orderObj,pays,returncontent, false);
+                        clearAll();
+                    }
+                }
+            });
+        }
+
+    });
+});
+
+var changeNum=function(element,max){
+    var id=element.id.replace("returnNumInputDiv_","").replace("returnNumInput_","");
+    var str=$("#returnNumInput_"+id).val();
+    var reg=new RegExp(/^[1-9][0-9]*$/)
+    if(reg.test(str)){
+        if(Number(str)>max){
+            $("#returnNumInput_"+id).val(max);
+        }
+    }
+    else{
+        $("#returnNumInput_"+id).val(0);
+    }
+
+    refreshTotalPrice();
+}
+
+var refreshTotalPrice = function () {
+    //将填写了returnnum和returnamt的contentinfo选出来
+    var returncontent = [];
+    for (var i = 1; i <= buys.length; i++) {
+//            alert($("#returnNumInput_"+i).val());
+//            alert($("#returnAmtInput_"+ i).val());
+        if ($("#returnNumInput_" + i).val()  &&  $("#returnAmtInput_" + i).val()) {
+            var reg = new RegExp(/^[0-9]+\.*[0-9]*$/);
+            if (reg.test($("#returnNumInput_" + i).val()) && reg.test($("#returnAmtInput_" + i).val())) {
+                if(Number($("#returnNumInput_" + i).val())==0||Number($("#returnAmtInput_" + i).val())==0) continue;
+                if ($("#returnNumInput_" + i).val() <= buys[i - 1].NUM) {
+                    var thecontent = buys[i - 1];
+                    thecontent.RETURNNUM = Number($("#returnNumInput_" + i).val());
+                    thecontent.RETURNAMT = Number($("#returnAmtInput_" + i).val());
+                    returncontent.push(thecontent);
+                } else {
+                    alert("退货件数不能大于原始件数!");
+                    return;
+                }
+            } else {
+                alert("请在退货件数和退货金额中输入非负数!");
+                return;
+            }
+        }
+    }
+    var total = 0;
+    var num=0;
+    for (var i = 0; i < returncontent.length; i++) {
+        num+=Number(returncontent[i].RETURNNUM);
+        total += Number(returncontent[i].RETURNAMT)*Number(returncontent[i].RETURNNUM);
+    }
+    document.getElementById("totalNumSpan").innerHTML = ""+num;
+    document.getElementById("totalPriceSpan").innerHTML = "￥" + floor2(total);
+}
+
+var floor2 = function (x) {
+    var f = parseFloat(x);
+    if (isNaN(f)) {
+        return false;
+    }
+    var f = Math.floor(x * 100) / 100;
+    var s = f.toString();
+    var rs = s.indexOf('.');
+    if (rs < 0) {
+        rs = s.length;
+        s += '.';
+    }
+    while (s.length <= rs + 2) {
+        s += '0';
+    }
+    return s;
+}
+
+var countTotalPayShare = function () {
+    var CASHPAYSHARE = 0;
+    var CREDITPAYSHARE = 0;
+    var CASHCOUPONPAYSHARE = 0;
+    var GOODSCOUPONPAYSHARE = 0;
+    var ECARDPAYSHARE = 0;
+    var OTHERPAYSHARE = 0;
+    var PREMIUMPAYSHARE = 0;
+    for (var i = 0; i < buys.length; i++) {
+        if (buys[i].CASHPAYSHARE)
+            CASHPAYSHARE += buys[i].CASHPAYSHARE;
+        if (buys[i].CREDITPAYSHARE)
+            CREDITPAYSHARE += buys[i].CREDITPAYSHARE;
+        if (buys[i].CASHCOUPONPAYSHARE)
+            CASHCOUPONPAYSHARE += buys[i].CASHCOUPONPAYSHARE;
+        if (buys[i].GOODSCOUPONPAYSHARE)
+            GOODSCOUPONPAYSHARE += buys[i].GOODSCOUPONPAYSHARE;
+        if (buys[i].ECARDPAYSHARE)
+            ECARDPAYSHARE += buys[i].ECARDPAYSHARE;
+        if (buys[i].OTHERPAYSHARE)
+            OTHERPAYSHARE += buys[i].OTHERPAYSHARE;
+        if (buys[i].PREMIUMPAYSHARE)
+            PREMIUMPAYSHARE += buys[i].PREMIUMPAYSHARE;
+    }
+//    document.getElementById("totalcashpay").innerHTML="现金支付总额(元):"+floor2(CASHPAYSHARE);
+//    document.getElementById("totalcreditpay").innerHTML="银行卡支付总额(元):"+floor2(CREDITPAYSHARE);
+//    document.getElementById("totalcashcouponpay").innerHTML="现金券支付总额(元):"+floor2(CASHCOUPONPAYSHARE);
+//    document.getElementById("totalgoodscouponpay").innerHTML="商品券支付总额(元):"+floor2(GOODSCOUPONPAYSHARE);
+//    document.getElementById("totalecardpay").innerHTML="电子卡支付总额(元):"+floor2(ECARDPAYSHARE);
+//    document.getElementById("totalotherpay").innerHTML="其他支付总额(元):"+floor2(OTHERPAYSHARE);
+//    document.getElementById("totalpremiumpay").innerHTML="溢价总额(元):"+floor2(PREMIUMPAYSHARE);
+}
+
+var cancelOrder=function(element){
+//        alert(element.id);
+    var ordercode=element.id.replace("cancelOrder_","");
+    var options={OFFLINEORDERCODE:ordercode};
+    var params={data:options};
+//        var params={data:options,sign:sign($("#rand").val())};
+//        alert(JSON.stringify(params));
+    $.ajax({
+        'url': '/orders/cancelReturnOrder',
+        'type': 'post',
+        'data': params,
+        'datatype': 'json',
+        'timeout': 10000,
+        'error': function (msg) {
+            alert("系统错误"+JSON.stringify(msg));
+            return;
+        },
+        'success': function (msg) {
+            if(msg.status==false){
+                alert("取消订单失败!")
+                return;
+            }
+            else{
+                alert("取消订单成功!");
+                $.Dialog.close();
+                $("#orderTable").trigger('reloadGrid');
+            }
+        }
+    });
+}
+
+var refreshBuy = function () {
+    $("#orderTablebyPos").clearGridData();
+    $("#orderTablebyPos").jqGrid('setGridParam', {data: buys}).trigger('reloadGrid');
+    $("#payTablebyPos").clearGridData();
+    $("#payTablebyPos").jqGrid('setGridParam', {data: pays}).trigger('reloadGrid');
+    $(".myspinner").spinner();
+    var sum=0;
+    for(var k=0;k<pays.length;k++){
+        sum+=pays[k].AMT;
+    }
+    document.getElementById("totalOriPrice").innerHTML = "总支付金额(元):" + floor2(sum);
+    refreshTotalPrice();
+}
+
+var QueryPos=function(){
+    var qry = $("#code").val().trim();//去除首尾空格
+    buys = [];
+    $.ajax({
+        'url': '/orders/getPayListWhenReturn',
+        'type': 'get',
+        'data': {POSDEALNUM: qry},
+        'datatype': 'json',
+        'timeout': 10000,
+        'error': function (msg) {
+            alert("获取该POS条对应的支付信息失败!");
+            return;
+        },
+        'success': function (msg) {
+            if (msg.status == false ||msg.data.length==0) {
+                alert("获取该POS条对应的支付信息失败!");
+                return;
+            }
+            else {
+                pays = msg.data;
+                $.ajax({
+                    'url': '/orders/getOrderInfoWhenReturn',
+                    'type': 'get',
+                    'data': {POSDEALNUM: qry},
+                    'datatype': 'json',
+                    'timeout': 3000,
+                    'error': function (msg) {
+                        alert("获取该POS条对应的订单信息失败!");
+                        return;
+                    },
+                    'success': function (msg) {
+                        if (msg.status == false) {
+                            alert("获取该POS条对应的订单信息失败!");
+                            return;
+                        }
+                        else {
+                    //alert(JSON.stringify(msg.data));
+                            buys = msg.data;
+                            refreshBuy();
+//                    countTotalPayShare();
+                        }
+                    }
+                });
+            }
+        }
+    });
+}
+
+function getOrderDetailAndPrint(orderObj) {
+    var ordercontent = [];
+    var payinfo=[];
+    $.ajax({
+        'url': '/orders/getOfflineContentByOrder',
+        'type': 'get',
+        'data': {OFFLINEORDERCODE: orderObj.OFFLINEORDERCODE},
+        'datatype': 'json',
+        'timeout': 10000,
+        'error': function (msg) {
+            alert("系统错误" + JSON.stringify(msg));
+            return;
+        },
+        'success': function (msg) {
+            if (msg.status == false) {
+                alert("获取订单明细失败");
+                return;
+            }
+            else {
+                ordercontent = msg.data;
+                pays =[];
+                $.ajax({
+                    'url': '/orders/getPayListWhenReturn',
+                    'type': 'get',
+                    'data': {POSDEALNUM: orderObj.POSCODE},
+                    'datatype': 'json',
+                    'timeout': 10000,
+                    'error': function (msg) {
+                        alert("系统错误!");
+                        return;
+                    },
+                    'success': function (msg) {
+                        if (msg.status == false ||msg.data.length==0) {
+                            alert("获取支付信息失败!");
+                            return;
+                        }
+                        else {
+                            payinfo = msg.data;
+                            printOrder(orderObj,payinfo,ordercontent, true);
+                        }
+                    }
+                });
+
+            }
+        }});
+    return rv;
+}
+
+
+//打印按钮触发
+var prtBtnClick = function (element) {
+    var tb = jQuery("#orderTable");
+    var data = tb.getRowData(element.id);
+    var orderObj = {};
+    orderObj.OFFLINEORDERCODE = data.OFFLINEORDERCODE;
+    orderObj.PLACETIME = data.PLACETIME;
+    orderObj.TIMEOUTTIME = data.TIMEOUTTIME;
+    orderObj.RETUSERCODE = data.RETUSERCODE;
+    orderObj.POSCODE = data.RETORIPOSTRANSCODE;
+    orderObj.RETBACKCOUPON = data.RETBACKCOUPON;
+    var details = getOrderDetailAndPrint(orderObj);
+}
+
+//打印排版
+function getPrintStr(src, printLen, rightAlign) {
+    var len = 0;
+    var printStr = "";
+    if(!src)
+       src="";
+    for (var i = 0; i < src.length; i++) {
+        var regCN = /[\u4E00-\u9FA5]/g;//中文
+        var ch = src.substr(i, 1);
+        var p = 0;
+        if (regCN.test(ch)) {
+            p = 2;
+        } else {
+            p = 1;
+        }
+        if ((len + p) <= printLen) {
+            printStr += ch;
+            len += p;
+        }
+        else
+            break;
+    }
+
+    for (var j = 0; j < (printLen - len); j++) {
+        if (rightAlign)
+            printStr = " " + printStr;
+        else
+            printStr += " ";
+    }
+
+    return printStr;
+}
+
+//打印付款通知单
+var printOrder = function (orderInfo, payInfo, contentinfo, rePrint) {
+    var pt = document.getElementById('printer');
+    if (!orderInfo || contentinfo.length == 0) {
+        alert("退单信息为空！");
+        return;
+    }
+    if (pt.openPrinter()) {
+        pt.init();
+        pt.setBold(1);
+        pt.setFZ(12);
+        pt.println("      汇金百货");
+        pt.println("   商品退款通知单\n");
+        pt.init();
+        pt.println("******************************************");
+        var orderTitle = orderInfo.OFFLINEORDERCODE;
+        if (rePrint)
+            orderTitle += "             R";
+        pt.println("退 单 号：" + orderTitle);
+        pt.println("开 单 员：" + orderInfo.RETUSERCODE);
+        if (orderInfo.RETBACKCOUPON && parseFloat(orderInfo.RETBACKCOUPON) > 0 ) {
+            pt.println("应 收 券：" + orderInfo.RETBACKCOUPON);
+        }
+        pt.println("------------------------------------------");
+        for (var i = 0; i < payInfo.length; i++) {
+            var item = payInfo[i];
+            var paymode = getPrintStr(item.PAYMODENAME, 15, false);
+            var amt = item.AMT.toString();
+            if (!amt.contains(".")) {
+                amt += ".00";
+            }
+            amt = getPrintStr(amt, 25, true);
+            pt.println(paymode + " " + amt);
+        }
+        pt.println("------------------------------------------");
+        pt.println("编号    品牌     名称      数量  单价(元)");
+
+        for (var i = 0; i < contentinfo.length; i++) {
+            var item = contentinfo[i];
+            var brand = getPrintStr(item.BRANDNAME, 8, false);
+            var name = getPrintStr(item.ITEMNAME, 9, false);
+            if(!item.RETURNNUM)
+                item.RETURNNUM = item.NUM;
+            var num = getPrintStr(item.RETURNNUM.toString(), 4, true);
+            if(!item.RETURNAMT)
+                item.RETURNAMT = item.RETAILAMT;
+//            var price = item.RETURNAMT.toString();
+            var price = item.UNITPRICE.toString();
+            if (!price.contains(".")) {
+                price += ".00";
+            }
+            price = getPrintStr(price, 9, true);
+            pt.println(item.ITEMCODE + " " + brand + " " + name + " " + num + " " + price);
+        }
+        pt.println("\n开单时间：" + orderInfo.PLACETIME);
+        pt.println("退款时限：" + orderInfo.TIMEOUTTIME);
+        pt.println("------------------------------------------");
+        pt.println("请凭此单据到收银台退款");
+        pt.println("");
+        pt.tab();
+        pt.tab();
+        pt.printQRCodeBySZ(5, orderInfo.OFFLINEORDERCODE);
+        pt.cutPaper();
+        pt.flush();
+        pt.closePrinter();
+    } else {
+        alert("无法打印订单，请检查打印机!");
+    }
+}
+
+var showContent = function (element) {
+    var str = element.id.replace("content_", "");
+    var ordercode = str.substr(0, 18);
+    var orderstate = str.replace(ordercode + "_", "");
+//    alert(ordercode);
+    $.ajax({
+        'url': '/orders/getOfflineContentByOrder',
+        'type': 'get',
+        'data': {OFFLINEORDERCODE: ordercode},
+        'datatype': 'json',
+        'timeout': 10000,
+        'error': function (msg) {
+            alert("系统错误" + JSON.stringify(msg));
+            return;
+        },
+        'success': function (msg) {
+            if (msg.status == false) {
+                alert("获取订单明细失败");
+                return;
+            }
+            else {
+//                            alert(JSON.stringify(msg.data));
+                var contents = msg.data;
+                $.Dialog({
+                    shadow: true,
+                    overlay: true,
+                    title: '',
+                    draggable: true,
+                    width: 900,
+                    height: 220,
+                    padding: 10,
+                    onShow: function (_dialog) {
+                        var content = '<div style="width:100%">' +
+                                '<table style="width:100%;margin-bottom: 7px">' +
+                                '<tr style="width:100%">' +
+                                '<td>' +
+                                ' <table id="contentTable"></table>' +
+                                '</td>' +
+                                '</tr>' +
+                                ' </table>' +
+                                '</div>';
+
+                        if(orderstate==100){
+                            content+='<div style="width:100%">' +
+                                    '<button id="cancelOrder_'+ordercode+'" class="bg-mecOrange fg-white" style="width: 100px;margin-bottom: 6px;" onclick="cancelOrder(this);">取消退单</button>'+
+                                    '</div>';
+                        }
+
+                        $.Dialog.title("订单详情");
+                        $.Dialog.content(content);
+                        $.Metro.initInputs();
+
+                        jQuery("#contentTable").jqGrid({
+                            datatype: "local",
+                            height: 150,
+                            width: 900,
+                            autowidth: true,
+                            shrinkToFit: true,
+                            colNames: [
+                                "商品编码",
+                                "SKC编码",
+                                "供应商SKC编码",
+                                "所退数量",
+                                "所退金额",
+                                "名称",
+                                "品牌",
+                                "颜色",
+                                "尺码",
+                                "单价"
+                            ],
+                            colModel: [
+                                {name: 'ITEMCODE', index: 'ITEMCODE'},
+                                {name: 'SKCCODE', index: 'SKCCODE'},
+                                {name: 'MERCHANTSKCCODE', index: 'MERCHANTSKCCODE'},
+                                {name: 'NUM', index: 'NUM'},
+                                {name: 'RETAILAMT', index: 'RETAILAMT', align: 'right', formatter: 'number'},
+                                {name: 'ITEMNAME', index: 'ITEMNAME'},
+                                {name: 'BRANDNAME', index: 'BRANDNAME'},
+                                {name: 'COLOR', index: 'COLOR'},
+                                {name: 'SIZE', index: 'SIZE'},
+//                                    {name: 'PRICE', index: 'PRICE', sortable: false},
+                                {name: 'UNITPRICE', index: 'UNITPRICE', align: 'right', formatter: 'number'}
+                            ],
+                            rowNum: 10000,
+                            rowList: [10000],
+                            pager: '',
+                            viewrecords: true,
+                            sortname: 'ITEMCODE',
+                            sortorder: "asc",
+                            caption: "",
+                            onSelectRow: function () {
+
+                            }
+                        });
+                        $("#contentTable").jqGrid('setGridParam', {data: contents}).trigger('reloadGrid');
+                    }
+                });
+            }
+        }
+    });
+}
+
+</script>
+<title></title>
+<style type="text/css" class="init">
+    .ui-jqgrid,
+    .ui-jqgrid * {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        -ms-box-sizing: content-box;
+        -o-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+
+</head>
+<body class="metro" onload="load()">
+
+<!--<div id="spinnerDiv_x" onclick="changeNum(this)">-->
+<!--<input class="myspinner" id="spinner_x" name="value1" value="1" min=1 style="width:36px" onkeyup="changeNum(this)" >-->
+<!--</div>-->
+<!--<script> $(".myspinner").spinner();</script>-->
+
+<div id="maindiv">
+    <div class=row>
+            <embed id="printer" type="application/x-epsondriver" width=0 height=0>
+            <div class="tab-control bd-orange" data-role="tab-control">
+                <ul class="tabs">
+                    <li class="active"><a href="#_page_1">开退货单</a></li>
+                    <li><a href="#_page_2">今日退货单</a></li>
+                </ul>
+
+                <div class="frames bd-orange">
+                    <div class="frame" id="_page_1">
+                        <div class="input-control text" style="margin-top:5px;width: 500px;">
+                            <input id="code" type="text" data-state="info" placeholder="请输入POS条编码" onkeydown="if ((event.keyCode || event.which)==13){QueryPos();}"
+                                   onkeypress="return ((event.keyCode || event.which)==8 || ((event.keyCode || event.which) >=48 && (event.keyCode || event.which)<= 57))"      style="height:28px;width:240px"/>
+                            <button id="queryPos" class="bg-mecBlue fg-white" style="width:100px;height: 28px">查询</button>
+                        </div>
+
+                        <label id="totalOriPrice" style="width:100%;margin-top: 10px;color:darkblue;font-weight: bold">
+                            总支付金额(元):0</label>
+
+                        <div style="width:100%">
+                            <table style="width:100%">
+                                <tr style="width:100%">
+                                    <td>
+                                        <table id="payTablebyPos"></table>
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br>
+                        <!--<div style="width:100%">-->
+                        <!--<table style="width:100%">-->
+                        <!--<tr style="width:100%">-->
+                        <!--<td style="width:17%;height:18px">-->
+                        <!--<label id="totalcashpay" style="width:100%;color:blue;font-weight: bold"> 现金支付额(元):0</label>-->
+                        <!--</td>-->
+                        <!--<td style="width:17%;height:18px">-->
+                        <!--<label id="totalcreditpay" style="width:100%;color:blue;font-weight: bold"> 银行卡支付额(元):0</label>-->
+                        <!--</td>-->
+                        <!--<td style="width:17%;height:18px">-->
+                        <!--<label id="totalcashcouponpay" style="width:100%;color:blue;font-weight: bold"> 现金券支付额(元):0</label>-->
+                        <!--</td>-->
+                        <!--<td style="width:17%;height:18px">-->
+                        <!--<label id="totalgoodscouponpay" style="width:100%;color:blue;font-weight: bold"> 商品券支付额(元):0</label>-->
+                        <!--</td>-->
+                        <!--<td style="width:17%;height:18px">-->
+                        <!--<label id="totalecardpay" style="width:100%;color:blue;font-weight: bold"> 电子卡支付额(元):0</label>-->
+                        <!--</td>-->
+                        <!--<td style="width:15%;height:18px">-->
+                        <!--<label id="totalotherpay" style="width:100%;color:blue;font-weight: bold"> 其他支付额(元):0</label>-->
+                        <!--</td>-->
+                        <!--</tr>-->
+                        <!--&lt;!&ndash;<tr style="width:100%">&ndash;&gt;-->
+                        <!--&lt;!&ndash;&ndash;&gt;-->
+                        <!--&lt;!&ndash;<td style="width:25%;height:42px">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<label id="totalpremiumpay" style="width:100%;color:blue;font-weight: bold"> 溢价总额(元):0</label>&ndash;&gt;
+                        -->
+                        <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                        <!--</table>-->
+                        <!--</div>-->
+
+                        <div style="width:100%">
+                            <table style="width:100%">
+                                <tr style="width:100%">
+                                    <td>
+                                        <table id="orderTablebyPos"></table>
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!--<div style="width:100%;">-->
+                            <!--<table style="width:100%;margin-top: 2px">-->
+                                <!--<tr style="width:100%">-->
+                                    <!--<td style="width:84%;height:42px">-->
+                                        <div class="input-control text" style="margin-top:12px;width: 300px;">
+                                        <input id="ticket" type="text" data-state="info" placeholder="顾客需归还现金券(默认为0)"
+                                               onkeypress="return (event.keyCode || event.which)==8 || (( (this.value.indexOf('.')==-1||(this.value.indexOf('.')!=-1 && this.value.length-this.value.indexOf('.')<2))  &&  ((event.keyCode || event.which) >=48 && (event.keyCode || event.which)<= 57) ||(this.value.indexOf('.')==-1 && (event.keyCode || event.which)==46))) "   style="height:28px;width:240px"/>
+                                        </div>
+                                    <!--</td>-->
+                                <!--</tr>-->
+                            <!--</table>-->
+                        <!--</div>-->
+
+
+                        <!--<label id="totalPrice" style="width:100%;margin-top: 10px;color:orange;font-weight: bold">-->
+                            <!--总退货金额(元):0</label>-->
+
+                        <!--<div style="width:100%">-->
+                            <!--<table style="width:100%;margin-top: 2px">-->
+                                <!--<tr style="width:100%">-->
+                                    <!--<td style="width:84%;height:42px">-->
+                                        <!--<button id="commit" class="bg-darkBlue fg-white" style="width:100px">提交</button>-->
+                                        <!--<button id="cancel" class="bg-green fg-white" style="width: 100px;">取消</button>-->
+                                    <!--</td>-->
+                                <!--</tr>-->
+                            <!--</table>-->
+
+                        <!--</div>-->
+
+                        <table style="width:100%;margin-top: 2px">
+                            <tr style="width:100%">
+                                <td>
+                                    <label id="totalNum" > 已选&nbsp;<span id="totalNumSpan" style="color:red;font-weight: bold;font-size:200%">0</span>&nbsp;件商品</label>
+                                </td>
+                                <td>
+                                    <button id="cancel" class="bg-mecOrange fg-white" style="width: 100px;">取消</button>
+                                </td>
+                                <td width="35%">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                </td>
+                                <td>
+                                    <label id="totalPrice" > 应退金额:<span id="totalPriceSpan" style="color:red;font-weight: bold;font-size:200%">￥0.00</span></label>
+                                </td>
+                                <td style="height:42px">
+                                    <button id="commit" class="bg-mecBlue fg-white" style="width:100px;">提交</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="frame" id="_page_2">
+                        <div class="input-control text" style="width: 300px;">
+                            <input id="qry" type="text" data-state="info"
+                                   placeholder="关键字"/>
+                            <button class="btn-search" id="search" value="搜索"/>
+                        </div>
+                        <br>
+
+                        <div style="widthqry:100%">
+                            <table style="width:100%">
+                                <tr style="width:100%">
+                                    <td>
+                                        <table id="orderTable"></table>
+                                        <div id="orderDiv"></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+</div>
+
+</body>
+</html>
+

@@ -1,0 +1,71 @@
+{
+  "DISCOUNTID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "ISONLINEORDER": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "GROUPCODE": {
+    "type": "char(20)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "组号，区分是否是拼单",
+    "defaultValue": null
+  },
+  "ORDERCODE": {
+    "type": "char(18)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "CONTENTCODE": {
+    "type": "char(26)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "DISCOUNTREASON": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "DISCOUNTTYPE": {
+    "type": "int(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "1-折让；2-折扣；3-增礼；4-手工折扣；5-供应商活动",
+    "defaultValue": null
+  },
+  "DISCOUNTAMT": {
+    "type": "decimal(12,2)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "VIPCARDTYPE": {
+    "type": "char(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  }
+}

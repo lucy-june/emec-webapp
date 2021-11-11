@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--<base href=? target="_blank"/> _blank表示每次打开该页面都开一个新的tab-->
+
+    <meta charset="utf-8">
+    <meta id="role" name="role" content="<%= role %>"/>
+    <meta id="contractstate" name="contractstate" content="<%= contractstate %>"/>
+    <meta id="recordstate" name="recordstate" content="<%= recordstate %>"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+    <meta name="description" content="Simple responsive css framework">
+    <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+    <link href="css/metro-bootstrap.css" rel="stylesheet">
+    <link href="css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/iconFont.css" rel="stylesheet">
+    <link href="css/docs.css" rel="stylesheet">
+    <link href="js/prettify/prettify.css" rel="stylesheet">
+    <script src="js/jquery/jquery.min.js"></script>
+    <script src="js/jquery/jquery.widget.min.js"></script>
+    <script src="js/jquery/jquery.mousewheel.js"></script>
+    <script src="js/prettify/prettify.js"></script>
+    <script src="js/holder/holder.js"></script>
+    <script src="js/load-metro.js"></script>
+    <script src="js/docs.js"></script>
+
+    <script src="js/metro/metro-scroll.js"></script>
+
+    <script type="text/javascript">
+        function SetWinHeight()
+        {
+            var ifm= document.getElementById("iframe");
+            var subWeb = document.frames ? document.frames["iframe"].document : ifm.contentDocument;
+            if(ifm != null && subWeb != null) {
+                ifm.height = subWeb.body.scrollHeight;
+            }
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+//            if ($("#role").attr("content") == '0') {
+//                $("#li").show();
+//                $("#li00").show();
+//                $("#li0").show();
+//                $("#li1").show();
+//                $("#li2").show();
+//                $("#li02").show();
+//            }
+
+//            if ($("#recordstate").attr("content") == 1){
+//                if ($("#role").attr("content") == '1' && $("#contractstate").attr("content") == '2') {
+//                    $("#li3").show();
+//                    $("#li03").show();
+//                    $("#li4").show();
+//                    $("#li04").show();
+//                }
+//                else if ($("#role").attr("content") == '1' && $("#contractstate").attr("content") != '2') {
+//                    $("#li3").show();
+//                    $("#li03").show();
+//                }
+//                //系统管理员
+//                else if ($("#role").attr("content") == '9') {
+//                    $("#li5").show();
+////                $("#li6").show();
+////                $("#li05").show();
+//                    $("#li06").show();
+//                    $("#li11").show();
+//                }
+//
+//                //促销管理员
+//                else if ($("#role").attr("content") == '2') {
+//                    $("#li7").show();
+//                    $("#li71").show();
+//                    $("#li8").show();
+//                }
+//                //物流管理员
+//                else if ($("#role").attr("content") == '3') {
+//                    $("#li9").show();
+//                    $("#li09").show();
+//                    $("#li009").show();
+//                    $("#li0009").show();
+//                }
+//                //退货管理员
+//                else if ($("#role").attr("content") == '4') {
+//                    $("#li10").show();
+//                }
+//                //U盾管理员
+//                else if ($("#role").attr("content") == '5') {
+//                    $("#li07").show();
+//                }
+//            }
+
+//            $("#skuskcimport").click(function () {
+//                updateNav(["商品信息导入","SKC/SKU导入"]);
+//                $("#iframe").attr("src", "items/skuskcImport");
+//            });
+//            $("#onoff").click(function () {
+//                updateNav(["商品上线下线","上下线管理"]);
+//                $("#iframe").attr("src", "items/onoffLine");
+//            });
+//            $("#modifyLink").click(function () {
+//                updateNav(["商品信息更新","SKU信息更新"]);
+//                $("#iframe").attr("src", "items/modify");
+//            });
+//            $("#modifySKCLink").click(function () {
+//                updateNav(["商品信息更新","SKC信息更新"]);
+//                $("#iframe").attr("src", "items/modifySkc");
+//            });
+//            $("#modifyOnlineLink").click(function () {
+//                updateNav(["商品信息更新","上线信息更新"]);
+//                $("#iframe").attr("src", "items/modifyOnline");
+//            });
+//            $("#queryLink").click(function () {
+//                updateNav(["商品信息查询","高级查询"]);
+//                $("#iframe").attr("src", "items/query");
+//            });
+            $("#queryCounterLink").click(function () {
+                updateNav(["本柜商品查询","高级查询"]);
+                $("#iframe").attr("src", "items/queryCounter");
+            });
+            $("#addOfflineOrderLink").click(function () {
+                updateNav(["订单管理","柜台开单"]);
+                $("#iframe").attr("src", "orders/addOffline");
+            });
+            $("#addOfflineReturnOrderLink").click(function () {
+                updateNav(["线下退货","POS条退货"]);
+                $("#iframe").attr("src", "orders/addOfflineReturn");
+            });
+            $("#acceptOnlineOrderLink").click(function () {
+                updateNav(["订单管理","线上接单"]);
+                $("#iframe").attr("src", "orders/acceptOnline");
+            });
+            $("#totalOrder").click(function () {
+                updateNav(["订单管理","全部订单"]);
+                $("#iframe").attr("src", "orders/counterOrders");
+            });
+            $("#pickCounter").click(function () {
+                updateNav(["提货与备货","柜台提货"]);
+                $("#iframe").attr("src", "logistics/pickCounter");
+            });
+            $("#pickDept").click(function () {
+                updateNav(["顾客提货","门店自提"]);
+                $("#iframe").attr("src", "logistics/pickDept");
+            });
+            $("#sendExpress").click(function () {
+                updateNav(["物流管理","发快递"]);
+                $("#iframe").attr("src", "logistics/sendExpress");
+            });
+            $("#totalPackage").click(function () {
+                updateNav(["包裹查询","高级查询"]);
+                $("#iframe").attr("src", "logistics/totalPackage");
+            });
+            $("#collectPackage").click(function () {
+                updateNav(["物流管理","收包裹"]);
+                $("#iframe").attr("src", "logistics/collectPackage");
+            });
+            $("#transferPackage").click(function () {
+                updateNav(["物流管理","调送包裹"]);
+                $("#iframe").attr("src", "logistics/transferPackage");
+            });
+            $("#packOrder").click(function () {
+                updateNav(["物流管理","打包订单"]);
+                $("#iframe").attr("src", "logistics/packOrder");
+            });
+            $("#skuLink").click(function () {
+                updateNav(["商品信息录入","SKU信息录入"]);
+                $("#iframe").attr("src", "items/add");
+            });
+            $("#skcLink").click(function () {
+                updateNav(["商品信息录入","SKC信息录入"]);
+                $("#iframe").attr("src", "items/addSkc");
+            });
+            $("#onlineLink").click(function () {
+                updateNav(["商品信息录入","上线信息录入"]);
+                $("#iframe").attr("src", "items/addOnline");
+            });
+            $("#modifyPwdLink").click(function () {
+                updateNav(["账户","修改密码"]);
+                $("#iframe").attr("src", "pwd/modifyPwd");
+            });
+            $("#infoLink").click(function () {
+                updateNav(["账户","账户信息"]);
+                $("#iframe").attr("src", "account/displayInfo");
+            });
+            $("#skuValidate").click(function () {
+                updateNav(["商品信息审核","SKU信息审核"]);
+                $("#iframe").attr("src", "items/validate");
+            });
+            $("#skcValidate").click(function () {
+                updateNav(["商品信息审核","SKC信息审核"]);
+                $("#iframe").attr("src", "items/validateSkc");
+            });
+            $("#onlineValidate").click(function () {
+                updateNav(["商品信息审核","上线信息审核"]);
+                $("#iframe").attr("src", "items/validateOnline");
+            });
+            $("#increaseStockLink").click(function () {
+                updateNav(["库存管理","进货"]);
+                $("#iframe").attr("src", "items/increaseStock");
+            });
+            $("#decreaseStockLink").click(function () {
+                updateNav(["库存管理","退货"]);
+                $("#iframe").attr("src", "items/decreaseStock");
+            });
+            $("#importStockLink").click(function () {
+                updateNav(["库存管理","导入库存"]);
+                $("#iframe").attr("src", "items/importStock");
+            });
+            $("#negativeStockLink").click(function () {
+                updateNav(["库存管理","负库存设置"]);
+                $("#iframe").attr("src", "items/negativeStock");
+            });
+            $("#prepareLink").click(function () {
+                updateNav(["提货与备货","备货"]);
+                $("#iframe").attr("src", "logistics/prepare");
+            });
+//            $("#cancelOrderLink").click(function () {
+//                $("#iframe").attr("src", "orders/cancel");
+//            });
+            $("#addCounterLink").click(function() {
+                $("#iframe").attr("src", "super/addCounter");
+            });
+            $("#bindUkeyLink").click(function() {
+                $("#iframe").attr("src", "super/bindUkey");
+            });
+            $("#changeUkeyLink").click(function() {
+                $("#iframe").attr("src", "super/changeUkey");
+            });
+            $("#updateUkeyLink").click(function() {
+                $("#iframe").attr("src", "super/updateUkey");
+            });
+            $("#lossUkeyLink").click(function() {
+                $("#iframe").attr("src", "super/lossUkey");
+            });
+            $("#addGoodsadminLink").click(function() {
+                $("#iframe").attr("src", "super/addGoodsadmin");
+            });
+            $("#addSalesadminLink").click(function() {
+                $("#iframe").attr("src", "super/addSalesadmin");
+            });
+            $("#addAlladminLink").click(function() {
+                $("#iframe").attr("src", "super/addAlladmin");
+            });
+            $("#resetPwdLink").click(function() {
+                $("#iframe").attr("src", "super/resetPwd");
+            });
+            $("#addSellerLink").click(function () {
+                $("#iframe").attr("src", "super/addSeller");
+            })
+            $("#businessSettingLink").click(function() {
+                $("#iframe").attr("src", "super/businessSetting");
+            });
+            $("#xjh").click(function () {
+                updateNav([]);
+                $("#iframe").attr("src", "/xjh.html");
+            });
+            $("#addPromotionLink").click(function () {
+                updateNav(["促销管理","添加促销活动"]);
+                $("#iframe").attr("src", "sales/ui_addPromotion");
+            });
+            $("#viewPromotionLink").click(function () {
+                updateNav(["促销管理","查看促销活动"]);
+                $("#iframe").attr("src", "sales/ui_viewPromotion");
+            });
+            $("#modifyPromotionLink").click(function () {
+                updateNav(["促销管理","修改促销活动"]);
+                $("#iframe").attr("src", "sales/ui_modifyPromotion");
+            });
+            $("#validatePromotionLink").click(function () {
+                updateNav(["促销管理","审核促销活动"]);
+                $("#iframe").attr("src", "sales/ui_validatePromotion");
+            });
+//            $("#logisticsManagementLink").click(function () {
+//                $("#iframe").attr("src", "logistics/management");
+//            });
+//            $("#addDeliveryLink").click(function () {
+//                $("#iframe").attr("src", "logistics/addDelivery");
+//            });
+            $("#queryDeliveryLink").click(function () {
+                updateNav(["发货跟踪","物流信息"]);
+                $("#iframe").attr("src", "logistics/queryDelivery");
+            });
+
+            $("#addAppActivity").click(function() {
+                $("#iframe").attr("src", "super/addAppActivity");
+            });
+
+            $("#editAppHome").click(function() {
+                $("#iframe").attr("src", "super/editAppHome");
+            });
+
+            $("#addAppBundle").click(function() {
+                $("#iframe").attr("src", "super/addAppBundle");
+            });
+
+            $("#uploadPublicKeys").click(function() {
+                $("#iframe").attr("src", "super/uploadPublicKeys");
+            });
+
+            var updateNav=function(arr){
+                $("#nav").empty();
+                if(arr&&arr.length!=0){
+                    var str="";
+                    for(var k=0;k<arr.length;k++){
+                        str+='<li><a href="#" class="fg-orange">'+arr[k]+'</a></li>';
+                    }
+                    str='<nav class="breadcrumbs" style="margin-top: 10px">'
+                    +'<ul >'
+                    +'<li><a href="#"><i class="icon-home fg-orange"></i></a></li>'
+                    +str
+                    +'</ul>'
+                    +'</nav>';
+                    $("#nav").append(str);
+                }
+            }
+
+            var judgeInitPwdAccount=function(){
+                var options={};
+                $.ajax({
+                    'url': '/judge',
+                    'type': 'get',
+                    'data': options,
+                    'datatype': 'html',
+                    'timeout': 10000,
+                    'error': function (msg) {
+                        alert("未知错误!");
+                        return;
+                    },
+                    'success': function (msg) {
+                        var state=msg.data;
+                        if (state==2){
+                            alert("请修改密码！");
+                            $("#iframe").attr("src", "pwd/modifyPwd");
+                        }
+                    }
+                });
+
+            }
+
+            judgeInitPwdAccount();
+        });
+    </script>
+
+    <title><%= title %></title>
+    </title>
+</head>
+<body class="metro">
+
+<header class="bg-dark">
+    <nav class="navigation-bar bg-mecBlue">
+        <div class="navigation-bar-content container " style="height: 52px;">
+            <div id="xjh"  class="element"><span style="font-size: 24px;font-family:Arial"><b>eMEC</b></span></div>
+            <span class="element-divider" style="margin-top: 3px;"></span>
+            <a class="element1 pull-menu"></a>
+            <ul class="element-menu">
+                <!--<li id="li" style="display:none"><a class="dropdown-toggle active" href="#"><b>商品信息查询</b> </a>-->
+                    <!--<ul class="dropdown-menu " data-role="dropdown">-->
+                        <!--<li><a id="queryLink">高级查询</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+
+                <!--<li id="li00" style="display:none"><a class="dropdown-toggle active" href="#"><b>商品信息导入</b> </a>-->
+                    <!--<ul class="dropdown-menu " data-role="dropdown">-->
+                        <!--<li><a id="skuskcimport">sku/skc导入</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+
+                <!--<li id="li0" style="display:none"><a class="dropdown-toggle active" href="#"><b>商品信息录入</b> </a>-->
+                    <!--<ul class="dropdown-menu" data-role="dropdown">-->
+                        <!--<li><a id="skuLink">SKU信息录入</a></li>-->
+                        <!--<li><a id="skcLink">SKC信息录入</a></li>-->
+                        <!--<li><a id="onlineLink">上线信息录入</a></li>-->
+                    <!--</ul>-->
+                    <!--<ul class="dropdown-menu " data-role="dropdown">-->
+                        <!--<li><a  class="dropdown-toggle">新品信息录入</a>-->
+                            <!--<ul class="dropdown-menu" data-role="dropdown">-->
+                                <!--<li><a id="skuLink">SKU信息录入</a></li>-->
+                                <!--<li><a id="skcLink">上线信息录入</a></li>-->
+                            <!--</ul>-->
+                        <!--</li>-->
+                        <!--<li class="divider"></li>-->
+                        <!--<li><a  class="dropdown-toggle">商品信息修改</a>-->
+                            <!--<ul class="dropdown-menu" data-role="dropdown">-->
+                                <!--<li><a id="modifyLink">SKU信息修改</a></li>-->
+                                <!--<li><a id="modifyOnlineLink">上线信息修改</a></li>-->
+                            <!--</ul>-->
+                        <!--</li>-->
+                        <!--<li><a id="queryLink">商品信息查询</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+                <!--<li id="li1" style="display:none"><a class="dropdown-toggle active" href="#"><b>商品信息更新</b> </a>-->
+                    <!--<ul class="dropdown-menu " data-role="dropdown">-->
+                        <!--<li><a id="modifyLink">SKU信息更新</a></li>-->
+                        <!--<li><a id="modifySKCLink">SKC信息更新</a></li>-->
+                        <!--<li><a id="modifyOnlineLink">上线信息更新</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+                <!--<li id="li2" style="display:none"><a class="dropdown-toggle" href="#"><b>商品信息审核</b> </a>-->
+                    <!--<ul class="dropdown-menu" data-role="dropdown">-->
+                        <!--<li><a id="skuValidate">SKU信息审核</a></li>-->
+                        <!--<li><a id="skcValidate">SKC信息审核</a></li>-->
+                        <!--<li><a id="onlineValidate">上线信息审核 </a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+
+                <!--<li id="li02" style="display:none"><a class="dropdown-toggle" href="#"><b>商品上线下线</b> </a>-->
+                    <!--<ul class="dropdown-menu" data-role="dropdown">-->
+                        <!--<li><a id="onoff">上下线管理</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+
+                <!--<li id="li3" style="display:none"><a class="dropdown-toggle" href="#"><b>本柜商品</b> </a>-->
+                    <!--<ul class="dropdown-menu" data-role="dropdown">-->
+                        <!--<li><a id="prepareLink">物流备货</a></li>-->
+                        <!--<li><a id="stockLink">进货与退货</a></li>-->
+                        <!--<li><a id="queryCounterLink">商品信息查询</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+
+                <!--<li id="li4" style="display:none"><a class="dropdown-toggle" href="#"><b>订单管理</b> </a>-->
+                    <!--<ul class="dropdown-menu" data-role="dropdown">-->
+                        <!--<li><a id="addOfflineOrderLink">线下开单</a></li>-->
+                        <!--<li><a id="cancelOrderLink">取消订单</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+
+                <!--<%if(recordstate==1){ %>-->
+
+                <!--<%if(role==1){ %>-->
+                <!--<li id="li3" style="display:inline"><a class="dropdown-toggle" href="#"><b>商品查询</b> </a>-->
+                    <!--<ul class="dropdown-menu" data-role="dropdown">-->
+                        <!--<li><a id="queryCounterLink">高级查询</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+                <!--<li id="li03" style="display:inline"><a class="dropdown-toggle" href="#"><b>库存管理</b> </a>-->
+                    <!--<ul class="dropdown-menu" data-role="dropdown">-->
+                        <!--<li><a id="increaseStockLink">进货</a></li>-->
+                        <!--<li><a id="decreaseStockLink">退货</a></li>-->
+                        <!--<li><a id="importStockLink">导入库存</a></li>-->
+                        <!--<li><a id="negativeStockLink">负库存设置</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+                <!--<%}%>-->
+
+                <!--<%if(role==1 && contractstate==2){ %>-->
+                <!--<li id="li4" style="display:inline"><a class="dropdown-toggle" href="#"><b>订单管理</b> </a>-->
+                    <!--<ul class="dropdown-menu" data-role="dropdown">-->
+                        <!--<li><a id="addOfflineOrderLink">柜台开单</a></li>-->
+                        <!--<li><a id="acceptOnlineOrderLink">网上接单</a></li>-->
+                        <!--<li><a id="totalOrder">全部订单</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+                <!--<li id="li04" style="display:inline"><a class="dropdown-toggle" href="#"><b>提货与备货</b> </a>-->
+                    <!--<ul class="dropdown-menu" data-role="dropdown">-->
+                        <!--<li><a id="pickCounter">柜台提货</a></li>-->
+                        <!--<li><a id="prepareLink">物流备货</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+                <!--<%}%>-->
+
+                <%if(role==9){ %>
+                <li id="li5" style="display:inline"><a class="dropdown-toggle" href="#"><span class="icon-user"/> 用户管理 </a>
+                    <ul class="dropdown-menu" data-role="dropdown">
+                        <!--<li><a id="addCounterLink">添加柜台账号</a></li>-->
+                        <!--<li><a id="bindUkeyLink">管理U盾</a></li>-->
+                        <!--<li><a id="addGoodsadminLink">添加商品管理员账号</a></li>-->
+                        <!--<li><a id="addSalesadminLink">添加促销管理员账号</a></li>-->
+                        <li><a id="addAlladminLink">添加用户</a></li>
+                        <li><a id="addAlladminLink">用户查询</a></li>
+                        <li><a id="resetPwdLink">重置密码</a></li>
+                    </ul>
+                </li>
+                <li id="li06" style="display:inline"><a class="dropdown-toggle" href="#"><span class="icon-wrench"/> 系统设置</a>
+                    <ul class="dropdown-menu" data-role="dropdown">
+                        <li><a id="businessSettingLink">业务参数设置</a></li>
+                    </ul>
+                </li>
+                <li id="li11" style="display:inline"><a class="dropdown-toggle" href="#"><span class="icon-grid"/> APP设置 </a>
+                    <ul class="dropdown-menu" data-role="dropdown">
+                        <li><a id="addAppActivity">添加活动</a></li>
+                        <li><a id="addAppBundle">添加Bundle</a></li>
+                        <li><a id="editAppHome">编辑首页</a></li>
+                    </ul>
+                </li>
+                <%}%>
+
+                <%if(role==2){ %>
+                <li id="li7" style="display:inline"><a class="dropdown-toggle" href="#"><span class="icon-gift"/> 促销管理 </a>
+                    <ul class="dropdown-menu" data-role="dropdown">
+                        <li><a id="addPromotionLink">添加促销活动</a></li>
+                        <li><a id="modifyPromotionLink">修改促销活动</a></li>
+                        <li><a id="viewPromotionLink">查看促销活动</a></li>
+                        <li><a id="validatePromotionLink">审核促销活动</a></li>
+                    </ul>
+                </li>
+                <!--<li id="li71" style="display:inline"><a class="dropdown-toggle" href="#"><b>规则修改</b> </a>-->
+                    <!--<ul class="dropdown-menu" data-role="dropdown">-->
+                        <!--<li><a id="modifyPromotionLink">修改促销</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+                <!--<li id="li8" style="display:inline"><a class="dropdown-toggle" href="#"><b>规则审核</b> </a>-->
+                    <!--<ul class="dropdown-menu" data-role="dropdown">-->
+                        <!--<li><a id="validatePromotionLink">审核促销</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+                <%}%>
+
+                <%if(role==3){ %>
+                <li id="li9" style="display:inline"><a class="dropdown-toggle" href="#"><b>包裹查询</b> </a>
+                    <ul class="dropdown-menu" data-role="dropdown">
+                        <li><a id="totalPackage">高级查询</a></li>
+                    </ul>
+                </li>
+                <li id="li09" style="display:inline"><a class="dropdown-toggle" href="#"><b>物流管理</b> </a>
+                    <ul class="dropdown-menu" data-role="dropdown">
+                        <li><a id="collectPackage">收包裹</a></li>
+                        <li><a id="transferPackage">调送包裹</a></li>
+                        <li><a id="packOrder">打包订单</a></li>
+                        <li><a id="sendExpress">发快递</a></li>
+                    </ul>
+                </li>
+                <li id="li009" style="display:inline"><a class="dropdown-toggle" href="#"><b>发货跟踪</b> </a>
+                    <ul class="dropdown-menu" data-role="dropdown">
+                        <li><a id="queryDeliveryLink">发货跟踪</a></li>
+                    </ul>
+                </li>
+                <li id="li0009" style="display:inline"><a class="dropdown-toggle" href="#"><b>顾客提货</b> </a>
+                    <ul class="dropdown-menu" data-role="dropdown">
+                        <li><a id="pickDept">顾客提货</a></li>
+                    </ul>
+                </li>
+                <%}%>
+
+                <%if(role==4){ %>
+                <li id="li10" style="display:inline"><a class="dropdown-toggle" href="#"> <span class="icon-forward"></span> 线下退货 </a>
+
+                    <ul class="dropdown-menu" data-role="dropdown">
+                        <li><a id="addOfflineReturnOrderLink">POS条退货</a></li>
+                    </ul>
+                </li>
+                <%}%>
+
+                <%if(role==5){ %>
+                <li id="li07" style="display:inline"><a class="dropdown-toggle" href="#"><span class="icon-key"/> U盾管理 </a>
+                    <ul class="dropdown-menu" data-role="dropdown">
+                        <li><a id="bindUkeyLink">绑定U盾</a></li>
+                        <li><a id="changeUkeyLink">解绑/换绑</a></li>
+                        <li><a id="updateUkeyLink">更新公钥文件</a></li>
+                        <li><a id="lossUkeyLink">挂失或者解挂</a></li>
+                        <li><a id="uploadPublicKeys">批量上传公钥</a></li>
+                    </ul>
+                </li>
+                <%}%>
+
+                <%}%>
+
+                <!--<li id="li6" style="display:inline"><a class="dropdown-toggle" href="#"><b>营业员管理</b></a>-->
+                <!--<ul class="dropdown-menu" data-role="dropdown">-->
+                <!--<li><a id="addSellerLink">添加柜台营业员</a></li>-->
+                <!--</ul>-->
+                <!--</li>-->
+                <!--<li id="li05" style="display:inline"><a class="dropdown-toggle" href="super/testHelper" target="_blank"><b>辅助测试</b> </a>-->
+                <!--</li>-->
+            </ul>
+            <div class="element-menu place-right" style="margin-right: 10px">
+                <li><a class="dropdown-toggle" href="#"> <span class="icon-cog"></span> <%= usercode %> </a>
+                    <ul class="dropdown-menu place-right" data-role="dropdown">
+                        <li><a id="infoLink">用户信息</a></li>
+                        <li><a id="modifyPwdLink">修改密码</a></li>
+                        <% if(role == '1' ) {%>
+                        <li><a href="/download/HJEpsonDriver.msi">下载打印机插件</a></li>
+                        <li><a href="/download/HuijinSecurityPlugin.msi">下载U盾插件</a></li>
+                        <% } %>
+                        <li><a id="logoutLink" href="/logout">退 出</a></li>
+                    </ul>
+                </li>
+            </div>
+
+            <!--<div class="element input-element place-right">-->
+                <!--<form>-->
+                    <!--<div class="input-control text span4">-->
+                        <!--<input type="text" placeholder="搜索">-->
+                        <!--<button class="btn-search"></button>-->
+                    <!--</div>-->
+                <!--</form>-->
+            <!--</div>-->
+        </div>
+    </nav>
+    </header>
+<div class="container">
+    <div id="nav">
+
+    </div>
+
+    <div id="mainContent" class="grid" style="margin-top: 10px;margin-left: 0px">
+        <iframe width="100%" height="660px"  id="iframe" name="iframe" frameborder="0"
+            scrolling="no"  onload="SetWinHeight()" onchange="SetWinHeight()"
+         <% if(role == '2' ) {%> src="sales/ui_viewPromotion" <%}%>
+         <% if(role == '4' ) {%> src="orders/addOfflineReturn" <%}%>
+         <% if(role == '5' ) {%> src="super/bindUkey" <%}%>
+         <% if(role == '9' ) {%> src="super/addAlladmin" <%}%> >
+        </iframe>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+    <meta name="description" content="Simple responsive css framework">
+    <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+
+    <link href="../css/metro-bootstrap.css" rel="stylesheet">
+    <link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/iconFont.css" rel="stylesheet">
+    <link href="../css/docs.css" rel="stylesheet">
+    <link href="../js/prettify/prettify.css" rel="stylesheet">
+    <link href="../css/datatable/css/jquery.dataTables.css" rel="stylesheet">
+    <style type="text/css" class="init">
+        /*强制dataTable不换行*/
+        th, td {
+            white-space: nowrap;
+        }
+    </style>
+
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery.widget.min.js"></script>
+    <script src="../js/jquery/jquery.mousewheel.js"></script>
+    <script src="../js/datatable/jquery.dataTables.js"></script>
+    <script src="../js/prettify/prettify.js"></script>
+    <script src="../js/holder/holder.js"></script>
+    <script src="../js/load-metro.js"></script>
+    <script src="../js/docs.js"></script>
+    <script src="../js/metro/metro-scroll.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            var table = $("#infoTable").DataTable({
+                "scrollY": 360,
+                "order": [[ 4, "desc" ]],
+                "drawCallback": function (settings) {
+                    window.parent.SetWinHeight();
+                }
+            });
+
+            $("#infoTable tbody").on('click', 'tr', function () {
+                var lgt={};
+                var number = $("td", this).eq(2).text();
+                var company = $("td", this).eq(1).text();
+                var url = "../query?";
+                if(company == "顺丰速运") {
+                    url += "type=shunfeng&postid=" + number;
+                    lgt.type="shunfeng";
+                    lgt.postid=number;
+                } else if(company == "圆通速递") {
+                    url += "type=yuantong&postid=" + number;
+                    lgt.type="yuantong";
+                    lgt.postid=number;
+                } else if(company == "申通快递") {
+                    url += "type=shentong&postid=" + number;
+                    lgt.type="shentong";
+                    lgt.postid=number;
+                } else if(company == "中通快递") {
+                    url += "type=zhongtong&postid=" + number;
+                    lgt.type="zhongtong";
+                    lgt.postid=number;
+                } else if(company == "韵达快递") {
+                    url += "type=yunda&postid=" + number;
+                    lgt.type="yunda";
+                    lgt.postid=number;
+                }
+                var options = {};
+                options["HOST"] = "www.kuaidi100.com";
+                options["PATH"] = url;
+
+//                alert(JSON.stringify(options));
+
+                $.ajax({
+                    'url': '/logistics/queryExpress',
+                    'type': 'get',
+                    'data': lgt,
+                    'datatype': 'html',
+                    'timeout': 10000,
+                    'error': function (msg) {
+                        alert("查询信息失败，请重试！！" + JSON.stringify(msg));
+                        return;
+                    },
+                    'success': function (msg) {
+//                        alert(JSON.stringify(msg));
+                        if(msg.status==false){
+                            alert("查询信息失败，请重试！！" + JSON.stringify(msg));
+                            return;
+                        }
+                        else{
+                            msg=msg.data;
+                            msg=eval("("+msg+")").data;
+                            alert(JSON.stringify(msg));
+                            if(msg) {
+                                $("#detailtable").empty();
+                                var info = company +"&nbsp&nbsp&nbsp&nbsp&nbsp运单号：" + number;
+                                $("#infotext").html(info);
+
+                                msg.forEach(function (dt) {
+                                    var str = "<tr><td>" + dt["time"] + "</td><td>" + dt["context"] + "</td></tr>";
+                                    $("#detailtable").append(str);
+                                });
+
+                                $("#detaildiv").show();
+                                window.parent.SetWinHeight();
+                            } else {
+                                alert("查询错误，请检查单号是否正确!");
+                            }
+                        }
+
+                    }
+                });
+
+            });
+
+            var addData = function () {
+                var options = {};
+                $.ajax({
+                    'url': '/logistics/getDeliveringOrders',
+                    'type': 'get',
+                    'data': options,
+                    'datatype': 'html',
+                    'timeout': 10000,
+                    'error': function (msg) {
+                        alert("读取物流信息失败，请刷新！");
+                        return;
+                    },
+                    'success': function (msg) {
+                        if(msg.status==true){
+                            msg=msg.data;
+                            if(msg && msg.length>0) {
+                                msg.forEach(function (dt) {
+                                    //对日期字符串进行操作来格式化显示,先删去最后.000Z，然后替换T为空格
+                                    var datestring = dt["createdAt"].slice(0,-5);
+                                    datestring = datestring.replace(/T/, "&nbsp;&nbsp;&nbsp;");
+                                    table.row.add([
+                                        dt["ORDERCODE"],
+                                        dt["LGTCOMPANY"],
+                                        dt["LGTNUMBER"],
+                                        dt["OPERATEPERSON"],
+                                        datestring
+                                    ]);
+                                });
+                                table.draw();
+                            }
+                        }
+                        else{
+                            alert("读取物流信息失败，请刷新！");
+                        }
+                    }
+                });
+            };
+
+            addData();
+
+        });
+    </script>
+
+    <title>Mec Demo</title>
+</head>
+<body class="metro">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp ">
+            <div class="panel">
+                <div class="panel-header bg-lightGray fg-black">订单跟踪</div>
+                <div class="panel-content">
+                    <table id="infoTable" class="display">
+                        <thead>
+                        <tr>
+                            <th>订单号</th>
+                            <th>快递公司</th>
+                            <th>运单号</th>
+                            <th>发货人</th>
+                            <th>发货时间</th>
+                        </tr>
+                        </thead>
+                        <tbody align="center">
+
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th>订单号</th>
+                            <th>快递公司</th>
+                            <th>运单号</th>
+                            <th>发货人</th>
+                            <th>发货时间</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="panel"  data-role="panel" id="detaildiv" style="display: none">
+                <div class="panel-header bg-lightGray fg-black"> 物流详情</div>
+                <div class="panel-content">
+                    <div style="width: 60%;margin: 0 auto">
+                        <h4 id="infotext">&nbsp</h4>
+                    <table id="detailtable" style="width: 100%">
+
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

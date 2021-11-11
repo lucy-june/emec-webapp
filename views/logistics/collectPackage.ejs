@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="product" content="Metro UI CSS Framework">
+
+
+<link href="../css/metro-bootstrap.css" rel="stylesheet">
+<link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+<link href="../css/iconFont.css" rel="stylesheet">
+<link href="../css/docs.css" rel="stylesheet">
+<link href="../js/prettify/prettify.css" rel="stylesheet">
+<!--<link href="../css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">-->
+<script src="../js/load-metro.js"></script>
+<!--<script src="../js/jquery/jquery.min.js"></script>-->
+
+<link rel="stylesheet" type="text/css" media="screen"
+      href="../js/jquery.jqGrid-4.6.0/css/themes/redmond/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css"/>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+
+<script src="../js/jquery/jquery.widget.min.js"></script>
+<script src="../js/jquery/jquery.mousewheel.js"></script>
+<script src="../js/prettify/prettify.js"></script>
+<script src="../js/holder/holder.js"></script>
+<script src="../js/docs.js"></script>
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+
+<script src="../js/metro.js"></script>
+<script src="../js/github.js"></script>
+
+<script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+
+
+<script src="../js/metro/metro-scroll.js"></script>
+<script src="../js/district/selectdistrict.js"></script>
+
+<script>
+
+Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+        "M+": this.getMonth() + 1,                 //月份
+        "d+": this.getDate(),                    //日
+        "h+": this.getHours(),                   //小时
+        "m+": this.getMinutes(),                 //分
+        "s+": this.getSeconds(),                 //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds()             //毫秒
+    };
+    if (/(y+)/.test(fmt))
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt))
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+
+$(document).ready(function () {
+    jQuery("#orderTable").jqGrid({
+        datatype: "local",
+        height: 460,
+        width: window.screen.availWidth > 1140 ? 1020 : 820,
+        autowidth: true,
+        shrinkToFit: true,
+        colNames: [
+            "包裹编码",
+            "包裹状态",
+//            "订单编码",
+//            "线上线下单",
+            "支付方式",
+            "自提或配送",
+            "提货或发货门店",
+            "下单时间",
+            ""
+        ],
+        colModel: [
+            {name: 'PACKAGECODE', index: 'PACKAGECODE',width:250},
+            {name: 'PACKAGESTATE', index: 'PACKAGESTATE',width: 80, frozen: true,formatter: 'select', edittype: "select", editoptions: {value: "0:待备货;1:已备货;2:集货中;3:已集齐;4:待调货;5:调货途中;7:已集齐;99:打包处理完"}},
+//            {name: 'ORDERCODE', index: 'ORDERCODE',width:200},
+//            {name: 'ISONLINEORDER', index: 'ISONLINEORDER',formatter: 'select', edittype: "select", editoptions: {value: "0:线下单;1:线上单"}},
+            {name: 'PAYMENTMODE', index: 'PAYMENTMODE',formatter: 'select', edittype: "select", editoptions: {value: "0:现付;1:网付;2:到付"}},
+            {name: 'DELIVERYMODE', index: 'DELIVERYMODE',formatter: deliveryFormat},
+            {name: 'DELIVERYDEPTCODE', index: 'DELIVERYDEPTCODE',formatter: 'select', edittype: "select", editoptions: {value: "10201:徐汇店;10202:虹桥店"}},
+            {name: 'PLACEORDERTIME', index: 'PLACEORDERTIME',formatter:dateFormat},
+            {name: 'PACKAGECODE', index: 'PACKAGECODE',align:'center', width:220 ,sortable: false, formatter: conFormat1}
+        ],
+        rowNum: 30,
+        rowList: [10, 30, 50],
+        pager: '#orderDiv',
+        viewrecords: true,
+        sortname: 'createdAt',
+        sortorder: "desc",
+        caption: "",
+        fitColumns: true,
+        editurl: 'clientArray',
+        onSelectRow: function () {
+
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function () {
+
+        },
+        gridComplete: function () {
+
+        }
+    });
+    jQuery("#orderTable").jqGrid('navGrid', "#orderDiv", {refresh: false, edit: false, add: false, del: false})
+
+    fillOrder();
+
+    function assFormat(cellvalue, options, rowObject) {
+        var name=assMap[cellvalue];
+        if(name) return name;
+        else if(cellvalue) return cellvalue;
+        else return "";
+    }
+
+    function dateFormat(cellvalue, options, rowObject) {
+        if (!cellvalue) return '';
+        return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+    }
+
+    function numFormat(cellvalue, options, rowObject) {
+        //            alert(JSON.stringify(rowObject));
+        var id=rowObject.id;
+        var str = '<div id="spinnerDiv_'+id+'" onclick="changeNum(this)">'+
+                '<input class="myspinner" id="spinner_'+id+'" name="value1" value="'+cellvalue+'" min=1 style="width:50px" onkeyup="changeNum(this)" >'+
+                '</div>';
+
+        return str;
+    }
+
+    function deliveryFormat(cellvalue, options, rowObject) {
+        if(cellvalue==0) return "自提";
+        var ordercode=rowObject.ORDERCODE;
+        var str="配送"+
+                "<i class='icon-location-3 on-right on-left' " +
+                "style='cursor:hand; color: green;'  " +
+                "onmouseout='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand;color: green;&quot;)' " +
+                "onmouseover='javascript:this.setAttribute(&quot;style&quot;,&quot;cursor:hand; color: red; &quot;)' " +
+                "id='delivery_" + ordercode + "' onclick='clickDelivery(this)'></i>";
+        return str;
+    }
+
+    function conFormat1(cellvalue, options, rowObject) {
+//            alert(JSON.stringify(rowObject));
+        var packagestate=rowObject.PACKAGESTATE;
+        var DEPTCODE=rowObject.DEPTCODE;
+        var DELIVERYDEPTCODE=rowObject.DELIVERYDEPTCODE;
+
+        var type="";
+        var text="";
+        if(packagestate==5) {
+            text="收入集货区";
+            type='3';
+        }
+        else if(DEPTCODE==DELIVERYDEPTCODE) {
+            text="收入集货区";
+            type='1';
+        }
+        else {
+            text="收入调货区";
+            type='2';
+        }
+
+        var str='<div style="width:100%">';
+        str += '<button id="collect_'+cellvalue+'" value="'+type+'" class="bg-lightBlue fg-white" style="width:60px;height:13px;margin-right:3px;margin-top:2px;margin-bottom:2px;float:right" onclick="showContent1(this)">'+text+'</button>';
+        if(packagestate==1)str += '<button id="print_'+cellvalue+'" class="bg-lightOrange fg-white" style="width:60px;height:13px;margin-top:2px;margin-right:3px;margin-bottom:2px;float:right" onclick="printContent1(this)">打印</button>';
+        str +='</div>';
+        return str;
+    }
+
+    function dataFormat(cellvalue, options, rowObject) {
+        if (!cellvalue) return '';
+        return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+    }
+});
+
+var fillOrder=function(){
+
+    $.ajax({
+        'url': '/logistics/getCollectingPackage',
+        'type': 'get',
+        'data': {},
+        'datatype': 'json',
+        'timeout': 10000,
+        'error': function (msg) {
+            alert("获取待收货信息失败");
+            return;
+        },
+        'success': function (msg) {
+            if (msg.status == false) {
+                alert("获取待收货信息失败");
+                return;
+            }
+            else{
+                $("#orderTable").clearGridData();
+                $("#orderTable").jqGrid('setGridParam', {data: msg.data}).trigger('reloadGrid');
+            }
+        }
+    });
+}
+
+//var printContent1=function(element) {
+//    var packagecode = element.id.replace("print_", "");
+//    var printStr="";
+//    printStr+="包裹编码："+packagecode;
+//    alert("这里添加打印内容"+printStr);
+//
+////    var pt = document.getElementById('printer');
+////    pt.openCom();
+////    pt.init();
+////    pt.setBold(1);
+////    pt.setFZ(12);
+////    pt.print("收包裹通知单");
+////    pt.init();
+////    pt.print("=====================================\n");
+//////    pt.print("订 单 号：02014122398672002341");
+//////    pt.print("订单金额：1233.5 元");
+//////    pt.print("柜    号：203011");
+//////    pt.print("营 业 员：Lucy\n");
+////    pt.print(printStr);
+//////pt.setQRSZ(5);
+//////    pt.printQRCodeBySZ(6,"1223456789012345678");
+////    pt.cutPaper();
+////    pt.closeCom();
+//
+//    var bdhtml=window.document.body.innerHTML;//获取当前页的html代码
+//    window.document.body.innerHTML='<body class="metro"><div id="maindiv">' +
+//            '<p></br></br></br></br></br><font size="8">收包裹通知单</font></p>'+
+//            '<p>=====================================<br/></p>'+
+//            '<p id="printshow"></p>'+
+//            '</div></body>';//需要打印的页面
+//    printContentShow("printshow",printStr);
+//    window.print();
+//    window.document.body.innerHTML=bdhtml;//还原界面
+//}
+//
+//var printContentShow=function(id,v){
+//    var ps=document.getElementById(id);
+//    ps.innerHTML=v;
+//}
+var printContent1=function(element){
+    var packagecode = element.id.replace("print_", "");
+    var printStr="";
+    printStr+="包裹编码："+packagecode;
+//        alert(packagecode);
+
+
+        $.Dialog({
+            shadow: true,
+            overlay: true,
+            title: '',
+            draggable: true,
+            width: 500,
+//            height: ,
+            padding: 10,
+            onShow: function (_dialog) {
+                var content = '<div style="width:100%">' +
+                        '<p></br></br><font size="8">收包裹通知单</font></p>'+
+                        '<p>=====================================<br/></p>'+
+                        '<p id="printshow">'+printStr+'</p>' +
+                        '</br></br></br>'+
+                        '<button id="printConfirm_'+packagecode+'" value="'+printStr+'"  class="bg-darkGreen fg-white" style="width:100px;margin-bottom: 6px;margin-left: 8px" onclick="printConfirm(this);">打印</button>'+
+                        '</div>';//需要打印的页面
+
+                $.Dialog.title("打印预览");
+                $.Dialog.content(content);
+                //$.Metro.initInputs();
+            }
+        });
+
+}
+var printConfirm=function(element) {
+    var packagecode = element.id.replace("printConfirm_", "");
+    var printStr = element.value;
+//    alert("这里添加打印内容"+packagecode);
+//    alert("这里添加打印内容"+printStr);
+
+    var pt = document.getElementById('printer');
+    pt.openCom();
+    pt.init();
+    pt.setBold(1);
+    pt.setFZ(12);
+    pt.print("收包裹通知单");
+    pt.init();
+    pt.print("=====================================\n");
+//    pt.print("订 单 号：02014122398672002341");
+//    pt.print("订单金额：1233.5 元");
+//    pt.print("柜    号：203011");
+//    pt.print("营 业 员：Lucy\n");
+    pt.print(printStr);
+//    pt.setQRSZ(5);
+//    pt.printQRCodeBySZ(6,"1223456789012345678");
+    pt.cutPaper();
+    pt.closeCom();
+
+}
+
+
+
+var showContent1=function(element){
+    var text=document.getElementById(element.id).innerHTML;
+    var type=element.value;
+//    alert("$$$"+type);
+    var pos=text.replace("收入","")+"位置*";
+    var packagecode=element.id.replace("collect_","");
+//        alert(packagecode);
+
+    getSuggestPosition(packagecode,function(position){
+        $.Dialog({
+            shadow: true,
+            overlay: true,
+            title: '',
+            draggable: true,
+            width: 320,
+            height: 50,
+            padding: 10,
+            onShow: function (_dialog) {
+                var content = '<div style="width:100%">' +
+                        '<input id="position_'+packagecode+'" type="text" style="width:150px;margin-bottom: 6px;height:25px;margin-left: 8px" placeholder="'+pos+'" />'+
+                        '<button id="confirmCollect_'+packagecode+'" value="'+type+'" class="bg-darkGreen fg-white" style="width:100px;margin-bottom: 6px;margin-left: 8px" onclick="collectPackage(this);">收入包裹</button>'+
+                        '</div>';;
+
+                $.Dialog.title(text);
+                $.Dialog.content(content);
+                $.Metro.initInputs();
+
+                $("#position_"+packagecode).val(position);
+            }
+        });
+    })
+}
+
+var getSuggestPosition=function(packagecode,cb){
+    $.ajax({
+        'url': '/logistics/getSuggestPosition',
+        'type': 'get',
+        'data': {packagecode:packagecode},
+        'datatype': 'json',
+        'timeout': 10000,
+        'error': function (msg) {
+            cb(null);
+            return;
+        },
+        'success': function (msg) {
+            if(msg.status==false){
+                cb(null);
+                return;
+            }
+            else{
+//                alert(JSON.stringify(msg.data));
+                if(msg.data) cb(msg.data);
+                else cb(null);
+            }
+        }
+    });
+}
+
+var collectPackage=function(element){
+    var type =element.value;
+//    alert(type);
+    var packagecode=element.id.replace("confirmCollect_","");
+    var position=$("#position_"+packagecode).val();
+    if(!position||position==""){
+        alert("请收入包裹,并填写包裹位置信息!");
+        return;
+    }
+    $.ajax({
+        'url': '/logistics/collectPackage'+type,
+        'type': 'post',
+        'data': {PACKAGECODE:packagecode,POSITIONCODE:position},
+        'datatype': 'json',
+        'timeout': 10000,
+        'error': function (msg) {
+            alert("系统错误请重试!")
+            return;
+        },
+        'success': function (msg) {
+            if(msg.status==false){
+                alert("系统错误请重试!")
+                return;
+            }
+            else{
+                alert("确认收入包裹成功"+JSON.stringify(msg.data));
+                $.Dialog.close();
+                fillOrder();
+            }
+        }
+    });
+}
+
+var clickDelivery=function(element){
+    var ordercode=element.id.replace("delivery_","");
+    var options={};
+    if(ordercode && ordercode.charAt(0)=='1'){
+        options.ONLINEORDERCODE=ordercode;
+    }
+    else{
+        options.OFFLINEORDERCODE=ordercode;
+    }
+//        alert(ordercode);
+    $.ajax({
+        'url': '/orders/getSiteInfoByOrder',
+        'type': 'get',
+        'data': options,
+        'datatype': 'json',
+        'timeout': 10000,
+        'error': function (msg) {
+            alert("获取配送地址信息失败!");
+            return;
+        },
+        'success': function (msg) {
+            if(msg.status==false){
+                alert("获取配送地址信息失败!");
+                return;
+            }
+            else{
+//                    alert(JSON.stringify(msg.data));
+                var siteinfo =msg.data;
+                if(!siteinfo||Object.keys(siteinfo).length==0){
+                    alert("没有找到配送地址信息!");
+                    return;
+                }
+                $.Dialog({
+                    shadow: true,
+                    overlay: true,
+                    title: '',
+                    draggable: true,
+                    width: 600,
+                    height: 200,
+                    padding: 10,
+                    onShow: function (_dialog) {
+                        var content =
+                                '<table width="100%" > '+
+                                '<tr style="width:100%"> '+
+                                '<td style="width:20%;height:42px"> '+
+                                '<label class="col-sm-2 control-label" style="width:150px"> 收货人: </label>'+
+                                '<input id="site_person_'+ordercode+'" type="text" data-state="info" '+
+                                '   placeholder="收货人*" style="height:30px;width:90%" readonly/> '+
+                                '</td> '+
+                                '<td style="width:20%;height:42px"> '+
+                                '<label class="col-sm-2 control-label" style="width:150px"> 收货人手机: </label>'+
+                                '<input id="site_telephone_'+ordercode+'" type="text" data-state="info" '+
+                                '   placeholder="联系方式*" style="height:30px;width:90%" readonly/> '+
+                                '</td> '+
+                                ' '+
+                                '<td style="width:20%;height:42px"> '+
+                                '<label class="col-sm-2 control-label" style="width:150px"> 省: </label>'+
+                                '<input id="selProvince_'+ordercode+'" type="text" data-state="info" '+
+                                '   placeholder="省" style="height:30px;width:90%" readonly/> '+
+                                '</td> '+
+                                '<td style="width:20%;height:42px"> '+
+                                '<label class="col-sm-2 control-label" style="width:150px"> 市: </label>'+
+                                '<input id="selCity_'+ordercode+'" type="text" data-state="info" '+
+                                '   placeholder="市" style="height:30px;width:90%" readonly/> '+
+                                '</td> '+
+                                '<td style="width:20%;height:42px"> '+
+                                '<label class="col-sm-2 control-label" style="width:150px"> 区: </label>'+
+                                '<input id="selArea_'+ordercode+'" type="text" data-state="info" '+
+                                '   placeholder="区" style="height:30px;width:90%" readonly/> '+
+                                '</td> '+
+                                '</tr> '+
+                                ' '+
+                                '<tr style="width:100%"> '+
+                                '<td colspan="5"> '+
+                                '<label class="col-sm-2 control-label" style="width:200px"> 详细地址: </label>'+
+                                '<input id="site_detail_'+ordercode+'" type="text" data-state="info" placeholder="详细地址*" '+
+                                '   style="height:30px;width:98%" readonly/> '+
+                                '</td> '+
+                                '</tr> '+
+                                '</table>';
+
+                        $.Dialog.title("配送地址");
+                        $.Dialog.content(content);
+                        $.Metro.initInputs();
+
+                        $("#site_person_"+ordercode).val(siteinfo.PERSON);
+                        $("#site_telephone_"+ordercode).val(siteinfo.TELEPHONE);
+                        $("#selProvince_"+ordercode).val(siteinfo.PROVINCE);
+                        $("#selCity_"+ordercode).val(siteinfo.CITY);
+                        $("#selArea_"+ordercode).val(siteinfo.DISTRICT);
+                        $("#site_detail_"+ordercode).val(siteinfo.DETAIL);
+                    }
+                });
+            }
+        }
+    });
+}
+
+
+</script>
+<title></title>
+<style type="text/css" class="init">
+    .ui-jqgrid,
+    .ui-jqgrid * {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        -ms-box-sizing: content-box;
+        -o-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+
+</head>
+<body class="metro">
+<embed id="printer" type="application/x-epsondriver" width=0 height=0 >
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp ">
+
+            <div style="width:100%">
+                <table style="width:100%">
+                    <tr style="width:100%">
+                        <td>
+                            <table id="orderTable"></table>
+                            <div id="orderDiv"></div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
+

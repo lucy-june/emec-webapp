@@ -1,0 +1,26 @@
+{
+    "dev":{
+    "hostname": "localhost",
+        "port": 8888,
+        "rejectUnauthorized": true,
+        "agent": false
+},
+    "test":{
+    "hostname": "192.168.0.110",
+        "port": 8888,
+        "rejectUnauthorized": true,
+        "agent": false
+},
+    "qa":{
+    "hostname": "10.68.0.21",
+        "port": 8080,
+        "rejectUnauthorized": true,
+        "agent": false
+},
+    "prod":{
+    "hostname": "192.168.0.110",
+        "port": 8888,
+        "rejectUnauthorized": true,
+        "agent": false
+}
+}

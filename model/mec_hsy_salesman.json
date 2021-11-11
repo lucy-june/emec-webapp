@@ -1,0 +1,42 @@
+{
+  "SALESMANCODE": {
+    "type": "char(6)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "SALESMANNAME": {
+    "type": "varchar(10)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "GENDER": {
+    "type": "int(1)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "STORECODE": {
+    "type": "char(5)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "AREACODE": {
+    "type": "varchar(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "COUNTERCODE": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  }
+}

@@ -1,0 +1,18 @@
+{
+    "dev":{
+        "contextLogPath":"../../web_app_logs/context.log",
+        "accessLogPath":"../../web_app_logs/access.log"
+    },
+    "test":{
+        "contextLogPath":"../../web_app_logs/context.log",
+        "accessLogPath":"../../web_app_logs/access.log"
+    },
+    "qa":{
+        "contextLogPath":"../../web_app_logs/context.log",
+        "accessLogPath":"../../web_app_logs/access.log"
+    },
+    "prod":{
+        "contextLogPath":"../../web_app_logs/context.log",
+        "accessLogPath":"../../web_app_logs/access.log"
+    }
+}

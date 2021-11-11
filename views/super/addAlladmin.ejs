@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+    <meta name="description" content="Simple responsive css framework">
+    <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+    <link href="../css/metro-bootstrap.css" rel="stylesheet">
+    <link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/iconFont.css" rel="stylesheet">
+    <link href="../css/docs.css" rel="stylesheet">
+    <link href="../js/prettify/prettify.css" rel="stylesheet">
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery.widget.min.js"></script>
+    <script src="../js/jquery/jquery.mousewheel.js"></script>
+    <script src="../js/prettify/prettify.js"></script>
+    <script src="../js/holder/holder.js"></script>
+    <script src="../js/load-metro.js"></script>
+    <script src="../js/docs.js"></script>
+    <script src="../js/github.info.js"></script>
+    <script src="../js/metro/metro-scroll.js"></script>
+    <script type="text/javascript">
+        function checkName(str) {
+            if(!str) {
+                return {result:false, msg:"请输入账号!"};
+            } else if (str.length > 14) {
+                return {result:false, msg:"账号应少于14位!"};
+            } else {
+                return {result:true, msg:""};
+            }
+        }
+
+        function checkTel(str) {
+            var regu = /^(\+86)?( )?[0-9]{11}$/;
+            return regu.test(str);
+        }
+
+        function checkEmail(str) {
+            var regu = /^(\w)+(\.\w+)*@(\w)+((\.\w{2,3}){1,3})$/;
+            return regu.test(str);
+        }
+
+        function checkPwd(pwd, pwd2) {
+            if (pwd != pwd2) {
+                return {result:false, msg:"两次输入的密码不相同！"};
+            } else if (pwd.length > 32) {
+                return {result:false, msg:"密码长度应少于32位！"};
+            } else if (pwd.length < 6) {
+                return {result:false, msg:"密码长度应大于6位！"};
+            } else {
+                return {result:true, msg:"OK!"};
+            }
+
+
+        }
+
+        var resetInput = function () {
+            var arr = ["USERID", "PWD", "PWD2","NAME", "TELEPHONE", "EMAIL"];
+            for (var k = 0; k < arr.length; k++) {
+                $("#" + arr[k]).val("");
+            }
+            $("#ROLE").val("2");
+            $("#DEPTCODE").val("10201");
+        };
+
+        var confirmAdd = function () {
+            var nameResult = checkName($("#USERID").val());
+            if (!nameResult.result) {
+                alert(nameResult.msg);
+                return;
+            }
+
+            var pwdResult = checkPwd($("#PWD").val(), $("#PWD2").val());
+            if (!pwdResult.result) {
+                alert(pwdResult.msg);
+                return;
+            }
+
+            var arr = ["USERID", "PWD","NAME", "TELEPHONE", "EMAIL"];
+            var options = {};
+            for (var k = 0; k < arr.length; k++) {
+                options[arr[k]] = $("#" + arr[k]).val();
+            }
+            options["ROLE"] =$("#ROLE").val();
+            if(options["ROLE"]==1){
+                options["COUNTERCODE"]=options["USERID"];
+            }
+            options["DEPTCODE"]=$("#DEPTCODE").val();
+            $.ajax({
+                'url': '/super/addAccountService',
+                'type': 'get',
+                'data': options,
+                'datatype': 'html',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("未知错误,添加账户失败!");
+                    resetInput();
+                    return;
+                },
+                'success': function (msg) {
+                    if(msg.status == true) {
+                        alert("成功添加管理员账户!");
+                    } else if(msg.status == false) {
+//                        alert("已存在该账号!");
+                        alert(msg.data);
+                    } else {
+                        alert("未知错误,添加失败!");
+                    }
+                    resetInput();
+                }
+            });
+        }
+
+    </script>
+
+    <title>Mec Demo</title>
+    </title>
+</head>
+<body class="metro">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp bd-orange">
+
+                    <table style="width:100%">
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">账户类型*： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <select id="ROLE" type="text" data-state="info"
+                                        placeholder="" style="height:30px;width:200px">
+                                    <option selected="selected" value="2">促销管理员</option>
+                                    <option value="3">物流管理员</option>
+                                    <option value="4">退货管理员</option>
+                                    <option value="1">柜台</option>
+                                    <option value="5">U盾管理员</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">所属门店*： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <select id="DEPTCODE" type="text" data-state="info"
+                                        placeholder="" style="height:30px;width:200px">
+                                    <option selected="selected" value="10201">汇金百货徐汇店</option>
+                                    <option value="10202">汇金百货虹桥店</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">账号*： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <input id="USERID" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" />
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">密码*： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control password" data-role="input-control" style="width:200px">
+                                    <input id="PWD" type="password" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" />
+                                    <button class="btn-reveal" tabindex="0"></button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">确认密码*： </label>
+
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control password" data-role="input-control" style="width:200px">
+                                    <input id="PWD2" type="password" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" />
+                                    <button class="btn-reveal" tabindex="0"></button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">姓名： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <input id="NAME" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" />
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!--<tr>-->
+                        <!--<td style="width:100px;height:65px">-->
+                        <!--<div class="input-control text size2">-->
+                        <!--<label class="col-sm-2 control-label">性别 </label>-->
+
+                        <!--</div>-->
+                        <!--</td>-->
+                        <!--<td style="height:65px">-->
+                        <!--<div class="input-control text size2" style="width:200px">-->
+                        <!--<select id="GENDER" type="text" data-state="info"-->
+                        <!--placeholder="" style="height:30px;width:200px">-->
+                        <!--<option value=1 >男</option>-->
+                        <!--<option value=0 >女</option>-->
+                        <!--</select>-->
+                        <!--<script>-->
+                        <!--$("#GENDER").val($("#GENDER2").val());-->
+                        <!--</script>-->
+                        <!--</div>-->
+                        <!--</td>-->
+                        <!--</tr>-->
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">联系电话： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <input id="TELEPHONE" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" />
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">电子邮箱： </label>
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <input id="EMAIL" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" />
+                                </div>
+                            </td>
+                        </tr>
+
+                    </table>
+                    <br>
+                    <br>
+
+                    <div class="input-control switch" data-role="input-control" style="width:100%">
+                        <button class="bg-mecBlue fg-white" style="width:120px"
+                                onclick="confirmAdd()">确认
+                        </button>
+                        <button class="bg-mecOrange fg-white" style="width:120px"
+                                onclick="resetInput()">重置
+                        </button>
+                    </div>
+
+    </div>
+</div>
+</div>
+</body>
+</html>

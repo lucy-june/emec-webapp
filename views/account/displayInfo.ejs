@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+    <meta name="description" content="Simple responsive css framework">
+    <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+    <link href="../css/metro-bootstrap.css" rel="stylesheet">
+    <link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/iconFont.css" rel="stylesheet">
+    <link href="../css/docs.css" rel="stylesheet">
+    <link href="../js/prettify/prettify.css" rel="stylesheet">
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery.widget.min.js"></script>
+    <script src="../js/jquery/jquery.mousewheel.js"></script>
+    <script src="../js/prettify/prettify.js"></script>
+    <script src="../js/holder/holder.js"></script>
+    <script src="../js/load-metro.js"></script>
+    <script src="../js/docs.js"></script>
+
+    <script src="../js/metro/metro-scroll.js"></script>
+    <script type="text/javascript">
+        function checkName(str) {
+            if (str.length > 5) return false;
+            else return true;
+        }
+
+        function checkTel(str) {
+            var regu = /^(\+86)?( )?[0-9]{11}$/;
+            return regu.test(str);
+        }
+
+        function checkEmail(str) {
+            var regu = /^(\w)+(\.\w+)*@(\w)+((\.\w{2,3}){1,3})$/;
+            return regu.test(str);
+        }
+
+        var confirmModify = function () {
+            if (!checkName($("#NAME").val())) {
+                alert("姓名输入不符合规范");
+                return;
+            }
+            if (!checkTel($("#TELEPHONE").val())) {
+                alert("手机号格式不正确");
+                return;
+            }
+            if (!checkEmail($("#EMAIL").val())) {
+                alert("邮箱格式不正确");
+                return;
+            }
+
+            var arr = ["USERCODE", "NAME", "GENDER", "TELEPHONE", "EMAIL"]
+            var options = {};
+            for (var k = 0; k < arr.length; k++) {
+                options[arr[k]] = $("#" + arr[k]).val();
+            }
+            $.ajax({
+                'url': '/account/modifyInfoService',
+                'type': 'post',
+                'data': options,
+                'datatype': 'html',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("修改用户信息失败！");
+                    return;
+                },
+                'success': function (msg) {
+                    alert("成功修改用户信息!");
+                    var arr = ["USERCODE", "NAME", "GENDER", "TELEPHONE", "EMAIL"]
+                    for (var k = 0; k < arr.length; k++) {
+                        $("#" + arr[k] + "2").val($("#" + arr[k]).val());
+                    }
+                }
+            });
+        };
+
+        var cancelModify = function () {
+            var arr = ["USERCODE", "NAME", "GENDER", "TELEPHONE", "EMAIL"]
+            for (var k = 0; k < arr.length; k++) {
+                $("#" + arr[k]).val($("#" + arr[k] + "2").val());
+            }
+        }
+
+//        $(document).ready(function () {
+//            alert("3333");
+//            $("#GENDER").val($("#GENDER2").val());
+//        }
+
+    </script>
+
+    <title>Mec Demo</title>
+    </title>
+</head>
+<body class="metro">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp bd-orange">
+
+                    <table style="width:100%;">
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">用户ID </label>
+
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <input id="USERCODE" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" value="<%= user.USERCODE %>"
+                                           readonly/>
+                                    <input id="USERCODE2" type="hidden" value="<%= user.USERCODE %>" readonly/>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">姓名 </label>
+
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <input id="NAME" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" value="<%= user.NAME %>"/>
+                                    <input id="NAME2" type="hidden" value="<%= user.NAME %>"/>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">性别 </label>
+
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <select id="GENDER" type="text" data-state="info"
+                                            placeholder="" style="height:30px;width:200px">
+                                        <option value=1 >男</option>
+                                        <option value=0 >女</option>
+                                    </select>
+                                    <input id="GENDER2" type="hidden" value="<%= user.GENDER %>"/>
+                                    <script>
+                                        $("#GENDER").val($("#GENDER2").val());
+                                    </script>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">手机号码 </label>
+
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <input id="TELEPHONE" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px"
+                                           value="<%= user.TELEPHONE %>"/>
+                                    <input id="TELEPHONE2" type="hidden" value="<%= user.TELEPHONE %>"/>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">电子邮箱 </label>
+
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control text size2" style="width:200px">
+                                    <input id="EMAIL" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px" value="<%= user.EMAIL %>"/>
+                                    <input id="EMAIL2" type="hidden" value="<%= user.EMAIL %>"/>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </table>
+                    <br>
+
+
+                    <div >
+
+                        <button class="bg-mecBlue fg-white" style="width:120px"
+                                onclick="confirmModify()">修改
+                        </button>
+                        <button class="bg-mecOrange fg-white" style="width:120px;"
+                                          onclick="cancelModify()">取消
+                        </button>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

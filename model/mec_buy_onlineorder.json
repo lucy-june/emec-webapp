@@ -1,0 +1,263 @@
+{
+  "ONLINEORDERCODE": {
+    "type": "char(18)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "USERCODE": {
+    "type": "char(32)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "ORDERSTATE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "见文档",
+    "defaultValue": "1"
+  },
+  "NOTE": {
+    "type": "varchar(256)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "PAYMENTMODE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-现场支付，1-网上支付，2-到付",
+    "defaultValue": "0"
+  },
+  "DELIVERYMODE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-自提 1-物流配送",
+    "defaultValue": "0"
+  },
+  "SITEID": {
+    "type": "int(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "DELIVERYDEPTCODE": {
+    "type": "varchar(8)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "订单最终自提货或发货点"
+  },
+  "SHIPPRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "运费",
+    "defaultValue": "0.00"
+  },
+  "PACKING": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "包装费",
+    "defaultValue": "0.00"
+  },
+  "STORECODE": {
+    "type": "char(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "门店号",
+    "defaultValue": null
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "FINALPRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "FINALRULESTRING": {
+    "type": "varchar(1024)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "TRANSID": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "CHRCODE": {
+    "type": "char(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "VIPCARDNO": {
+    "type": "varchar(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "贵宾卡卡号",
+    "defaultValue": null
+  },
+  "VIPCODE": {
+    "type": "varchar(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "vip账户号",
+    "defaultValue": null
+  },
+  "VIPCARDTYPE": {
+    "type": "varchar(4)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "vip卡类型",
+    "defaultValue": "00"
+  },
+  "VIPDISCOUNTRATE": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "vip折扣值",
+    "defaultValue": "100.00"
+  },
+  "RECEIVABLEAMT": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "应收金额",
+    "defaultValue": "0.00"
+  },
+  "PAYMENTSTATE": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-未支付 1-单一订单支付完成 2-拼单支付完成",
+    "defaultValue": "0"
+  },
+  "PAYLOCAL": {
+    "type": "int(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "0-pos机付款 1-app付款",
+    "defaultValue": null
+  },
+  "POSDEALNUM": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "pos机交易序列号",
+    "defaultValue": null
+  },
+  "POSCODE": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "pos机号码",
+    "defaultValue": null
+  },
+  "POSTRANSCODE": {
+    "type": "varchar(32)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "CASHIER": {
+    "type": "char(6)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "收银员",
+    "defaultValue": null
+  },
+  "REALSHIPPRICE": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "实付运费",
+    "defaultValue": "0.00"
+  },
+  "REALPACKING": {
+    "type": "decimal(12,2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "实付包装费",
+    "defaultValue": "0.00"
+  },
+  "TIMEOUTTIME": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "订单超时作废时间",
+    "defaultValue": null
+  },
+  "PLACETIME": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "下单时间",
+    "defaultValue": null
+  },
+  "AUDITTIME": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "订单审核时间",
+    "defaultValue": null
+  },
+  "PAYTIME": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "订单支付时间",
+    "defaultValue": null
+  },
+  "OUTTIME": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "订单出库时间",
+    "defaultValue": null
+  },
+  "RECEIVABLETIME": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "收款时间",
+    "defaultValue": null
+  },
+  "FINISHTIME": {
+    "type": "datetime",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "订单完成时间",
+    "defaultValue": null
+  },
+  "IFRETURN": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "是否是退货单 0是普通订单 1退货订单",
+    "defaultValue": "0"
+  }
+}

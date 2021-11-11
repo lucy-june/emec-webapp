@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="product" content="Metro UI CSS Framework">
+
+
+<link href="../css/metro-bootstrap.css" rel="stylesheet">
+<link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+<link href="../css/iconFont.css" rel="stylesheet">
+<link href="../css/docs.css" rel="stylesheet">
+<link href="../js/prettify/prettify.css" rel="stylesheet">
+<!--<link href="../css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">-->
+<script src="../js/load-metro.js"></script>
+<!--<script src="../js/jquery/jquery.min.js"></script>-->
+
+<link rel="stylesheet" type="text/css" media="screen"
+      href="../js/jquery.jqGrid-4.6.0/css/themes/redmond/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css"/>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+
+<script src="../js/jquery/jquery.widget.min.js"></script>
+<script src="../js/jquery/jquery.mousewheel.js"></script>
+<script src="../js/prettify/prettify.js"></script>
+<script src="../js/holder/holder.js"></script>
+<script src="../js/docs.js"></script>
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+
+<script src="../js/metro.js"></script>
+<script src="../js/github.js"></script>
+
+<script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+
+
+<script src="../js/metro/metro-scroll.js"></script>
+
+<script>
+
+Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+        "M+": this.getMonth() + 1,                 //月份
+        "d+": this.getDate(),                    //日
+        "h+": this.getHours(),                   //小时
+        "m+": this.getMinutes(),                 //分
+        "s+": this.getSeconds(),                 //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds()             //毫秒
+    };
+    if (/(y+)/.test(fmt))
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt))
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+var tmpObj = null;
+var skcArr = [];
+
+//    var skcArr=[{MERCHANTSKCCODE:"11",COLOR:"11",SIZE:"111",ID:null,id:"a"},
+//        {MERCHANTSKCCODE:"22",COLOR:"222",SIZE:"2",ID:null,id:"b"},
+//        {MERCHANTSKCCODE:"3",COLOR:"33",SIZE:"333",ID:null,id:"c"},
+//        {MERCHANTSKCCODE:"4",COLOR:"444",SIZE:"4",ID:null,id:"d"}
+//    ];//一定要添加id字段
+
+$(document).ready(function () {
+    jQuery("#itemTable").jqGrid({
+        url: '/items/getSkcCheckableSku?qry=',
+        datatype: "json",
+        height: 220,
+        width: window.screen.availWidth > 1140 ? 1020 : 820,
+        autowidth: false,
+        shrinkToFit: false,
+        colNames: [
+            "商品编码",
+            "条形码",
+            "货号",
+            "全称",
+            "简称",
+
+            "品牌编码",
+            "销售分类编码",
+            "商品分类编码",
+            "供应商编码",
+            "招商人员编码",
+            "品牌名称",
+            "销售分类名称",
+            "商品分类名称",
+            "供应商名称",
+            "招商人员名称",
+
+            "商品编码类型",
+            "合同经销方式",
+            "核定售价",
+            "统一暂时售价",
+            "销项税率",
+            "消费税率",
+            "进项税率",
+            "是否允许退货",
+            "销售状态",
+
+            "规格",
+            "计量单位",
+            "产地",
+            "净重",
+            "毛重",
+            "等级",
+            "颜色",
+            "包装规格",
+            "尺寸",
+            "体积",
+            "质保期",
+
+            "最后进价",
+            "安全库存",
+            "最高存量",
+            "最低存量",
+            "最高订货量",
+            "最低订货量",
+            "商品属性",
+
+            "复查状态",
+            "错误信息",
+            "输入员",
+
+            "审核时间",
+            "最后一次更新时间",
+            "是否考虑库存",
+            "是否允许上线",
+            "是否允许负库存",
+            "ID"
+        ],
+        colModel: [
+
+            {name: 'ITEMCODE', index: 'ITEMCODE', width: 60, frozen: true},
+            {name: 'BARCODE', index: 'BARCODE', width: 120, frozen: true},
+            {name: 'PRODUCTCODE', index: 'PRODUCTCODE', width: 80, frozen: true},
+            {name: 'ITEMNAME', index: 'ITEMNAME', width: 120, frozen: true},
+            {name: 'ITEMSHORTNAME', index: 'ITEMSHORTNAME', width: 70, frozen: true},
+
+            {name: 'BRANDCODE', index: 'BRANDCODE'},
+            {name: 'RETAILTYPECODE', index: 'RETAILTYPECODE'},
+            {name: 'ITEMTYPECODE', index: 'ITEMTYPECODE'},
+            {name: 'MERCHANTCODE', index: 'MERCHANTCODE'},
+            {name: 'AGENTCODE', index: 'AGENTCODE'},
+            {name: 'BRANDNAME', index: 'BRANDNAME'},
+            {name: 'ITEMTYPENAME', index: 'ITEMTYPENAME'},
+            {name: 'RETAILTYPENAME', index: 'RETAILTYPENAME'},
+            {name: 'MERCHANTNAME', index: 'MERCHANTNAME'},
+            {name: 'AGENTNAME', index: 'AGENTNAME'},
+
+            {name: 'ITEMCODETYPE', index: 'ITEMCODETYPE', formatter: 'select', edittype: "select", editoptions: {value: "0:正常商品编码;1:大类码"}},
+            {name: 'BUSINESSMODE', index: 'BUSINESSMODE'},
+            {name: 'PRICE', index: 'PRICE'},
+            {name: 'TEMPPRICE', index: 'TEMPPRICE'},
+            {name: 'TAXRATE', index: 'TAXRATE'},
+            {name: 'EXCISERATE', index: 'EXCISERATE'},
+            {name: 'PURCHASETAXRATE', index: 'PURCHASETAXRATE'},
+            {name: 'RETURNGOODS', index: 'RETURNGOODS', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'SALESTATE', index: 'SALESTATE', formatter: 'select', edittype: "select", editoptions: {value: "0:正常;2:手工登记删除;3:合同到期自动登记删除"}},
+
+            {name: 'SPECIFICATION', index: 'SPECIFICATION'},
+            {name: 'UNIT', index: 'UNIT'},
+            {name: 'PRODUCINGAREA', index: 'PRODUCINGAREA'},
+            {name: 'NETWEIGHT', index: 'NETWEIGHT'},
+            {name: 'GROSSWEIGHT', index: 'GROSSWEIGHT'},
+            {name: 'GRADE', index: 'GRADE'},
+            {name: 'COLOR', index: 'COLOR'},
+            {name: 'CASING', index: 'CASING'},
+            {name: 'DIMENSION', index: 'DIMENSION'},
+            {name: 'VOLUME', index: 'VOLUME'},
+            {name: 'TERM', index: 'TERM'},
+
+            {name: 'LASTPURCHASEPRICE', index: 'LASTPURCHASEPRICE'},
+            {name: 'SAFESTOCK', index: 'SAFESTOCK'},
+            {name: 'MAXSTOCK', index: 'MAXSTOCK'},
+            {name: 'MINSTOCK', index: 'MINSTOCK'},
+            {name: 'MAXORDER', index: 'MAXORDER'},
+            {name: 'MINORDER', index: 'MINORDER'},
+            {name: 'PROPERTY', index: 'PROPERTY', formatter: 'select', edittype: "select", editoptions: {value: "0:普通商品;1:黄金商品;2:香烟商品"}},
+
+            {name: 'CHECKSTATE', index: 'CHECKSTATE', formatter: 'select', edittype: "select", editoptions: {value: "0:复查不通过(可改价格、招商人员、商品分类);1:复查通过(不可改价格、招商人员、商品分类);2:输入;3:变更(不可改价格、招商人员、商品分类);4:变更不通过(不可改价格、招商人员、商品分类)"}},
+            {name: 'ERRORINFO', index: 'ERRORINFO'},
+            {name: 'INPUTPERSON', index: 'INPUTPERSON'},
+
+            {name: 'createdAt', index: 'createdAt', formatter: dataFormat},
+            {name: 'updatedAt', index: 'updatedAt', formatter: dataFormat},
+
+            {name: 'ISCONSIDERSTOCK', index: 'ISCONSIDERSTOCK', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'ISALLOWONLINE', index: 'ISALLOWONLINE', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'ISALLOWNEGATIVE', index: 'ISALLOWNEGATIVE', formatter: 'checkbox', editoptions: {value: "1:0"}},
+            {name: 'ID', index: 'ID'}
+
+        ],
+        rowNum: 20,
+        rowList: [20, 50, 100],
+        pager: '#itemDiv',
+        viewrecords: true,
+        sortname: 'ITEMCODE',
+        sortorder: "desc",
+        caption: "商品信息",
+        fitColumns: true,
+        onSelectRow: function () {
+            var id = $("#itemTable").jqGrid('getGridParam', "selrow");
+            var obj = $("#itemTable").jqGrid('getRowData', id);
+            $.ajax({
+                'url': '/items/getCheckableSkcBySku',
+                'type': 'get',
+                'data': {ITEMCODE:obj.ITEMCODE},
+                'datatype': 'json',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("获取选定商品的skc信息失败!");
+                    return;
+                },
+                'success': function (msg) {
+                    if(msg.status==false){
+                        alert("获取选定商品的skc信息失败!");
+                        return;
+                    }
+                    else{
+                        alert(JSON.stringify(msg.data));
+                        tmpObj = obj;
+                        var caption = tmpObj.ITEMCODE + "商品的SKC信息";
+                        clearTable();
+                        var skcs=msg.data;
+                        for(var k=0;k<skcs.length;k++){
+                            var skc=skcs[k];
+                            delete skc.updatedAt;
+                            delete skc.createdAt;
+                            skc.id="org"+k;
+                        }
+                        skcArr=skcs;
+                        jQuery("#skcTable").jqGrid('setCaption', caption).trigger('reloadGrid');
+                        jQuery("#skcTable").jqGrid('setGridParam', {data: skcArr}).trigger('reloadGrid');
+                    }
+                }
+            });
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function () {
+            var userdata = JSON.stringify($(this).getGridParam('userData'));
+            if (userdata != '{}' && userdata)
+                alert(userdata);
+        },
+        gridComplete: function () {
+
+        }
+    });
+    jQuery("#itemTable").jqGrid('navGrid', '#itemDiv', {search: false, add: false, edit: false, del: false});
+    jQuery("#itemTable").jqGrid('setFrozenColumns');
+    jQuery("#itemTable").jqGrid('hideCol', 'ID');
+
+//        $("#orderTable").jqGrid('setGridParam',{datatype: "local",data:orderDataAdapter(msg.data)}).trigger('reloadGrid');
+    jQuery("#skcTable").jqGrid({
+        datatype: "local",
+        height: 250,
+        width: window.screen.availWidth > 1140 ? 1020 : 820,
+        autowidth: true,
+        shrinkToFit: true,
+        colNames: [
+            "供应商SKC编码",
+            "颜色",
+            "尺寸",
+            "ID"
+        ],
+        colModel: [
+            {name: 'MERCHANTSKCCODE', index: 'MERCHANTSKCCODE', editable: true},
+            {name: 'COLOR', index: 'COLOR', editable: true},
+            {name: 'SIZE', index: 'SIZE', editable: true},
+            {name: 'ID', index: 'ID'}
+        ],
+        rowNum: 10,
+        rowList: [10, 30, 50],
+        pager: '#skcDiv',
+        viewrecords: true,
+        sortname: 'COLOR',
+        sortorder: "asc",
+        caption: "SKC信息",
+        fitColumns: true,
+        editurl: 'clientArray',
+//            cellEdit:true,
+//            cellsubmit:'clientArray',
+        onSelectRow: function () {
+//                var id = $("#skcTable").jqGrid('getGridParam', "selrow");
+//                alert(id);
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function () {
+
+        },
+        gridComplete: function () {
+
+        }
+    });
+    var inlineparams = {
+        addParams: { useFormatter: false },
+        add: true,
+        edit: true,
+        save: true,
+        cancel: true,
+        del: true
+    };
+//        jQuery("#skcTable").jqGrid('navGrid', '#skcDiv', {search:false});
+    jQuery("#skcTable").jqGrid('navGrid', "#skcDiv", {search: false, refresh: false, edit: false, add: false, del: false})
+//            .navButtonAdd('#skcDiv', {
+//        caption: "",
+//        buttonicon: "ui-icon-trash",
+//        onClickButton: function () {
+//            var id = $("#skcTable").jqGrid('getGridParam', "selrow");
+//            if (id == null) {
+//                alert("请选择要删除的数据!");
+//                return;
+//            }
+//            else {
+//                var r=confirm("是否确认删除该SKC?")
+//                if (r==true)
+//                {
+//                    $("#skcTable").jqGrid("delRowData", id);
+//                }
+//                else
+//                {
+//                    return;
+//                }
+//            }
+//        },
+//        position: "last"
+//    });
+//    jQuery("#skcTable").jqGrid('inlineNav', "#skcDiv", inlineparams);
+    jQuery("#skcTable").jqGrid('hideCol', 'ID');
+    jQuery("#skcTable").jqGrid('setGridParam', {data: skcArr}).trigger('reloadGrid');
+
+
+    function dataFormat(cellvalue, options, rowObject) {
+        if (!cellvalue) return '';
+        return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+    }
+
+    $("#search").click(function () {
+        var qry = $("#qry").val().trim();//去除首尾空格
+        $("#itemTable").jqGrid('setGridParam', { url: '/items/getSkcCheckableSku?qry=' + qry}).trigger('reloadGrid');
+    })
+
+
+    $("#invalid").click(function () {
+        if(!tmpObj||!tmpObj.ITEMCODE){
+            alert("请选择需要废弃修改的商品");
+            return;
+        }
+        else{
+            var itemcode=tmpObj.ITEMCODE
+            var options={ITEMCODE:itemcode};
+
+            alert(JSON.stringify(options));
+
+            $.ajax({
+                'url': '/items/invalidSkc',
+                'type': 'post',
+                'data': options,
+                'datatype': 'json',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("废弃修改失败");
+                    return;
+                },
+                'success': function (msg) {
+                    if(msg.status==false){
+                        alert("废弃修改失败");
+                        return;
+                    }
+                    else{
+                        alert("成功废弃修改");
+                        clearTable();
+                        jQuery("#itemTable").trigger('reloadGrid');
+                    }
+                }
+            });
+        }
+    });
+
+    var clearTable=function(){
+        skcArr = [];
+        jQuery("#skcTable").clearGridData();
+        jQuery("#skcTable").jqGrid('setCaption', "SKC信息");
+        jQuery("#skcTable").jqGrid('setGridParam', {data: skcArr}).trigger('reloadGrid');
+    }
+
+    $("#approve").click(function () {
+        if(!tmpObj||!tmpObj.ITEMCODE){
+            alert("请选择需要审核skc信息的商品");
+            return;
+        }
+        else{
+            var itemcode=tmpObj.ITEMCODE
+            var options={ITEMCODE:itemcode};
+
+            alert(JSON.stringify(options));
+
+            $.ajax({
+                'url': '/items/approveSkc',
+                'type': 'post',
+                'data': options,
+                'datatype': 'json',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("审核失败");
+                    return;
+                },
+                'success': function (msg) {
+                    if(msg.status==false){
+                        alert("审核失败");
+                        return;
+                    }
+                    else{
+                        alert("成功审核");
+                        clearTable();
+                        jQuery("#itemTable").trigger('reloadGrid');
+                    }
+                }
+            });
+        }
+    });
+
+
+});
+
+</script>
+<title></title>
+<style type="text/css" class="init">
+    .ui-jqgrid,
+    .ui-jqgrid * {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        -ms-box-sizing: content-box;
+        -o-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+
+</head>
+<body class="metro">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp ">
+            <div class="input-control text" style="width: 300px;">
+                <input id="qry" type="text" data-state="info"
+                       placeholder="关键字" />
+                <button class="btn-search" id="search" value="搜索"/>
+            </div>
+
+            <br>
+
+            <div style="width:100%">
+                <table style="width:100%">
+                    <tr style="width:100%">
+                        <td>
+                            <table id="itemTable"></table>
+                            <div id="itemDiv"></div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+
+            <br>
+
+            <div class="panel" data-role="panel">
+                <div class="panel-header bg-lightGray fg-black"> SKC信息审核</div>
+                <div class="panel-content">
+                    <div style="width:100%">
+                        <div style="width:100%">
+                            <table style="width:100%">
+                                <tr style="width:100%">
+                                    <td>
+                                        <table id="skcTable"></table>
+                                        <div id="skcDiv"></div>
+                                    </td>
+
+                                </tr>
+                            </table>
+                        </div>
+
+                        <br>
+
+                        <div >
+                            <button id="approve" class="bg-darkBlue fg-white" style="width:100px">审核通过</button>
+                            <button id="invalid" class="bg-green fg-white" style="width:100px">废弃修改</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
+

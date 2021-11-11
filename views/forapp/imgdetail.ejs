@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<p>
+<span>
+    <% if (imgdetailList.length) { %>
+    <% imgdetailList.forEach(function(imgdetail){ %>
+    <br> 
+    <img src="<%= imgdetail.IMGURL %>" alt="" style="max-width: 100%;width: 100%;">
+    <% }) %>
+    <% } %>
+</span>
+</p>
+</html>

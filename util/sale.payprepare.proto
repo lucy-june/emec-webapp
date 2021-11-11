@@ -1,0 +1,19 @@
+﻿package sale;
+message payprepare
+{
+        required double totalpay=1;
+        required double actualtotalpay=2;
+        required string orderorgroupcode=3;
+        message payList
+        {
+                required string itemcode = 1;
+                required double amount = 2;
+                required double vipdiscount = 3;
+                required double handdiscount = 4;
+                required double promotiondiscount = 5;
+                required double merchantdiscount = 6;
+                required string vipcardtype = 7;
+                required string vipdiscountstr = 8;
+        }
+        repeated payList paylists=4;
+}

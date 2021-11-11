@@ -1,0 +1,18 @@
+{
+    "dev":{
+        "hostname": "www.kuaidi100.com",
+        "port": 80
+    },
+    "test":{
+        "hostname": "www.kuaidi100.com",
+        "port": 80
+    },
+    "qa":{
+        "hostname": "www.kuaidi100.com",
+        "port": 80
+    },
+    "prod":{
+        "hostname": "www.kuaidi100.com",
+        "port": 80
+    }
+}

@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+    <link href="css/metro-bootstrap.css" rel="stylesheet">
+    <link href="css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/iconFont.css" rel="stylesheet">
+    <link href="css/docs.css" rel="stylesheet">
+    <link href="js/prettify/prettify.css" rel="stylesheet">
+    <link href="css/jquery.dataTables.css" rel="stylesheet">
+    <link href="css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">
+
+    <script src="js/load-metro.js"></script>
+    <script src="js/jquery/jquery.min.js"></script>
+
+    <script src="js/jquery/jquery.widget.min.js"></script>
+    <script src="js/jquery/jquery.mousewheel.js"></script>
+    <script src="js/prettify/prettify.js"></script>
+    <script src="js/holder/holder.js"></script>
+    <script src="js/docs.js"></script>
+
+    <script src="js/metro/metro-scroll.js"></script>
+    <script src="js/jquery.dataTables.js"></script>
+
+    <script src="js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+
+    <script src="js/metro.js"></script>
+    <script src="js/github.js"></script>
+
+    <script src="js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+
+
+    <script>
+        var getTabStr=function(i){
+            var tabstr='<li id="tab'+i+'" class="active"><a id="a'+i+'" href="#frame'+i+'">商品约束<span><i id="remove'+i+'"'
+                    +'class="icon-cancel fg-red on-right on-left " onclick="delTab('+i+')"></i></span></a>'
+                    +'</li>'
+                    +'<li id="tab" onclick="addTab()"><a><span><i id="add"'
+                    +'class="icon-plus fg-green on-right on-left " ></i></span></a>'
+                    +'</li>';
+            return tabstr;
+        }
+
+        var getFrameStr=function(i){
+            var framestr='<div id="frame'+i+'" class="frame" style="display: block">'
+                    +'<div class="input-control text">'
+                    +'    <select id="type'+i+'" type="text" data-state="info"'
+                    +'    style="height:30px;width:200px">'
+                    +'<option value="number">总量超过</option>'
+                    +'<option value="price">总价超过</option>'
+                    +'    </select>'
+                    +'    <input id="threshold'+i+'" type="text" data-state="info"'
+                    +'   placeholder="约束值"'
+                    +'   style="width:200px;height:30px;margin-left: 0px"/>'
+                    +'</div>'
+                    +''
+                    +'<div style="height:280px;overflow:scroll;border:2px solid #efeae3">'
+                    +'    <table id="table'+i+'" class="table striped bordered hovered">'
+                    +'<thead>'
+                    +'<tr class="warning">'
+                    +'    <th>操作</th>'
+                    +'    <th>属性名</th>'
+                    +'    <th>约束符</th>'
+                    +'    <th>属性值</th>'
+                    +'</tr>'
+                    +'</thead>'
+                    +'<tr id="tr'+i+'_0">'
+                    +'    <td>'
+                    +'<i id="delColumn'+i+'_0" class="icon-minus fg-yellow on-right on-left " onclick="delColumn('+i+',0)"></i>'
+                    +'    </td>'
+                    +'    <td>'
+                    +'<div style="position:relative;">'
+                    +'    <span style="margin-left:100px;width:18px;overflow:hidden;">'
+                    +'<select id="keySelect'+i+'_0" style="width:250px;margin-left:-100px"'
+                    +'onchange="this.parentNode.nextSibling.value=this.value">'
+                    +'    <option value="商品编码" >商品编码</option>'
+                    +'    <option value="商品名称">商品名称</option>'
+                    +'    <option value="品牌编码">品牌编码</option>'
+                    +'    <option value="品牌名称">品牌名称</option>'
+                    +'    <option value="供应商编码">供应商编码</option>'
+                    +'    <option value="经营方式">经营方式</option>'
+                    +'    <option value="产地">产地</option>'
+                    +'    <option value="价格">价格</option>'
+                    +'    <option value="销项税率">销项税率</option>'
+                    +'    <option value="消费税率">消费税率</option>'
+                    +'    <option value="是否允许退货">是否允许退货</option>'
+                    +'    <option value="保质期<">保质期</option>'
+                    +'    <option value="是否允许线上销售">是否允许线上销售</option>'
+                    +'    <option value="是否记录库存信息">是否记录库存信息</option>'
+                    +''
+                    +'    <option value="颜色">颜色</option>'
+                    +'    <option value="尺寸">尺寸</option>'
+                    +'    <option value="库存">库存</option>'
+                    +'    <option value="SKC编码">SKC编码</option>'
+                    +'    <option value="所属柜编码">所属柜编码</option>'
+                    +'    <option value="购买数量">购买数量</option>'
+                    +''
+                    +'    <option value="所属分类">所属分类</option>'
+                    +'    <option value="所属区域">所属区域</option>'
+                    +'</select></span><input id="keyInput'+i+'_0" name="box" style="width:232px;position:absolute;left:0px;">'
+                    +'</div>'
+                    +'    </td>'
+                    +'    <td>'
+                    +'<div style="position:relative;">'
+                    +'    <span style="margin-left:100px;width:18px;overflow:hidden;">'
+                    +'<select id="compareSelect'+i+'_0" style="width:250px;margin-left:-100px"'
+                    +'onchange="this.parentNode.nextSibling.value=this.value">'
+                    +'    <option value="等于">等于</option>'
+                    +'    <option value="不等于">不等于</option>'
+                    +'    <option value="大于">大于</option>'
+                    +'    <option value="小于">小于</option>'
+                    +'    <option value="大于等于">大于等于</option>'
+                    +'    <option value="小于等于">小于等于</option>'
+                    +'    <option value="包含">包含</option>'
+                    +'    <option value="不包含">不包含</option>'
+                    +'</select></span><input id="compareInput'+i+'_0" name="box" style="width:232px;position:absolute;left:0px;">'
+                    +'</div>'
+                    +'    </td>'
+                    +'    <td>'
+                    +'<div style="position:relative;">'
+                    +'    <span style="margin-left:100px;width:18px;overflow:hidden;">'
+                    +'<select id="valueSelect'+i+'_0" style="width:250px;margin-left:-100px"'
+                    +'onchange="this.parentNode.nextSibling.value=this.value">'
+                    +'    <option value="xgz">xgz</option>'
+                    +'    <option value="ih99">ih99</option>'
+                    +'    <option value="ih99.com">ih99.com</option>'
+                    +'    <option value="www.ih99.com">www.ih99.com</option>'
+                    +'</select></span><input id="valueInput'+i+'_0" name="box" style="width:232px;position:absolute;left:0px;">'
+                    +'</div>'
+                    +'    </td>'
+                    +'</tr>'
+                    +'<tr id="tr'+i+'" onclick="addColumn('+i+')">'
+                    +'    <td>'
+                    +'        <i id="addColumn'+i+'" class="icon-plus fg-green on-right on-left " ></i>'
+                    +'    </td>'
+                    +'</tr>'
+                    +'    </table>'
+                    +'</div>'
+                    +'</div>';
+
+                return framestr;
+        }
+
+
+        var getColumnStr = function(i,j){
+            var columnStr='<tr id="tr'+i+'_'+j+'">'
+                    +'    <td>'
+                    +'<i id="delColumn'+i+'_'+j+'" class="icon-minus fg-yellow on-right on-left " onclick="delColumn('+i+','+j+')"></i>'
+                    +'    </td>'
+                    +'    <td>'
+                    +'<div style="position:relative;">'
+                    +'    <span style="margin-left:100px;width:18px;overflow:hidden;">'
+                    +'<select id="keySelect'+i+'_'+j+'" style="width:250px;margin-left:-100px"'
+                    +'onchange="this.parentNode.nextSibling.value=this.value">'
+                    +'    <option value="商品编码" >商品编码</option>'
+                    +'    <option value="商品名称">商品名称</option>'
+                    +'    <option value="品牌编码">品牌编码</option>'
+                    +'    <option value="品牌名称">品牌名称</option>'
+                    +'    <option value="供应商编码">供应商编码</option>'
+                    +'    <option value="经营方式">经营方式</option>'
+                    +'    <option value="产地">产地</option>'
+                    +'    <option value="价格">价格</option>'
+                    +'    <option value="销项税率">销项税率</option>'
+                    +'    <option value="消费税率">消费税率</option>'
+                    +'    <option value="是否允许退货">是否允许退货</option>'
+                    +'    <option value="保质期<">保质期</option>'
+                    +'    <option value="是否允许线上销售">是否允许线上销售</option>'
+                    +'    <option value="是否记录库存信息">是否记录库存信息</option>'
+                    +''
+                    +'    <option value="颜色">颜色</option>'
+                    +'    <option value="尺寸">尺寸</option>'
+                    +'    <option value="库存">库存</option>'
+                    +'    <option value="SKC编码">SKC编码</option>'
+                    +'    <option value="所属柜编码">所属柜编码</option>'
+                    +'    <option value="购买数量">购买数量</option>'
+                    +''
+                    +'    <option value="所属分类">所属分类</option>'
+                    +'    <option value="所属区域">所属区域</option>'
+                    +'</select></span><input id="keyInput'+i+'_'+j+'" name="box" style="width:232px;position:absolute;left:0px;">'
+                    +'</div>'
+                    +'    </td>'
+                    +'    <td>'
+                    +'<div style="position:relative;">'
+                    +'    <span style="margin-left:100px;width:18px;overflow:hidden;">'
+                    +'<select id="compareSelect'+i+'_'+j+'" style="width:250px;margin-left:-100px"'
+                    +'onchange="this.parentNode.nextSibling.value=this.value">'
+                    +'    <option value="等于">等于</option>'
+                    +'    <option value="不等于">不等于</option>'
+                    +'    <option value="大于">大于</option>'
+                    +'    <option value="小于">小于</option>'
+                    +'    <option value="大于等于">大于等于</option>'
+                    +'    <option value="小于等于">小于等于</option>'
+                    +'    <option value="包含">包含</option>'
+                    +'    <option value="不包含">不包含</option>'
+                    +'</select></span><input id="compareInput'+i+'_'+j+'" name="box" style="width:232px;position:absolute;left:0px;">'
+                    +'</div>'
+                    +'    </td>'
+                    +'    <td>'
+                    +'<div style="position:relative;">'
+                    +'    <span style="margin-left:100px;width:18px;overflow:hidden;">'
+                    +'<select id="valueSelect'+i+'_'+j+'" style="width:250px;margin-left:-100px"'
+                    +'onchange="this.parentNode.nextSibling.value=this.value">'
+                    +'    <option value="xgz">xgz</option>'
+                    +'    <option value="ih99">ih99</option>'
+                    +'    <option value="ih99.com">ih99.com</option>'
+                    +'    <option value="www.ih99.com">www.ih99.com</option>'
+                    +'</select></span><input id="valueInput'+i+'_'+j+'" name="box" style="width:232px;position:absolute;left:0px;">'
+                    +'</div>'
+                    +'    </td>'
+                    +'</tr>'
+                    +'<tr id="tr'+i+'" onclick="addColumn('+i+')">'
+                    +'    <td>'
+                    +'        <i id="addColumn'+i+'" class="icon-plus fg-green on-right on-left " ></i>'
+                    +'    </td>'
+                    +'</tr>';
+
+            return columnStr;
+        }
+
+
+        var irecords=[0];
+        var jrecords=[[0]];
+
+        var delColumn=function(i,j){
+            if(jrecords[irecords.indexOf(i)].length>=2){
+                $("#tr"+i+"_"+j).remove();
+                jrecords[irecords.indexOf(i)].splice(jrecords[irecords.indexOf(i)].indexOf(j),1);
+
+            }
+
+//            alert(irecords);
+//            var str=""
+//            for(var k=0;k<jrecords.length;k++) str+="\n"+jrecords[k];
+//            alert(str);
+        }
+
+        var addColumn=function(i){
+            var index=irecords.indexOf(i);
+            var j=jrecords[index][jrecords[index].length-1]+1;
+            jrecords[index].push(j);
+
+            var columnStr=getColumnStr(i,j);
+            $("#tr"+i).remove();
+            $("#table"+i).append(columnStr);
+
+
+//            alert(irecords);
+//            var str=""
+//            for(var k=0;k<jrecords.length;k++) str+="\n"+jrecords[k];
+//            alert(str);
+        }
+
+        var delTab=function(i){
+//            $("#a"+i).attr("href","");
+            if(irecords.length>=2){
+//                for(var k=0;k<irecords.length;k++){
+//                    $("#tab"+irecords[k]).attr("class","");
+//                }
+                var ind=irecords.indexOf(i);
+                var next=irecords[ind-1];
+                if(ind==0){
+                    next=irecords[ind+1];
+                }
+                jrecords.splice(irecords.indexOf(i),1);
+                irecords.splice(irecords.indexOf(i),1);
+
+               setTimeout(function(){
+                   $("#tab"+i).remove();
+                   $("#frame"+i).remove();
+                   $("#tab"+next).attr("class","active");
+                   $("#frame"+next).attr("style","display: block");
+
+               },100);
+
+            }
+
+//            alert(irecords);
+//            var str=""
+//            for(var k=0;k<jrecords.length;k++) str+="\n"+jrecords[k];
+//            alert(str);
+        }
+
+        var addTab=function(){
+            for(var k=0;k<irecords.length;k++){
+                $("#tab"+irecords[k]).attr("class","");
+                $("#frame"+irecords[k]).attr("style","display: none");
+            }
+
+            var n=irecords[irecords.length-1]+1;
+            irecords.push(n);
+            jrecords.push([0]);
+            var tabStr=getTabStr(n);
+            var frameStr=getFrameStr(n);
+            $("#tab").remove();
+            $("#frames").append(frameStr);
+            $("#tabs").append(tabStr);
+
+
+
+
+
+
+//            alert(irecords);
+//            var str=""
+//            for(var k=0;k<jrecords.length;k++) str+="\n"+jrecords[k];
+//            alert(str);
+        }
+
+
+        $(document).ready(function () {
+
+
+            $("#test").click(function () {
+
+                alert($("#keyInput0").val());
+//                $("#tabs").clear();
+//                $("#li1").remove();
+//                $("#_page_1").remove();
+            });
+
+        });
+    </script>
+
+    <style type="text/css" class="init">
+        th, td {
+            white-space: nowrap;
+        }
+
+        div.dataTables_wrapper {
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="metro" style="background-color: #efeae3">
+<button id="test"></button>
+<div class="grid">
+<div class=row>
+<div class="mectemp ">
+
+
+<div class="panel" data-role="panel">
+    <div class="panel-header bg-darkEmerald fg-white"> 基本信息</div>
+    <div class="panel-content ">
+        <table style="height: 100%;width:100%">
+            <tr>
+                <td style="width:150px"><label style="width:150px">促销规则名称：</label></td>
+                <td style="width:100%">
+                    <div class="input-control text"><input id="RULENAME" type="text" data-state="info"
+                                                           placeholder=""
+                                                           style="width:430px;height:30px;margin-top: 10px;margin-left: 0px"/>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px"><label style="width:150px">促销起止时间：</label></td>
+                <td style="width:100%">
+                    <div class="input-control text" data-role="datepicker" data-format="yyyy-mm-dd"
+                         data-week-start="1" style="width:200px;height:30px;margin-top: 10px;">
+                        <input id="DATE-EFFECTIVE" type="text">
+                        <button class="btn-date"></button>
+                    </div>
+                    <label class="inline-block"
+                           style="width: 20px"> --- </label>
+
+                    <div class="input-control text" data-role="datepicker" data-format="yyyy-mm-dd"
+                         data-week-start="1" style="width:200px;height:30px;margin-top: 10px;">
+                        <input id="DATE-EXPIRES" type="text">
+                        <button class="btn-date"></button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px"><label style="width:150px">规则优先级别：</label></td>
+                <td style="width:100%">
+
+                    <div class="slider" id="SALIENCE" data-role="slider" data-position="30"
+                         data-accuracy="0" style="width: 430px;margin-top: 10px">
+                        <div style="width: 200px;" class="complete"></div>
+                        <a style="left: 200px;" class="marker"></a></div>
+
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px"><label style="width:150px">规则详情描述：</label></td>
+                <td style="width:100%">
+                    <textarea id="RULEDESCRIPTION" style="height:100px;width: 100%"></textarea>
+                </td>
+            </tr>
+
+        </table>
+
+
+    </div>
+</div>
+<br>
+
+<div class="panel" data-role="panel">
+<div class="panel-header bg-darkEmerald fg-white"> 步骤1：设定促销条件</div>
+<div class="panel-content ">
+<nav class="breadcrumbs" style="margin-top: 2px">
+    <ul>
+        <li><a><i class="icon-diamond"></i></a><a>支付条件</a></li>
+    </ul>
+</nav>
+<div class="balloon">
+    <table>
+        <tr>
+            <td style="width:150px">
+                <div class="input-control checkbox" data-role="input-control" style="width:150px">
+                    <label class="inline-block">
+                        <input type="checkbox">
+                        <span class="check"></span>
+                        支付方式:
+                    </label>
+                </div>
+            </td>
+            <td style="width:100%">
+                <select id="PAYMENTMODE" type="text" data-state="info"
+                        placeholder="" style="height:30px;width:200px">
+                    <option></option>
+                    <option value="0">现金支付</option>
+                    <option value="1">刷卡支付</option>
+                    <option value="2">支付宝支付</option>
+                    <option value="3">微信支付</option>
+                    <option value="4">银联支付</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:150px">
+                <div class="input-control checkbox" data-role="input-control" style="width:150px">
+                    <label class="inline-block">
+                        <input type="checkbox">
+                        <span class="check"></span>
+                        是否使用会员卡:
+                    </label></div>
+            </td>
+            <td style="width:100%">
+                <select id="ISVIPCARD" type="text" data-state="info"
+                        placeholder="" style="height:30px;width:200px">
+                    <option></option>
+                    <option value="0">否</option>
+                    <option value="1">是</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:150px">
+                <div class="input-control checkbox" data-role="input-control" style="width:150px">
+                    <label class="inline-block">
+                        <input type="checkbox">
+                        <span class="check"></span>
+                        是否使用优惠券:
+                    </label></div>
+            </td>
+            <td style="width:100%">
+                <select id="ISDISCOUNTCOUPON" type="text" data-state="info"
+                        placeholder="" style="height:30px;width:200px">
+                    <option></option>
+                    <option value="0">否</option>
+                    <option value="1">是</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:150px">
+                <div class="input-control checkbox" data-role="input-control" style="width:150px">
+                    <label class="inline-block">
+                        <input type="checkbox">
+                        <span class="check"></span>
+                        是否使用现金券:
+                    </label></div>
+            </td>
+            <td style="width:100%">
+                <select id="ISCASHCOUPON" type="text" data-state="info"
+                        placeholder="" style="height:30px;width:200px">
+                    <option></option>
+                    <option value="0">否</option>
+                    <option value="1">是</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:150px">
+                <div class="input-control checkbox" data-role="input-control" style="width:150px">
+                    <label class="inline-block">
+                        <input type="checkbox">
+                        <span class="check"></span>
+                        是否使用积分:
+                    </label></div>
+            </td>
+            <td style="width:100%">
+                <select id="ISSCORE" type="text" data-state="info"
+                        placeholder="" style="height:30px;width:200px">
+                    <option></option>
+                    <option value="0">否</option>
+                    <option value="1">是</option>
+                </select>
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+<nav class="breadcrumbs" style="margin-top: 2px">
+    <ul>
+        <li><a><i class="icon-cart"></i></a><a>订单条件</a></li>
+    </ul>
+</nav>
+<div class="balloon">
+    <table>
+        <tr>
+            <td style="width:150px">
+                <div class="input-control checkbox" data-role="input-control" style="width:150px">
+                    <label class="inline-block">
+                        <input type="checkbox">
+                        <span class="check"></span>
+                        订单来源:
+                    </label>
+                </div>
+            </td>
+            <td style="width:100%">
+                <select id="ISONLINE" type="text" data-state="info"
+                        placeholder="" style="height:30px;width:200px">
+                    <option></option>
+                    <option value="0">线下单</option>
+                    <option value="1">线上单</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:150px">
+                <div class="input-control checkbox" data-role="input-control" style="width:150px">
+                    <label class="inline-block">
+                        <input type="checkbox">
+                        <span class="check"></span>
+                        取货方式:
+                    </label></div>
+            </td>
+            <td style="width:100%">
+                <select id="DELIVERYMODE" type="text" data-state="info"
+                        placeholder="" style="height:30px;width:200px">
+                    <option></option>
+                    <option value="0">自提</option>
+                    <option value="1">配送</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:150px">
+                <div class="input-control checkbox" data-role="input-control" style="width:150px">
+                    <label class="inline-block">
+                        <input type="checkbox">
+                        <span class="check"></span>
+                        配送地址:
+                    </label></div>
+            </td>
+            <td style="width:100%">
+                <select id="SITE" type="text" data-state="info"
+                        placeholder="" style="height:30px;width:200px">
+                    <option></option>
+                    <option value="0">上海</option>
+                    <option value="1">非上海</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:150px">
+                <div class="input-control checkbox" data-role="input-control" style="width:150px">
+                    <label class="inline-block">
+                        <input type="checkbox">
+                        <span class="check"></span>
+                        发货门店:
+                    </label></div>
+            </td>
+            <td style="width:100%">
+                <select id="DEPTCODE" type="text" data-state="info"
+                        placeholder="" style="height:30px;width:200px">
+                    <option></option>
+                    <option value="10201">徐汇店</option>
+                    <option value="10202">虹桥店</option>
+                </select>
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+<nav class="breadcrumbs" style="margin-top: 2px">
+    <ul>
+        <li><a><i class="icon-basket"></i></a><a>商品条件</a></li>
+    </ul>
+</nav>
+<div class="balloon">
+    <!--<table>-->
+    <!--<tr>-->
+    <!--<td>-->
+    <!--<h3><i class="icon-plus fg-green on-right on-left "></i></h3>-->
+    <!--</td>-->
+    <!--<td>-->
+    <!--<h3><i class="icon-minus fg-red on-right on-left "></i></h3>-->
+    <!--</td>-->
+    <!--</tr>-->
+
+    <!--</table>-->
+
+    <div class="tab-control" data-role="tab-control">
+        <ul id="tabs" class="tabs">
+            <li id="tab0" class="active"><a id="a0" href="#frame0">商品约束<span><i id="remove0"
+                                                                        class="icon-cancel fg-red on-right on-left " onclick="delTab(0)"></i></span></a>
+            </li>
+            <li id="tab" onclick="addTab()"><a><span><i id="add"
+                                                     class="icon-plus fg-green on-right on-left " ></i></span></a>
+            </li>
+        </ul>
+
+        <div id="frames" class="frames">
+            <div id="frame0" class="frame">
+                <div class="input-control text">
+                    <select id="type0" type="text" data-state="info"
+                            style="height:30px;width:200px">
+                        <option value="number">总量超过</option>
+                        <option value="price">总价超过</option>
+                    </select>
+                    <input id="threshold0" type="text" data-state="info"
+                           placeholder="约束值"
+                           style="width:200px;height:30px;margin-left: 0px"/>
+                </div>
+
+                <div style="height:280px;overflow:scroll;border:2px solid #efeae3">
+                    <table id="table0" class="table striped bordered hovered">
+                        <thead>
+                        <tr class="warning">
+                            <th>操作</th>
+                            <th>属性名</th>
+                            <th>约束符</th>
+                            <th>属性值</th>
+                        </tr>
+                        </thead>
+                        <tr id="tr0_0">
+                            <td>
+                                <i id="delColumn0_0" class="icon-minus fg-yellow on-right on-left " onclick="delColumn(0,0)"></i>
+                            </td>
+                            <td>
+                                <div style="position:relative;">
+                                    <span style="margin-left:100px;width:18px;overflow:hidden;">
+                                        <select id="keySelect0_0" style="width:250px;margin-left:-100px"
+                                                onchange="this.parentNode.nextSibling.value=this.value">
+                                            <option value="商品编码" >商品编码</option>
+                                            <option value="商品名称">商品名称</option>
+                                            <option value="品牌编码">品牌编码</option>
+                                            <option value="品牌名称">品牌名称</option>
+                                            <option value="供应商编码">供应商编码</option>
+                                            <option value="经营方式">经营方式</option>
+                                            <option value="产地">产地</option>
+                                            <option value="价格">价格</option>
+                                            <option value="销项税率">销项税率</option>
+                                            <option value="消费税率">消费税率</option>
+                                            <option value="是否允许退货">是否允许退货</option>
+                                            <option value="保质期<">保质期</option>
+                                            <option value="是否允许线上销售">是否允许线上销售</option>
+                                            <option value="是否记录库存信息">是否记录库存信息</option>
+
+                                            <option value="颜色">颜色</option>
+                                            <option value="尺寸">尺寸</option>
+                                            <option value="库存">库存</option>
+                                            <option value="SKC编码">SKC编码</option>
+                                            <option value="所属柜编码">所属柜编码</option>
+                                            <option value="购买数量">购买数量</option>
+
+                                            <option value="所属分类">所属分类</option>
+                                            <option value="所属区域">所属区域</option>
+                                            <!--<option value="ITEMCODE" >商品编码</option>-->
+                                            <!--<option value="ITEMNAME">商品名称</option>-->
+                                            <!--<option value="BRANDCODE">品牌编码</option>-->
+                                            <!--<option value="BRANDNAME">品牌名称</option>-->
+                                            <!--<option value="MERCHANTCODE">供应商编码</option>-->
+                                            <!--<option value="BUSINESSMODE">经营方式</option>-->
+                                            <!--<option value="PRODUCINGAREA">产地</option>-->
+                                            <!--<option value="PRICE">价格</option>-->
+                                            <!--<option value="TAXRATE">销项税率</option>-->
+                                            <!--<option value="EXCISERATE">消费税率</option>-->
+                                            <!--<option value="RETURNGOODS">是否允许退货</option>-->
+                                            <!--<option value="TERM">保质期</option>-->
+                                            <!--<option value="ISONLINE">是否允许线上销售</option>-->
+                                            <!--<option value="HASSTOCK">是否记录库存信息</option>-->
+
+                                            <!--<option value="COLOR">颜色</option>-->
+                                            <!--<option value="SIZE">尺寸</option>-->
+                                            <!--<option value="AMOUNT">库存</option>-->
+                                            <!--<option value="SKCID">SKC编码</option>-->
+                                            <!--<option value="COUNTERCODE">所属柜编码</option>-->
+                                            <!--<option value="NUM">购买数量</option>-->
+
+                                            <!--<option value="CATEGORYNAME">所属分类</option>-->
+                                            <!--<option value="REGIONNAME">所属区域</option>-->
+                                        </select></span><input id="keyInput0_0" name="box" style="width:232px;position:absolute;left:0px;">
+                                </div>
+                            </td>
+                            <td>
+                                <div style="position:relative;">
+                                    <span style="margin-left:100px;width:18px;overflow:hidden;">
+                                        <select id="compareSelect0_0" style="width:250px;margin-left:-100px"
+                                                onchange="this.parentNode.nextSibling.value=this.value">
+                                            <option value="等于">等于</option>
+                                            <option value="不等于">不等于</option>
+                                            <option value="大于">大于</option>
+                                            <option value="小于">小于</option>
+                                            <option value="大于等于">大于等于</option>
+                                            <option value="小于等于">小于等于</option>
+                                            <option value="包含">包含</option>
+                                            <option value="不包含">不包含</option>
+                                        </select></span><input id="compareInput0_0" name="box" style="width:232px;position:absolute;left:0px;">
+                                </div>
+                            </td>
+                            <td>
+                                <div style="position:relative;">
+                                    <span style="margin-left:100px;width:18px;overflow:hidden;">
+                                        <select id="valueSelect0_0" style="width:250px;margin-left:-100px"
+                                                onchange="this.parentNode.nextSibling.value=this.value">
+                                            <option value="xgz">xgz</option>
+                                            <option value="ih99">ih99</option>
+                                            <option value="ih99.com">ih99.com</option>
+                                            <option value="www.ih99.com">www.ih99.com</option>
+                                        </select></span><input id="valueInput0_0" name="box" style="width:232px;position:absolute;left:0px;">
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr id="tr0" onclick="addColumn(0)">
+                            <td>
+                                <i id="addColumn0" class="icon-plus fg-green on-right on-left " ></i>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--<td style="width:150px"><label style="width:150px">促销规则名称：</label></td>-->
+    <!--<td style="width:100%">-->
+    <!--<div class="input-control text"><input id="RULENAME" type="text" data-state="info"-->
+    <!--placeholder=""-->
+    <!--style="width:430px;height:30px;margin-top: 10px;margin-left: 0px"/>-->
+    <!--</div>-->
+    <!--</td>-->
+
+
+</div>
+</div>
+</div>
+<br>
+
+<div class="panel" data-role="panel">
+    <div class="panel-header bg-darkEmerald fg-white"> 步骤2：设定促销方式</div>
+    <div class="panel-content ">
+        <table>
+            <tr>
+                <td style="width:150px">
+                    <label style="width:150px">促销类别：</label>
+                </td>
+                <td style="width:100%">
+                    <select id="SALESTYPE" type="text" data-state="info"
+                            placeholder="" style="height:30px;width:200px">
+                        <option></option>
+                        <option value="discount">折扣</option>
+                        <option value="cut">减价</option>
+                        <option value="bargain">特价</option>
+                        <option value="present">赠送</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:150px">
+                    <label style="width:150px">促销参数：</label>
+                </td>
+                <td style="width:100%">
+                    <div style="position:relative;">
+                    <span style="margin-left:100px;width:18px;overflow:hidden;">
+                        <select style="width:200px;margin-left:-100px"
+                                onchange="this.parentNode.nextSibling.value=this.value">
+                            <option value="xgz">xgz</option>
+                            <option value="ih99">ih99</option>
+                            <option value="ih99.com">ih99.com</option>
+                            <option value="www.ih99.com">www.ih99.com</option>
+                        </select></span><input name="box" style="width:182px;position:absolute;left:0px;">
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+
+</body>
+</html>
+

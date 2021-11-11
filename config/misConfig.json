@@ -1,0 +1,26 @@
+{
+    "dev":{
+        "hostname": "126.200.200.101",
+        "port": 8080,
+        "rejectUnauthorized": true,
+        "agent": false
+    },
+    "test":{
+        "hostname": "126.200.200.101",
+        "port": 8080,
+        "rejectUnauthorized": true,
+        "agent": false
+    },
+    "qa":{
+        "hostname": "126.200.200.101",
+        "port": 8080,
+        "rejectUnauthorized": true,
+        "agent": false
+    },
+    "prod":{
+        "hostname": "126.200.168.10",
+        "port": 8087,
+        "rejectUnauthorized": true,
+        "agent": false
+    }
+}

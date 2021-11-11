@@ -1,0 +1,107 @@
+<!--非营业员用户登陆界面-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link href="css/index.css" rel="stylesheet">
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery/jquery.widget.min.js"></script>
+    <script src="js/jquery/jquery.mousewheel.js"></script>
+    <script src="js/jquery/jquery.form.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#myForm").submit(function(){
+                $(this).ajaxSubmit({
+                    success:function(responseText, statusText, xhr, $form){
+                        if(statusText=="success"){
+                            if(responseText.status){
+                                //登录成功，跳转
+                                if (responseText.state==1){
+                                    window.location.href="/main";
+                                }else if (responseText.state==2){
+                                    alert("检测到您未修改过密码，请修改密码，然后重新登录！");
+                                    window.location.href="/main";
+                                }
+
+                            }else{
+                                alert("登录失败："+responseText.data);
+                            }
+                        }else{
+                            alert("请求出错啦！");
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+
+    <title><%= title %></title>
+</head>
+<body class="metro" >
+<br><br>
+<div class="container">
+    <div class="row">
+
+        <img src="images/emec.jpg" style="margin-left: 45px;margin-bottom:5px;height: 25px">
+
+    </div>
+</div>
+
+<div class="wrapping-banner-home">
+    <div class="container">
+
+        <div class="row">
+            <div class="span7">
+                <div class="copy-block" >
+
+                    <h1  style="margin-top:100px;">
+                        <span class="eyebrow-header" align="right">让&nbsp;&nbsp;生&nbsp;&nbsp;意&nbsp;&nbsp;&nbsp;更&nbsp;&nbsp;容&nbsp;&nbsp;<font color="orange" size="18" >易</font></span>
+                        <br />
+                        <br /> <br />
+                        <span class="header1">打通零售业任督二<font color="orange" size="18" >脉</font></span>
+                    </h1>
+                    <!--<h2 class="subhead"><i>e</i>MEC系统是一套实现零售业全融通的O2O解决方案，为客户提供<font color="yellow">单品管理</font>，<font color="green">库存共享</font>，<font color="#00008b">电子开单</font>，<font color="purple">随心支付</font>，<font color="#ff8c00">互动营销</font>和<font color="#f5f5f5">数据服务</font>六大利器。</h2>-->
+
+
+                </div>
+
+
+
+                <!--</div>-->
+                <div style="margin-bottom: 10px;">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>© 2015 上海卖科 .  Terms · Privacy · Trademarks & Logos,</i>
+                </div>
+            </div>
+            <div class="span5">
+                <div class="hub-overlay">
+                    <h3>开始使用<i>e</i>MEC<font color="#4aff8c">管理平台</font></h3>
+                    <p>为供应链创造更多价值</p>
+                    <form id="myForm" class="hub-signup-form" action="/login" method="post">
+
+
+                        <div class="form-group">
+                            <input class="form-control" id="username" maxlength="30" name="username" placeholder="用户名" type="text" />
+                            <p class="error-message">This field has errored.</p>
+                        </div>
+
+                        <div class="form-group">
+                            <input class="form-control" id="password" name="password" placeholder="密码" type="password" />
+                            <p class="error-message">This field has errored.</p>
+                        </div>
+                        <div class="form-group">
+                            <input checked="checked" id="id_subscribe" name="subscribe" type="checkbox" />记住我
+                        </div>
+                        <button class="btn signup-button btn-block" type="submit">登     录</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

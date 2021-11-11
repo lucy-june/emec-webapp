@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="product" content="Metro UI CSS Framework">
+    <meta name="description" content="Simple responsive css framework">
+    <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+    <link href="../css/metro-bootstrap.css" rel="stylesheet">
+    <link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/iconFont.css" rel="stylesheet">
+    <link href="../css/docs.css" rel="stylesheet">
+    <link href="../js/prettify/prettify.css" rel="stylesheet">
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery.widget.min.js"></script>
+    <script src="../js/jquery/jquery.mousewheel.js"></script>
+    <script src="../js/prettify/prettify.js"></script>
+    <script src="../js/holder/holder.js"></script>
+    <script src="../js/load-metro.js"></script>
+    <script src="../js/docs.js"></script>
+
+    <script src="../js/metro/metro-scroll.js"></script>
+
+    <script type="text/javascript">
+        function checkPwd(pwdStr){
+            if(pwdStr.length>32) return {result:false,msg:"密码长度请小于32位"};
+            if(pwdStr.length<1) return {result:false,msg:"密码长度请大于1位"};
+            else return {result:true ,msg:"正确"};
+        }
+
+
+        var confirmPwd=function(){
+            var pwdCheck = checkPwd($("#newPwd").val());
+            if(! pwdCheck.result) {
+                alert( pwdCheck.msg);
+                return;
+            }
+
+            var oldPwd=$("#oldPwd").val();
+            var newPwd2=$("#newPwd2").val();
+            var newPwd=$("#newPwd").val();
+
+            if(newPwd!=newPwd2){
+                alert("两次输入密码不一致！")
+                $("#newPwd").val("");
+                $("#newPwd2").val("");
+                return;
+            }
+            $.ajax({
+                'url': '/pwd/modifyPwdService',
+                'type': 'post',
+                'data': {"oldPwd":oldPwd,"newPwd":newPwd},
+                'datatype': 'html',
+                'timeout': 10000,
+                'error': function (msg) {
+                    alert("修改密码失败！");
+                    $("#oldPwd").val("");
+                    $("#newPwd2").val("");
+                    $("#newPwd").val("");
+                    return;
+                },
+                'success': function (msg) {
+                    if (msg.status) {
+                        alert("修改密码成功,请重新登陆!");
+                        window.parent.location.href="..//logout";
+                    }
+                    else{
+                        alert("修改密码失败！");
+                        $("#oldPwd").val("");
+                        $("#newPwd2").val("");
+                        $("#newPwd").val("");
+                        return;
+                    }
+                }
+            });
+        };
+
+        var cancelPwd=function(){
+            $("#oldPwd").val("");
+            $("#newPwd2").val("");
+            $("#newPwd").val("");
+        }
+    </script>
+    <title>Mec Demo</title>
+    </title>
+</head>
+<body class="metro">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp bd-orange">
+            <!--<div class="panel" data-role="panel">-->
+
+                    <table style="width:100%;">
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label  class="col-sm-2 control-label">当前密码 </label>
+
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control password" data-role="input-control" style="width:200px">
+                                    <input id="oldPwd" type="password" placeholder="" data-state="info"
+                                           style="height:30px;width:100%">
+                                    <button class="btn-reveal" tabindex="0"></button>
+                                </div>
+                                <!--<div class="input-control text size2" style="width:200px">
+                                    <input id="oldPwd" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px"/>
+                                </div>-->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">新密码 </label>
+
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control password" data-role="input-control" style="width:200px">
+                                    <input id="newPwd" type="password" placeholder="" data-state="info"
+                                           style="height:30px;width:200px">
+                                    <button class="btn-reveal" tabindex="0"></button>
+                                </div>
+                                <!--<div class="input-control text size2" style="width:200px">
+                                    <input id="newPwd" type="text" data-state="info"
+                                           placeholder="" style="height:30px;width:200px"/>
+                                </div>-->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:100px;height:65px">
+                                <div class="input-control text size2">
+                                    <label class="col-sm-2 control-label">确认密码 </label>
+
+                                </div>
+                            </td>
+                            <td style="height:65px">
+                                <div class="input-control password" data-role="input-control" style="width:200px">
+                                    <input id="newPwd2" type="password" placeholder="" data-state="info"
+                                           style="height:30px;width:200px">
+                                    <button class="btn-reveal" tabindex="0"></button>
+                                </div>
+                                <!--<div class="input-control text size2" style="width:200px">
+                                    <input id="newPwd2" type="text" data-state="info"
+                                            placeholder="" style="height:30px;width:200px"/>
+                                </div>-->
+                            </td>
+                        </tr>
+
+                    </table>
+                    <br>
+                    <br>
+                    <div>
+                        <button class="bg-mecBlue fg-white" style="width:120px" onclick="confirmPwd()">修改</button>
+                        <button class="bg-mecOrange fg-white" style="width:120px;" onclick="cancelPwd()">取消</button>
+                    </div>
+
+    </div>
+</div>
+</div>
+</body>
+</html>

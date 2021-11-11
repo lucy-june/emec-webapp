@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="product" content="Metro UI CSS Framework">
+<link href="../css/metro-bootstrap.css" rel="stylesheet">
+<link href="../css/metro-bootstrap-responsive.css" rel="stylesheet">
+<link href="../css/iconFont.css" rel="stylesheet">
+<link href="../css/docs.css" rel="stylesheet">
+<link href="../js/prettify/prettify.css" rel="stylesheet">
+<script src="../js/load-metro.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/themes/ui-lightness/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="../js/jquery.jqGrid-4.6.0/css/ui.jqgrid.css"/>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="../js/jquery.jqGrid-4.6.0/js/jquery.jqGrid.min.js"></script>
+<script src="../js/jquery/jquery.widget.min.js"></script>
+<script src="../js/jquery/jquery.mousewheel.js"></script>
+<script src="../js/prettify/prettify.js"></script>
+<script src="../js/holder/holder.js"></script>
+<script src="../js/docs.js"></script>
+<script src="../js/metro/metro-scroll.js"></script>
+<script src="../js/datepicker/jquery-ui-1.10.4.custom.min.js"></script>
+<script src="../js/metro.js"></script>
+<script src="../js/jquery/jquery.form.min.js"></script>
+<script src="../js/datepicker/jquery.ui.datepicker-zh-CN.js"></script>
+<script src="../js/metro/metro-scroll.js"></script>
+<script src="../js/ukey.js"></script>
+    <style>
+        .div-inline{display: inline;float: left}
+    </style>
+<script>
+
+Date.prototype.Format = function (fmt) { //author: meizz
+    var o = {
+        "M+": this.getMonth() + 1,                 //月份
+        "d+": this.getDate(),                    //日
+        "h+": this.getHours(),                   //小时
+        "m+": this.getMinutes(),                 //分
+        "s+": this.getSeconds(),                 //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds()             //毫秒
+    };
+    if (/(y+)/.test(fmt))
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt))
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+var tmpObj = null;
+var skcArr = [];
+
+$(document).ready(function () {
+    $("#myForm").submit(function(){
+        $(this).ajaxSubmit({
+            success:function(responseText, statusText, xhr, $form){
+                if(statusText=="success"){
+                    if(responseText.status){
+                        alert("导入成功！");
+                        clearSkc();
+                        var data=responseText.msg;
+                        for ( var i = 0; i <= data.length; i++){
+                            /*
+                            if(data[i]['OP']=='-'){
+                                data[i]['OPS']='退货';
+                            }else{
+                                data[i]['OPS']='进货';
+                            }*/
+                            jQuery("#skcTable").jqGrid('addRowData', i + 1, data[i]);
+                        }
+                        $("#EXCELFILE").val("");
+
+                    }else{
+                        alert(responseText.msg);
+                    }
+                }else{
+                    alert("请求出错啦！");
+                }
+            }
+        });
+        return false;
+    });
+
+    jQuery("#skcTable").jqGrid({
+        datatype: "local",
+        height:  window.screen.availHeight * 0.4,
+        width:  document.body.clientWidth * 0.9,
+        autowidth: false,
+        shrinkToFit: false,
+        colNames: [
+            "SKC编码",
+            "供应商SKC编码",
+            "数量",
+            "ID"
+        ],
+        colModel: [
+            {name: 'SKCCODE', index: 'SKCCODE'},
+            {name: 'SKC', index: 'SKC', editable: true},
+            {name: 'NUM', index: 'NUM'},
+            {name: 'ID', index: 'ID'}
+        ],
+        rowNum: 10,
+        rowList: [10, 30, 50],
+        pager: '#skcDiv',
+        viewrecords: true,
+        sortname: 'MERCHANTSKCCODE',
+        sortorder: "asc",
+        caption: "SKC库存信息",
+        fitColumns: true,
+        editurl: 'clientArray',
+        onSelectRow: function () {
+
+        },
+        onSelectAll: function () {
+
+        },
+        loadComplete: function () {
+
+        },
+        gridComplete: function () {
+
+        }
+    });
+    var inlineparams = {
+        addParams: { useFormatter: false },
+        add: true,
+        edit: true,
+        save: true,
+        cancel: true,
+        del: true
+    };
+    jQuery("#skcTable").jqGrid('navGrid', "#skcDiv", {search: false, refresh: false, edit: false, add: false, del: false})
+    jQuery("#skcTable").jqGrid('hideCol', 'ID');
+    jQuery("#skcTable").jqGrid('setGridParam', {data: skcArr}).trigger('reloadGrid');
+
+
+    function dataFormat(cellvalue, options, rowObject) {
+        if (!cellvalue) return '';
+        return new Date(cellvalue).Format("yyyy-MM-dd hh:mm");
+    }
+
+});
+var clearSkc=function(){
+    skcArr = [];
+    jQuery("#skcTable").clearGridData();
+    jQuery("#skcTable").jqGrid('setCaption', "SKC库存信息");
+    jQuery("#skcTable").jqGrid('setGridParam', {data: skcArr}).trigger('reloadGrid');
+}
+
+function importFile(){
+    var filepath=$("#EXCELFILE").val();
+    var pos=filepath.indexOf(".");
+    var ext=filepath.substring(pos);
+    if(filepath.length<=0||ext!=".xls"&&ext!=".xlsx"){
+        alert("请选择Excel文件"+ext);
+        return;
+    }
+    if($("selAssistant").val()==""){
+        alert("请选择营业员！");
+        return;
+    }
+    $("#myForm").submit();
+    //loadImported("000123115314468");
+}
+
+</script>
+<title></title>
+<style type="text/css" class="init">
+    .ui-jqgrid,
+    .ui-jqgrid * {
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        -ms-box-sizing: content-box;
+        -o-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+
+</head>
+<body class="metro">
+
+<div id="maindiv">
+    <div class=row>
+        <div class="mectemp bd-orange">
+
+                <table>
+                    <tr>
+                        <form id="myForm" method="post" enctype="multipart/form-data" action="/items/importStocks">
+                        <td>
+                            <input id="EXCELFILE" name="EXCELFILE"  type="file">
+                        </td>
+                        <td>
+                            <!--<label class="inline-block" style="width: 60px"> 营业员* </label>-->
+                            <select id="selAssistant" name="selAssistant" style="width:150px;height:30px">
+                                <option value="">------营业员*------</option>
+                                <% if (assistantList.length) { %>
+                                <% assistantList.forEach(function(assistant){ %>
+                                <option value="<%= assistant.SALESMANCODE %>"> <%= assistant.SALESMANNAME %> </option>
+                                <% }) %>
+                                <% } %>
+                            </select>
+                        </td>
+                        </form>
+                        <td/>
+                        <td>
+                            <!--<div class="input-control checkbox margin10" data-role="input-control">-->
+                                <button class="bg-mecBlue fg-white" style="width:80px;vertical-align:top; "
+                                        onclick="importFile()">导入
+                                </button>
+                            <!--</div>-->
+                        </td>
+                    </tr>
+                </table>
+
+            <br>
+
+            <div style="width:100%">
+                <table style="width:100%">
+                    <tr style="width:100%">
+                        <td>
+                            <table id="skcTable"></table>
+                            <div id="skcDiv"></div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+<object id="plugin0" type="application/x-huijinsecurityplugin" width="0" height="0">
+    <param name="onload" value="pluginLoaded"/>
+</object>
+<input id="rand" name="rand" type="hidden" value="<%= rand %>">
+
+
+</body>
+</html>
+

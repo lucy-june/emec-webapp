@@ -1,0 +1,184 @@
+{
+  "ID": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": true,
+    "comment": null
+  },
+  "RULECODE": {
+    "type": "varchar(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "RULECONTENT": {
+    "type": "varchar(1024)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "DATEEFFECTIVE": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "DATEEXPIRES": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "DEPTCODE": {
+    "type": "varchar(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "规则适用门店，可以为抽象的网上门店，null为全部门店",
+    "defaultValue": null
+  },
+  "STATE": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "1"
+  },
+  "REDUCECONVERT": {
+    "type": "varchar(1024)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "REDUCE": {
+    "type": "varchar(1024)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "COUPONCONVERT": {
+    "type": "varchar(1024)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "COUPON": {
+    "type": "varchar(1024)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "GIFTCONVERT": {
+    "type": "varchar(1024)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "GIFT": {
+    "type": "varchar(1024)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "RULESCRIPT": {
+    "type": "text",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "MODIFYSTATE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "修改状态 0-未修改 1-修改待审核",
+    "defaultValue": "0"
+  },
+  "RECORDSTATE": {
+    "type": "int(11)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "0-作废 1-有效",
+    "defaultValue": "1"
+  },
+  "createdAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "updatedAt": {
+    "type": "datetime",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "VIPSALIENCE": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "1"
+  },
+  "COUPONVIPGRADE": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "赠券vip等级要求  0-无要求 1-普卡 2-金卡",
+    "defaultValue": "0"
+  },
+  "COUPONPOSACCU": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "赠券pos条是否累计  0-不累计  1-累计",
+    "defaultValue": "0"
+  },
+  "COUPONVIPMORE": {
+    "type": "int(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "VIP赠券多赠",
+    "defaultValue": "0"
+  },
+  "COUPONALLOWERROR": {
+    "type": "int(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": "赠券允许计算误差",
+    "defaultValue": "0"
+  },
+  "GIFTVIPGRADE": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "赠礼vip等级要求  0-无要求 1-普卡 2-金卡",
+    "defaultValue": "0"
+  },
+  "GIFTPOSACCU": {
+    "type": "int(1)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": "赠礼pos条是否累计  0-不累计  1-累计",
+    "defaultValue": "0"
+  },
+  "GIFTVIPMORE": {
+    "type": "int(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  },
+  "GIFTALLOWERROR": {
+    "type": "int(11)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "0"
+  }
+}

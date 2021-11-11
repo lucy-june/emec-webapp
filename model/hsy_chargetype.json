@@ -1,0 +1,51 @@
+{
+  "CHARGETYPECODE": {
+    "type": "char(3)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "CHARGETYPENAME": {
+    "type": "varchar(50)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "CHARGEMODE": {
+    "type": "decimal(1,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "TYPEBCODE": {
+    "type": "decimal(4,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "1"
+  },
+  "TYPEACCODE": {
+    "type": "decimal(4,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "1"
+  },
+  "TAXRATECODE": {
+    "type": "varchar(2)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "08"
+  },
+  "PRINTSTATE": {
+    "type": "decimal(1,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": "1"
+  }
+}

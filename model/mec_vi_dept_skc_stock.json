@@ -1,0 +1,22 @@
+{
+  "DEPTCODE": {
+    "type": "varchar(8)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  },
+  "SKCCODE": {
+    "type": "char(10)",
+    "allowNull": false,
+    "primaryKey": false,
+    "comment": null
+  },
+  "AMOUNT": {
+    "type": "decimal(32,0)",
+    "allowNull": true,
+    "primaryKey": false,
+    "comment": null,
+    "defaultValue": null
+  }
+}
