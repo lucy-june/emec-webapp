@@ -4,9 +4,14 @@
 - web pages: views/
 - security.auth.js for authentication and authorization.
 
-nodejs: v4.4.4
-npm:v2.15.1
-mysql:v5.6
+Install nodejs(include node + npm): https://nodejs.org/dist/v4.4.4/node-v4.4.4-x64.msi
+  - node: v4.4.4
+  - npm: v2.15.1
+Database: mysql v5.6
+IDE: webstorm 11.0.2
+To run the project:
+  - You can use IDE, to run bin/admin, bin/sale, bin/app
+  - You can also use cmd, cd to bin/ and run $ node admin, $ node sale, $ node app.
 
 ftp Server:
 ftp://202.120.40.140:221
