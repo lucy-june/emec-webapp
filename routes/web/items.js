@@ -1078,7 +1078,7 @@ router.get('/importStock',auth.authority, function(req, res) {
 
 //负库存设置iframe内跳转
 router.get('/negativeStock',auth.authority, function(req, res) {
-    res.render('items/negativeStock',{"assistantList":req.session.assistantList,"rand":req.session.RandomCode});
+    res.render('items/negativeStock',{"assistantList":req.session.assistantList || [],"rand":req.session.RandomCode});
 });
 
 router.post('/importStocks', auth.authority, function (req, res) {
