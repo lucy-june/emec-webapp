@@ -1,9 +1,14 @@
-# For Demo:
-- start files: admin.js (for admins, use http), sale.js (for salesman, use https), app.js (for customers' app, use restful service)
+﻿# For Demo:
+- Sysetm requirement: windows 2016 server base/ windows 2016 server data center/ windows 7.
+- Install nodejs(include node + npm): https://nodejs.org/dist/v4.4.4/node-v4.4.4-x64.msi
+  - node: v4.4.4
+  - npm: v2.15.1
+- start files: "$ node admin" (for admins, use http), "$ node sale(for salesman, use https), "$ node app" (for customers' app, use restful service)
 - request entry: routes/. res.render (for web pages), res.send (for web service)
 - web pages: views/
 - security.auth.js for authentication and authorization.
 
+# For Dev:
 Install nodejs(include node + npm): https://nodejs.org/dist/v4.4.4/node-v4.4.4-x64.msi
   - node: v4.4.4
   - npm: v2.15.1
