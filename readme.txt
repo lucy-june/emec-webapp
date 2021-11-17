@@ -3,7 +3,7 @@
 - Install nodejs(include node + npm): https://nodejs.org/dist/v4.4.4/node-v4.4.4-x64.msi
   - node: v4.4.4
   - npm: v2.15.1
-- start files: "$ node admin" (for admins, use http), "$ node sale(for salesman, use https), "$ node app" (for customers' app, use restful service)
+- start files: "$ npm install pm2@2.10.4 -g" "$ pm2 start admin  --name AdminServer" (for admins, use http), "$ pm2 start sale  --name SaleServer" (for salesman, use https), "$ pm2 start app  --name AppServer" (for customers' app, use restful service)
 - request entry: routes/. res.render (for web pages), res.send (for web service)
 - web pages: views/
 - security.auth.js for authentication and authorization.
